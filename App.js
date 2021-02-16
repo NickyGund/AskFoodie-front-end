@@ -1,6 +1,6 @@
 import React from 'react';
-import Main from 'src/navigation';
-import { AuthProvider,} from 'src/context';
+import Main from './src/navigation';
+import { AuthProvider,} from './src/context';
 
 export default function App() {
   return (
@@ -10,11 +10,3 @@ export default function App() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

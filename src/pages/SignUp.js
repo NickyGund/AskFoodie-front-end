@@ -6,6 +6,8 @@ const cross = Math.sqrt(width * width + height * height);
 
 export default () => {
   return (
-    <Text>Sign Up</Text>
+    <View style = {{flex:1, alignContent:'center', alignItems:'center', justifyContent:'center'}}>
+      <Text>Sign Up</Text>
+    </View>
   );
 };
