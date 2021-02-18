@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { AuthContext } from '../context';
 
 import MainNav from './mainNav';
-import { SignUp, SignIn} from '../pages';
+import { SignUp, SignIn, ProfileQuestionaire} from '../pages';
 
 const Stack = createStackNavigator();
 
@@ -28,7 +28,8 @@ export default () => {
     <>
       {/* {!loaded ? null : ( */}
         <NavigationContainer>
-          <Stack.Navigator initialRouteName='sign in' screenOptions={{ headerShown: false }}>
+          <Stack.Navigator initialRouteName='questionaire' screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="questionaire" component={ProfileQuestionaire} />
             <Stack.Screen name="sign in" component={SignIn} />
             <Stack.Screen name="sign up" component={SignUp} />
             <Stack.Screen name="main" component={MainNav} />

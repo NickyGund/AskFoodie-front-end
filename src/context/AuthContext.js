@@ -17,10 +17,9 @@ const AuthProvider = props => {
 
   const signUp = async () => {
     try {
-      const res = await axios.post('https://quoh.herokuapp.com/api/v1/auth/register', {
+      const res = await axios.post('http://localhost:3000/api/register', {
         email,
         userName,
-        birthDate,
         password
       });
       if (res.data.error) {
