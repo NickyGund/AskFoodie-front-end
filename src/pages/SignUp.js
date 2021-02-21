@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
-import { View, SafeAreaView, Dimensions, StyleSheet, Text, TextInput , Platform, Button, TouchableOpacity} from 'react-native';
+import React, {useState, useContext, useEffect } from 'react';
+import { View, SafeAreaView, Dimensions, StyleSheet, Text, TextInput , Platform, Button, TouchableOpacity, Alert} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { AuthContext, AuthProvider } from './../context/AuthContext'
+import { AuthContext, AuthProvider } from '../context/AuthContext'
 //INSTALL THIS
 //expo install @react-native-community/datetimepicker
 //const { width, height } = Dimensions.get('window');
@@ -11,26 +11,38 @@ export default (props) => {
 
   const next = () => {
 
-    /*
-    if (!this.validateEmail(this.state. email )) {
-      // not a valid email
-    } else {
-      // valid email
-      props.navigation.navigate('sign in');
+    
+    if (!validateEmail(email)) {
+      alert("Invalid email");
+        return;
+    } 
+
+    //We have to check if the email is taken
+
+    if (password != confirmPassword) {
+      alert("Passwords do not match!");
+        return;
     }
-    */
+  
     props.navigation.navigate('sign in');
+  
+
   };
   
-  
+  /*
   const [date, setDate] = useState(new Date(1598051730000));
-  //const [mode, setMode] = useState('date');
+  const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+  */
+ 
+ const auth = useContext(AuthContext);
+
+ const { email, password, error, setError , show, name, username, confirmPassword, date} = auth.state;
+
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
-    setDate(currentDate);
+    auth.setShow(Platform.OS === 'ios');
+    auth.setDate(currentDate);
   };
 
   const validateEmail = (email) => {
@@ -38,9 +50,6 @@ export default (props) => {
     return re.test(email);
   };
 
-  const comparePasswords = () => {
-    /* compare the two passwords */
-  }
   /*
   const showMode = (currentMode) => {
     setShow(true);
@@ -65,34 +74,38 @@ export default (props) => {
         <TextInput 
           style={styles.inputText} 
           placeholder = "Name.."
-          placeholderTextColor = "#003f5c" />
+          placeholderTextColor = "#003f5c"
+          onChangeText = {text => auth.setName(text)} />
       </View>
       <View style = {styles.inputView} >
         <TextInput 
           style={styles.inputText} 
           placeholder = "email.."
           placeholderTextColor = "#003f5c"
-          /*onChangeText = {text => setEmail(text)}*/ />
+          onChangeText = {text => auth.setEmail(text)} />
       </View>
       <View style = {styles.inputView} >
         <TextInput 
           style={styles.inputText} 
           placeholder = "username.."
-          placeholderTextColor = "#003f5c" />
+          placeholderTextColor = "#003f5c"
+          onChangeText = {text => auth.setUserName(text)} />
       </View>
       <View style = {styles.inputView} >
         <TextInput 
         secureTextEntry={true}
           style={styles.inputText} 
           placeholder = "password.."
-          placeholderTextColor = "#003f5c" />
+          placeholderTextColor = "#003f5c"
+          onChangeText = {text => auth.setPassword(text)} />
       </View>
       <View style = {styles.inputView} >
         <TextInput 
         secureTextEntry={true}
           style={styles.inputText} 
           placeholder = "retype password.."
-          placeholderTextColor = "#003f5c" />
+          placeholderTextColor = "#003f5c"
+          onChangeText = {text => auth.setConfirmPassword(text)} />
       </View>
 
 
@@ -100,7 +113,7 @@ export default (props) => {
       <View>
         <TouchableOpacity
           //onPress={showDatepicker}
-          onPress = {() => setShow(!show)}
+          onPress = {() => auth.setShow(!(auth.show))}
  >
           <Text style = {{color: 'white', fontWeight: 'bold'}} > Tap HERE to edit your date of birth...</Text>
         </TouchableOpacity>
@@ -149,9 +162,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 4,
     paddingHorizontal: 18,
-    //position: 'absolute',
-    //bottom:0,
-    //left:0,
     marginTop: 15
   },
 
@@ -161,9 +171,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 12,
-    //position: 'absolute',
-    //bottom:0,
-    //left:0,
     marginTop: 20
   },
   appButtonText: {

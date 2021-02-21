@@ -6,6 +6,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 const AuthContext = React.createContext();
 
 const AuthProvider = props => {
+  const [name,setName] = useState('');
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -50,6 +51,7 @@ const AuthProvider = props => {
 
   const state = {
     state: {
+      name,
       userName,
       password,
       email,
@@ -62,6 +64,7 @@ const AuthProvider = props => {
       date,
       show
     },
+    setName,
     setUserName,
     setPassword,
     setEmail,
