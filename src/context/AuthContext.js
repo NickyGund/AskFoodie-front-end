@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const AuthContext = React.createContext();
 
 const AuthProvider = props => {
+  const [name,setName] = useState('');
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -14,6 +16,10 @@ const AuthProvider = props => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userID, setUserID] = useState('');
   const [birthDate, setBirthDate] = useState(null);
+
+  const [date, setDate] = useState(new Date(1598051730000));
+  //const [mode, setMode] = useState('date');
+  const [show, setShow] = useState(false);
 
   const signUp = async () => {
     try {
@@ -45,6 +51,7 @@ const AuthProvider = props => {
 
   const state = {
     state: {
+      name,
       userName,
       password,
       email,
@@ -53,8 +60,11 @@ const AuthProvider = props => {
       token,
       loggedIn,
       userID,
-      birthDate
+      birthDate,
+      date,
+      show
     },
+    setName,
     setUserName,
     setPassword,
     setEmail,
@@ -63,6 +73,8 @@ const AuthProvider = props => {
     setConfirmPassword,
     setToken,
     setBirthDate,
+    setDate,
+    setShow
   };
 
   return <AuthContext.Provider value={state}>{props.children}</AuthContext.Provider>;
