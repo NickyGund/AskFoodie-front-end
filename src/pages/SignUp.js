@@ -4,10 +4,14 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { AuthContext, AuthProvider } from '../context/AuthContext'
 //INSTALL THIS
 //expo install @react-native-community/datetimepicker
-//const { width, height } = Dimensions.get('window');
-//const cross = Math.sqrt(width * width + height * height);
+const { width, height } = Dimensions.get('window');
+const cross = Math.sqrt(width * width + height * height);
 
 export default (props) => {
+  const auth = useContext(AuthContext);
+  const [show, setShow] = useState(false);
+  const { email, password, error, setError , name, username, confirmPassword, date} = auth.state;
+
 
   const next = () => {
 
@@ -29,19 +33,11 @@ export default (props) => {
 
   };
   
-  /*
-  const [date, setDate] = useState(new Date(1598051730000));
-  const [mode, setMode] = useState('date');
-  const [show, setShow] = useState(false);
-  */
  
- const auth = useContext(AuthContext);
-
- const { email, password, error, setError , show, name, username, confirmPassword, date} = auth.state;
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    auth.setShow(Platform.OS === 'ios');
+    setShow(Platform.OS === 'ios');
     auth.setDate(currentDate);
   };
 
@@ -50,23 +46,10 @@ export default (props) => {
     return re.test(email);
   };
 
-  /*
-  const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
-  };
 
-  const showDatepicker = () => {
-    showMode('date');
-  };
-
-  const showTimepicker = () => {
-    showMode('time');
-  };
-  */
 
   return (
-    <View style = {/*{{flex:1, alignContent:'center', alignItems:'center', justifyContent:'center'}}*/ styles.container}>
+    <View style = {styles.container}>
 
       <Text style={styles.message }>Become a Foodie!</Text>
 
@@ -112,9 +95,8 @@ export default (props) => {
       
       <View>
         <TouchableOpacity
-          //onPress={showDatepicker}
-          onPress = {() => auth.setShow(!(auth.show))}
- >
+          onPress = {() => setShow(!show)}
+        >
           <Text style = {{color: 'white', fontWeight: 'bold'}} > Tap HERE to edit your date of birth...</Text>
         </TouchableOpacity>
         {show && (
@@ -127,7 +109,7 @@ export default (props) => {
             onChange={onChange}
             maximumDate = {new Date()}
             minimumDate={new Date(1900, 1, 1)}
-            style = {{height:30,borderRadius:25, width: 100,alignItems: 'center',justifyContent: 'center'}}
+            style = {{height:height*.3,borderRadius:25, width: width*.75,alignItems: 'center',justifyContent: 'center'}}
           />
         )}
       </View>
@@ -238,7 +220,6 @@ const styles = StyleSheet.create({
 
   set: {
     alignContent:'center',
-    alignItems:'center',
     alignItems:'center',
     flex:1,
     backgroundColor: '#ADD8E6'
