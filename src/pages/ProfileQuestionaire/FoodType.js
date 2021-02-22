@@ -42,6 +42,10 @@ export default (props) => {
 
       }
 
+      const toDining = () => {
+        props.navigation.navigate('dining')
+      }
+
 
     return (
         <View style={{ flex: 1, alignItems:'center' }}>
@@ -77,7 +81,7 @@ export default (props) => {
         <View style = {{flex:2,}}>
             <TouchableOpacity 
                 style = {{borderColor:'black', height:25, width:75, borderWidth:1, alignItems:'center', justifyContent:'center'}}
-                // onPress = {toFoodQuestion}
+                onPress = {toDining}
             >
                 <Text>Next</Text>
             </TouchableOpacity>
