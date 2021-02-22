@@ -1,7 +1,7 @@
 import React, {useState, useContext, useEffect } from 'react';
 import { View, SafeAreaView, Dimensions, StyleSheet, Text, TextInput , Platform, Button, TouchableOpacity, Alert} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { AuthContext, AuthProvider } from '../context/AuthContext'
+import { AuthContext, AuthProvider } from '../context'
 //INSTALL THIS
 //expo install @react-native-community/datetimepicker
 const { width, height } = Dimensions.get('window');
@@ -10,42 +10,70 @@ const cross = Math.sqrt(width * width + height * height);
 export default (props) => {
   const auth = useContext(AuthContext);
   const [show, setShow] = useState(false);
-  const { email, password, error, setError , name, username, confirmPassword, date} = auth.state;
+  const [error, setError] = useState(null);
+
+  const { email, password , name, userName, confirmPassword,birthdate} = auth.state;
 
 
-  const next = () => {
-
-    
-    if (!validateEmail(email)) {
-      alert("Invalid email");
-        return;
-    } 
-
-    //We have to check if the email is taken
-
-    if (password != confirmPassword) {
-      alert("Passwords do not match!");
-        return;
+  const createAccount = async () => {
+    if (!passwordCheck()) return;
+    try {
+      if (!passwordCheck()) return;
+      const res = await auth.signUp();
+      Alert.alert(
+        'Success', 'Account Created Successfully', 
+        [{text:'Close', style:'default'}], 
+        {cancelable:false})
+        props.navigation.navigate('sign in')
+    } catch (err) {
+      Alert.alert(
+        'Error',
+        err.toString(),
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel'
+          }
+        ],
+        { cancelable: false }
+      );
     }
-  
-    props.navigation.navigate('sign in');
-  
-
   };
   
- 
-
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
-    auth.setDate(currentDate);
+  const passwordCheck = () => {
+    if (password.length < 6) {
+      setError('your passwords must be at least 6 characters');
+      Alert.alert(
+        'Error',
+        error,
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel'
+          }
+        ],
+        { cancelable: false }
+      );
+      return false;
+    }
+    if (password !== confirmPassword) {
+      setError('your passwords do not match');
+      Alert.alert(
+        'Error',
+        error,
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel'
+          }
+        ],
+        { cancelable: false }
+      );
+      return false;
+    }
+    setError(null);
+    return true;
   };
-
-  const validateEmail = (email) => {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
-  };
-
 
 
   return (
@@ -55,14 +83,16 @@ export default (props) => {
 
       <View style = {styles.inputView} >
         <TextInput 
-          style={styles.inputText} 
+          style={styles.inputText}
+          value = {name} 
           placeholder = "Name.."
           placeholderTextColor = "#003f5c"
           onChangeText = {text => auth.setName(text)} />
       </View>
       <View style = {styles.inputView} >
         <TextInput 
-          style={styles.inputText} 
+          style={styles.inputText}
+          value = {email} 
           placeholder = "email.."
           placeholderTextColor = "#003f5c"
           onChangeText = {text => auth.setEmail(text)} />
@@ -70,6 +100,7 @@ export default (props) => {
       <View style = {styles.inputView} >
         <TextInput 
           style={styles.inputText} 
+          value = {userName}
           placeholder = "username.."
           placeholderTextColor = "#003f5c"
           onChangeText = {text => auth.setUserName(text)} />
@@ -79,6 +110,7 @@ export default (props) => {
         secureTextEntry={true}
           style={styles.inputText} 
           placeholder = "password.."
+          value = {password}
           placeholderTextColor = "#003f5c"
           onChangeText = {text => auth.setPassword(text)} />
       </View>
@@ -86,6 +118,7 @@ export default (props) => {
         <TextInput 
         secureTextEntry={true}
           style={styles.inputText} 
+          value = {confirmPassword}
           placeholder = "retype password.."
           placeholderTextColor = "#003f5c"
           onChangeText = {text => auth.setConfirmPassword(text)} />
@@ -102,11 +135,10 @@ export default (props) => {
         {show && (
           <DateTimePicker
             testID="dateTimePicker"
-            value={date}
+            value={birthdate}
             mode={'date'}
             is24Hour={true}
-            display="defualt"
-            onChange={onChange}
+            onChange={(event, selected) => auth.setDate(selected)}
             maximumDate = {new Date()}
             minimumDate={new Date(1900, 1, 1)}
             style = {{height:height*.3,borderRadius:25, width: width*.75,alignItems: 'center',justifyContent: 'center'}}
@@ -116,20 +148,17 @@ export default (props) => {
 
 
       <View>
-        <TouchableOpacity onPress ={next} style={styles.appButtonContainer}>
+        <TouchableOpacity onPress ={createAccount} style={styles.appButtonContainer}>
           <Text style = {styles.appButtonText}>{'next'} </Text>
         </TouchableOpacity>
       </View>
 
       
-      <View>
+      {/* <View>
         <TouchableOpacity onPress ={next} style={styles.backButton}>
           <Text style = {styles.appButtonText}>{'cancel'} </Text>
         </TouchableOpacity>
-      </View>
-
-
-        
+      </View> */}
 
     </View>
   );
@@ -193,7 +222,7 @@ const styles = StyleSheet.create({
     width:"80%",
     backgroundColor:"#465881",
     borderRadius:25,
-    height:50,
+    height:height*.06,
     marginBottom:20,
     justifyContent:"center",
     padding:20,
@@ -214,7 +243,7 @@ const styles = StyleSheet.create({
   },
 
   inputText:{
-    height:50,
+    flex:1,
     color:"white"
   },
 
