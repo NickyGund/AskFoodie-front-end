@@ -15,34 +15,37 @@ const AuthProvider = props => {
   const [token, setToken] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [userID, setUserID] = useState('');
-  const [birthDate, setBirthDate] = useState(null);
 
-  const [date, setDate] = useState(new Date(1598051730000));
+  const [birthdate, setDate] = useState(new Date());
   //const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
 
   const signUp = async () => {
     try {
-      const res = await axios.post('https://quoh.herokuapp.com/api/v1/auth/register', {
+      const res = await axios.post('http://192.168.1.246:3000/api/register', {
         email,
+        firstName:name,
         userName,
-        birthDate,
+        birthdate,
         password
       });
+      console.log(res.data)
       if (res.data.error) {
+        console.log(res.data.data)
         throw new Error(res.data.data);
       }
-      await AsyncStorage.setItem('token', res.data.data.token);
-      setToken(res.data.token);
-      setLoggedIn(false);
-      setError(null);
-      setUserID(res.data.data.user.id);
-      await AsyncStorage.setItem('userId', res.data.data.user.id);
-      await AsyncStorage.setItem('userName', res.data.data.user.userName);
-      await AsyncStorage.setItem('email', res.data.data.user.email);
+      // await AsyncStorage.setItem('token', res.data.data.token)
+      // setToken(res.data.token);
+      // setLoggedIn(false);
+      // setError(null);
+      // setUserID(res.data.data.user.id);
+      // await AsyncStorage.setItem('userId', res.data.data.user.id);
+      // await AsyncStorage.setItem('userName', res.data.data.user.userName);
+      // await AsyncStorage.setItem('email', res.data.data.user.email);
       return res.data;
     } catch (err) {
       setError(err.message);
+      console.log(err.message)
       throw err;
     }
   };
@@ -60,8 +63,7 @@ const AuthProvider = props => {
       token,
       loggedIn,
       userID,
-      birthDate,
-      date,
+      birthdate,
       show
     },
     setName,
@@ -72,7 +74,6 @@ const AuthProvider = props => {
     signUp,
     setConfirmPassword,
     setToken,
-    setBirthDate,
     setDate,
     setShow
   };
