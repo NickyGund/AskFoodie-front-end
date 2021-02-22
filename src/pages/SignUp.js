@@ -126,7 +126,7 @@ export default (props) => {
 
 
       
-      <View>
+      <View style = {{ alignItems:'center'}}>
         <TouchableOpacity
           onPress = {() => setShow(!show)}
         >
@@ -141,7 +141,7 @@ export default (props) => {
             onChange={(event, selected) => auth.setDate(selected)}
             maximumDate = {new Date()}
             minimumDate={new Date(1900, 1, 1)}
-            style = {{height:height*.3,borderRadius:25, width: width*.75,alignItems: 'center',justifyContent: 'center'}}
+            style = {{height:height*.3,borderRadius:25, width: width*.75,}}
           />
         )}
       </View>
@@ -219,14 +219,12 @@ const styles = StyleSheet.create({
   },
 
   inputView:{
-    width:"80%",
+    width:width*.8,
     backgroundColor:"#465881",
     borderRadius:25,
     height:height*.06,
-    marginBottom:20,
     justifyContent:"center",
-    padding:20,
-    alignContent:'center', 
+    marginBottom:10,
     alignItems:'center',
   },
 
@@ -243,7 +241,7 @@ const styles = StyleSheet.create({
   },
 
   inputText:{
-    flex:1,
+    flexDirection:'row',
     color:"white"
   },
 
