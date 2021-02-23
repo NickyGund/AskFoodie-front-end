@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {Picker} from '@react-native-picker/picker';
 import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native';
+import { ProfileQuestionaireContext } from '../../context'
+
 const { width, height } = Dimensions.get('window');
 
 
 export default (props) => {
+    const questionaire = useContext(ProfileQuestionaireContext)
     const [distance, setDistance] = useState('')
 
-    const submit = () => {
-        // props.navigation.navigate('food');
-        console.log('submit')
+    const submit = async () => {
+        await questionaire.submit()
+        props.navigation.navigate('main')
     }
   return (
     <View style = {{flex:1, alignItems:'center', paddingTop:50, backgroundColor:'white'}}>
@@ -18,14 +21,14 @@ export default (props) => {
         </View>
         <View style = {{flex:1}}>
         <Picker
-            selectedValue={distance}
+            selectedValue={questionaire.state.distance}
             style={{ height:50, width: width*.8, }}
-            onValueChange={(itemValue, itemIndex) => setDistance(itemValue)}>
-            <Picker.Item label="5 Miles" value="1" />
-            <Picker.Item label="10 Miles" value="2" />
-            <Picker.Item label="15 Miles" value="3" />
-            <Picker.Item label="20 Miles" value="4" />
-            <Picker.Item label="No Preference" value="5" />
+            onValueChange={async (itemValue, itemIndex) => await questionaire.setDistance(itemValue)}>
+            <Picker.Item label="No Preference" value={1} />
+            <Picker.Item label="5 Miles" value={2}/>
+            <Picker.Item label="10 Miles" value={3} />
+            <Picker.Item label="15 Miles" value={4} />
+            <Picker.Item label="20 Miles" value={5} />
 
             
         </Picker>

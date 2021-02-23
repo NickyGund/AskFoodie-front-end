@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {Picker} from '@react-native-picker/picker';
 import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native';
+import { ProfileQuestionaireContext } from '../../context'
 const { width, height } = Dimensions.get('window');
 
 
 export default (props) => {
+    const questionaire = useContext(ProfileQuestionaireContext)
     const [price, setPrice] = useState('')
 
-    const toFoodQuestion = () => {
-        
+    const toFoodQuestion = async () => {
+        // await questionaire.setPrice(price)
         props.navigation.navigate('food');
     }
   return (
@@ -18,14 +20,14 @@ export default (props) => {
         </View>
         <View style = {{flex:1}}>
         <Picker
-            selectedValue={price}
+            selectedValue={questionaire.state.price}
             style={{ height:50, width: width*.8, }}
-            onValueChange={(itemValue, itemIndex) => setPrice(itemValue)}>
+            onValueChange={async (itemValue, itemIndex) => await questionaire.setPrice(itemValue)}>
+            <Picker.Item label="No Preference" value="none" />
             <Picker.Item label="$" value="$" />
             <Picker.Item label="$$" value="$$" />
             <Picker.Item label="$$$" value="$$$" />
             <Picker.Item label="$$$$" value="$$$$" />
-            <Picker.Item label="No Preference" value="none" />
 
             
         </Picker>

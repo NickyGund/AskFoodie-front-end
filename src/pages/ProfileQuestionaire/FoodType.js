@@ -1,48 +1,52 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {Picker} from '@react-native-picker/picker';
 import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native';
 import MultiSelect from 'react-native-multiple-select';
+import { ProfileQuestionaireContext } from '../../context'
+
 
 const { width, height } = Dimensions.get('window');
 
 
 export default (props) => {
+   const questionaire = useContext(ProfileQuestionaireContext)
     const [selectedItems, setSelectedItems] = useState([])
     const items = [{
-        id: '92iijs7yta',
+        id: 'chinese',
         name: 'Chinese',
       }, {
-        id: 'a0s0a8ssbsd',
+        id: 'italian',
         name: 'Italian',
       }, {
-        id: '16hbajsabsd',
+        id: 'american',
         name: 'American',
       }, {
-        id: 'nahs75a5sg',
+        id: 'indian',
         name: 'Indian',
       }, {
-        id: '667atsas',
+        id: 'mexican',
         name: 'Mexican',
       }, {
-        id: 'hsyasajs',
+        id: 'japanese',
         name: 'Japanese',
       }, {
-        id: 'djsjudksjd',
+        id: 'french',
         name: 'French',
       }, {
-        id: 'sdhyaysdj',
+        id: 'vietnamese',
         name: 'Vietnamese',
       }, {
-        id: 'suudydjsjd',
+        id: 'greek',
         name: 'Greek',
       }];
 
       const onSelectedItemsChange = (selected) => {
-          setSelectedItems(selected)
-
+        questionaire.setFoodTypes(selected)
       }
 
-      const toDining = () => {
+      const toDining = async () => {
+        console.log(selectedItems)
+        // await questionaire.setFoodTypes(setSelectedItems)
         props.navigation.navigate('dining')
       }
 
@@ -57,7 +61,7 @@ export default (props) => {
           items={items}
           uniqueKey="id"
           onSelectedItemsChange={onSelectedItemsChange}
-          selectedItems={selectedItems}
+          selectedItems={questionaire.state.foodTypes}
           selectText="Pick Items"
           searchInputPlaceholderText="Search Items..."
           onChangeInput={ (text)=> console.log(text)}

@@ -154,11 +154,11 @@ export default (props) => {
       </View>
 
       
-      {/* <View>
-        <TouchableOpacity onPress ={next} style={styles.backButton}>
-          <Text style = {styles.appButtonText}>{'cancel'} </Text>
+      <View>
+        <TouchableOpacity onPress ={() => props.navigation.navigate('sign in')} style={styles.backButton}>
+          <Text style = {styles.appButtonText}>{'Login'} </Text>
         </TouchableOpacity>
-      </View> */}
+      </View>
 
     </View>
   );

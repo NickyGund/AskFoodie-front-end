@@ -6,28 +6,38 @@ const ProfileQuestionaireContext = React.createContext();
 
 const ProfileProvider = props => {
  const [foodTypes, setFoodTypes] = useState([])
- const [price, setPrice] = useState('')
+ const [price, setPrice] = useState('none')
+ const [distance, setDistance] = useState(1)
+ const [dining, setDining] = useState(1)
 
  const submit = async () => {
-     try {
-         const res = await axios.post('', {
-            foodTypes,
-            price 
-         }) 
-     } catch (error) {
-         console.log(error.message)
-     }
+     const body = {foodTypes, price, distance, dining}
+    //  try {
+    //      const res = await axios.post('http://192.168.1.246:3000/api/register', {
+    //         foodTypes,
+    //         price,
+    //         distance,
+    //         dining 
+    //      }) 
+    //  } catch (error) {
+    //      console.log(error.message)
+    //  }
+    console.log(body)
  }
 
   const state = {
     state: {
       foodTypes,
-      price
+      price,
+      distance,
+      dining
 
     },
     setFoodTypes,
     setPrice,
-    submit
+    submit,
+    setDistance,
+    setDining
 
   };
 

@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {Picker} from '@react-native-picker/picker';
 import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native';
+import { ProfileQuestionaireContext } from '../../context'
 const { width, height } = Dimensions.get('window');
 
 
 export default (props) => {
+    const questionaire = useContext(ProfileQuestionaireContext)
     const [type, setType] = useState('')
 
-    const toDistanceQuestion = () => {
+    const toDistanceQuestion = async () => {
+    //    await questionaire.setDining(type)
         props.navigation.navigate('distance');
     }
   return (
@@ -17,12 +20,12 @@ export default (props) => {
         </View>
         <View style = {{flex:1}}>
         <Picker
-            selectedValue={type}
+            selectedValue={questionaire.state.dining}
             style={{ height:50, width: width*.8, }}
-            onValueChange={(itemValue, itemIndex) => setType(itemValue)}>
-            <Picker.Item label="Dine In" value='1' />
-            <Picker.Item label="Take Out" value="2" />
-            <Picker.Item label="No Preference" value='3' />
+            onValueChange={async (itemValue, itemIndex) => await questionaire.setDining(itemValue)}>
+            <Picker.Item label="No Preference" value={1} />
+            <Picker.Item label="Dine In" value={2} />
+            <Picker.Item label="Take Out" value={3} />
 
             
         </Picker>
