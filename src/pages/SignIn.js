@@ -1,7 +1,14 @@
 // https://reactnative.dev/docs/components-and-apis
-import React from 'react';
-import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, ImageBackground } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, ImageBackground, Alert } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
+import { AuthContext, AuthProvider } from '../context';
+
+export default (props) => {
+  App;
+  const auth = useContext(AuthContext);
+  //const {userName, password} = auth.state;
+}
 
 function get_font_size(size) {
   return size / PixelRatio.getFontScale();
@@ -89,11 +96,31 @@ function App(component) {
     password = text
   }
 
-  const toLogin = () => {
+  const toLogin = async () => {
     console.log(username);
     console.log(password);
     console.log();
-  };
+
+    try{
+    const res = await auth.signIn(username, password);
+    console.log('test?');
+    Alert.alert('Authentication confirmed, welcome!'
+    [{text:'Close', style:'default'}], 
+        {cancelable:false})
+        navigation.navigate('Home')
+  } catch(err) {
+    Alert.alert('Log in failed', 
+    err.toString(),
+    [{
+      text: 'Ok',
+      style: 'ok'
+    }
+  ],
+  {cancelable:false}
+  );
+}
+};
+  
 
   return (
     <View style={styles.container}>
@@ -122,4 +149,6 @@ function App(component) {
     </View>
   );
 };
-export default App;
+
+
+
