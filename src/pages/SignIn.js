@@ -4,14 +4,83 @@ import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, Image
 import { TextInput } from 'react-native-gesture-handler';
 import { AuthContext, AuthProvider } from '../context';
 
-export default (props) => {
-  App;
-  const auth = useContext(AuthContext);
-  //const {userName, password} = auth.state;
-}
+
 
 function get_font_size(size) {
   return size / PixelRatio.getFontScale();
+};
+
+
+const backgroundImage = {
+  uri: "https://i.imgur.com/4SKbUmR.jpg",
+};
+
+export default (props) =>  {
+  const auth = useContext(AuthContext)
+  const toSignUp = () => {
+    props.navigation.navigate('sign up');
+  };
+
+  var username, password;
+  const username_input_changed = (text) => {
+    username = text
+  }
+  const password_input_changed = (text) => {
+    password = text
+  }
+
+  const login = async () => {
+    console.log(username);
+    console.log(password);
+    console.log();
+
+    try{
+    const res = await auth.signIn();
+    console.log('test?');
+    Alert.alert('Authentication confirmed, welcome!'
+    [{text:'Close', style:'default'}], 
+        {cancelable:false})
+        navigation.navigate('Home')
+  } catch(err) {
+    Alert.alert('Log in failed', 
+    err.toString(),
+    [{
+      text: 'Ok',
+      style: 'ok'
+    }
+  ],
+  {cancelable:false}
+  );
+}
+};
+  
+
+  return (
+    <View style={styles.container}>
+      <ImageBackground source = {backgroundImage} style = {styles.background_image}>
+        <View style = {styles.menu_container}>
+          <Text adjustsFontSizeToFit style = {styles.title}>
+            Foodie
+          </Text>
+          <View style = {styles.login_container}>
+            <TextInput onChangeText = {(text) => auth.setUserName(text)} style = {styles.input} placeholder = "Email" textContentType = "username" />
+            <TextInput onChangeText = {password_input_changed} style = {styles.input} placeholder = "Password" textContentType = "password" secureTextEntry />
+          </View>
+          <TouchableOpacity>
+            <Text style = {styles.signin} onPress = {login}>
+              Login
+            </Text>
+          </TouchableOpacity>
+          <View style = {styles.bar} />
+          <TouchableOpacity onPress = {toSignUp}>
+            <Text style = {styles.signup}>
+              Register
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -78,77 +147,6 @@ const styles = StyleSheet.create({
     color: "#ffffffff",
   }
 });
-
-const backgroundImage = {
-  uri: "https://i.imgur.com/4SKbUmR.jpg",
-};
-
-function App(component) {
-  const toSignUp = () => {
-    component.navigation.navigate('sign up');
-  };
-
-  var username, password;
-  const username_input_changed = (text) => {
-    username = text
-  }
-  const password_input_changed = (text) => {
-    password = text
-  }
-
-  const toLogin = async () => {
-    console.log(username);
-    console.log(password);
-    console.log();
-
-    try{
-    const res = await auth.signIn(username, password);
-    console.log('test?');
-    Alert.alert('Authentication confirmed, welcome!'
-    [{text:'Close', style:'default'}], 
-        {cancelable:false})
-        navigation.navigate('Home')
-  } catch(err) {
-    Alert.alert('Log in failed', 
-    err.toString(),
-    [{
-      text: 'Ok',
-      style: 'ok'
-    }
-  ],
-  {cancelable:false}
-  );
-}
-};
-  
-
-  return (
-    <View style={styles.container}>
-      <ImageBackground source = {backgroundImage} style = {styles.background_image}>
-        <View style = {styles.menu_container}>
-          <Text adjustsFontSizeToFit style = {styles.title}>
-            Foodie
-          </Text>
-          <View style = {styles.login_container}>
-            <TextInput onChangeText = {username_input_changed} style = {styles.input} placeholder = "Username" textContentType = "username" />
-            <TextInput onChangeText = {password_input_changed} style = {styles.input} placeholder = "Password" textContentType = "password" secureTextEntry />
-          </View>
-          <TouchableOpacity>
-            <Text style = {styles.signin} onPress = {toLogin}>
-              Login
-            </Text>
-          </TouchableOpacity>
-          <View style = {styles.bar} />
-          <TouchableOpacity onPress = {toSignUp}>
-            <Text style = {styles.signup}>
-              Register
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </ImageBackground>
-    </View>
-  );
-};
 
 
 

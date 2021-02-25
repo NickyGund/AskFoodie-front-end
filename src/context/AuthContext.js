@@ -23,9 +23,9 @@ const AuthProvider = props => {
   const signUp = async () => {
     try {
       const res = await axios.post('http://192.168.1.246:3000/api/register', {
-        email,
+        email:email,
         firstName:name,
-        userName,
+        userName:userName,
         birthdate,
         password
       });
@@ -50,12 +50,12 @@ const AuthProvider = props => {
     }
   };
   
-  const signIn = async (input_name, input_pass) => {
+  const signIn = async () => {
     try{
       console.log('test1');
       const res = await axios.get('http://192.168.1.246:3000/api/login', {
-        userName:input_name,
-        password:input_pass
+        email,
+        password
       });
       console.log('test2');
       console.log(res.data)
@@ -63,7 +63,7 @@ const AuthProvider = props => {
         console.log(res.data.data)
         throw new Error(res.data.data);
       }
-      AuthContext.setLoggedIn(true);
+      setLoggedIn(true);
       return res.data;
     }
       catch (err) {
