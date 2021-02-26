@@ -52,19 +52,19 @@ const AuthProvider = props => {
   
   const signIn = async () => {
     try{
-      console.log('test1');
-      const res = await axios.get('http://192.168.1.246:3000/api/login', {
-        email,
-        password
+      const res = await axios.post('http://192.168.1.8:3000/api/login', {
+        email:email,
+        password:password
       });
-      console.log('test2');
       console.log(res.data)
       if(res.data.error){
         console.log(res.data.data)
         throw new Error(res.data.data);
       }
+      else{
       setLoggedIn(true);
       return res.data;
+      }
     }
       catch (err) {
       setError(err.message);

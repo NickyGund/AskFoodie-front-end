@@ -30,23 +30,20 @@ export default (props) =>  {
   }
 
   const login = async () => {
-    console.log(username);
-    console.log(password);
-    console.log();
-
     try{
     const res = await auth.signIn();
-    console.log('test?');
-    Alert.alert('Authentication confirmed, welcome!'
+    Alert.alert('Authentication confirmed', 'welcome!',
     [{text:'Close', style:'default'}], 
         {cancelable:false})
-        navigation.navigate('Home')
+        //navigation.navigate('Home')
+      
+    
   } catch(err) {
     Alert.alert('Log in failed', 
-    err.toString(),
+    "Incorrect Password",
     [{
       text: 'Ok',
-      style: 'ok'
+      style: 'Ok'
     }
   ],
   {cancelable:false}
@@ -63,8 +60,8 @@ export default (props) =>  {
             Foodie
           </Text>
           <View style = {styles.login_container}>
-            <TextInput onChangeText = {(text) => auth.setUserName(text)} style = {styles.input} placeholder = "Email" textContentType = "username" />
-            <TextInput onChangeText = {password_input_changed} style = {styles.input} placeholder = "Password" textContentType = "password" secureTextEntry />
+            <TextInput onChangeText = {(text) => auth.setEmail(text)} style = {styles.input} placeholder = "Email" textContentType = "emailAddress" />
+            <TextInput onChangeText = {(text) => auth.setPassword(text)} style = {styles.input} placeholder = "Password" textContentType = "password" secureTextEntry />
           </View>
           <TouchableOpacity>
             <Text style = {styles.signin} onPress = {login}>
