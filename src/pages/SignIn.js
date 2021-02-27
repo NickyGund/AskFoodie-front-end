@@ -60,8 +60,20 @@ export default (props) =>  {
             Foodie
           </Text>
           <View style = {styles.login_container}>
-            <TextInput onChangeText = {(text) => auth.setEmail(text)} style = {styles.input} placeholder = "Email" textContentType = "emailAddress" />
-            <TextInput onChangeText = {(text) => auth.setPassword(text)} style = {styles.input} placeholder = "Password" textContentType = "password" secureTextEntry />
+            <TextInput 
+              onChangeText = {(text) => auth.setEmail(text)} 
+              style = {styles.input} 
+              placeholder = "Email" 
+              textContentType = "emailAddress"
+              autoCapitalize = 'none' 
+            />
+            <TextInput 
+              onChangeText = {(text) => auth.setPassword(text)} 
+              style = {styles.input} placeholder = "Password" 
+              textContentType = "password" 
+              secureTextEntry
+              autoCapitalize = 'none' 
+              />
           </View>
           <TouchableOpacity>
             <Text style = {styles.signin} onPress = {login}>
