@@ -40,7 +40,7 @@ export default (props) =>  {
     
   } catch(err) {
     Alert.alert('Log in failed', 
-    "Incorrect Password",
+    err.toString(),
     [{
       text: 'Ok',
       style: 'Ok'
