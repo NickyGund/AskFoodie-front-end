@@ -1,10 +1,95 @@
 // https://reactnative.dev/docs/components-and-apis
-import React from 'react';
-import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, ImageBackground } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, ImageBackground, Alert } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
+import { AuthContext, AuthProvider } from '../context';
+
+
 
 function get_font_size(size) {
   return size / PixelRatio.getFontScale();
+};
+
+
+const backgroundImage = {
+  uri: "https://i.imgur.com/4SKbUmR.jpg",
+};
+
+export default (props) =>  {
+  const auth = useContext(AuthContext)
+  const toSignUp = () => {
+    props.navigation.navigate('sign up');
+  };
+
+  var username, password;
+  const username_input_changed = (text) => {
+    username = text
+  }
+  const password_input_changed = (text) => {
+    password = text
+  }
+
+  const login = async () => {
+    try{
+    const res = await auth.signIn();
+    Alert.alert('Authentication confirmed', 'welcome!',
+    [{text:'Close', style:'default'}], 
+        {cancelable:false})
+        //navigation.navigate('Home')
+      
+    
+  } catch(err) {
+    Alert.alert('Log in failed', 
+    err.toString(),
+    [{
+      text: 'Ok',
+      style: 'Ok'
+    }
+  ],
+  {cancelable:false}
+  );
+}
+};
+  
+
+  return (
+    <View style={styles.container}>
+      <ImageBackground source = {backgroundImage} style = {styles.background_image}>
+        <View style = {styles.menu_container}>
+          <Text adjustsFontSizeToFit style = {styles.title}>
+            Foodie
+          </Text>
+          <View style = {styles.login_container}>
+            <TextInput 
+              onChangeText = {(text) => auth.setEmail(text)} 
+              style = {styles.input} 
+              placeholder = "Email" 
+              textContentType = "emailAddress"
+              autoCapitalize = 'none' 
+            />
+            <TextInput 
+              onChangeText = {(text) => auth.setPassword(text)} 
+              style = {styles.input} placeholder = "Password" 
+              textContentType = "password" 
+              secureTextEntry
+              autoCapitalize = 'none' 
+              />
+          </View>
+          <TouchableOpacity>
+            <Text style = {styles.signin} onPress = {login}>
+              Login
+            </Text>
+          </TouchableOpacity>
+          <View style = {styles.bar} />
+          <TouchableOpacity onPress = {toSignUp}>
+            <Text style = {styles.signup}>
+              Register
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -72,54 +157,5 @@ const styles = StyleSheet.create({
   }
 });
 
-const backgroundImage = {
-  uri: "https://i.imgur.com/4SKbUmR.jpg",
-};
 
-function App(component) {
-  const toSignUp = () => {
-    component.navigation.navigate('sign up');
-  };
 
-  var username, password;
-  const username_input_changed = (text) => {
-    username = text
-  }
-  const password_input_changed = (text) => {
-    password = text
-  }
-
-  const toLogin = () => {
-    console.log(username);
-    console.log(password);
-    console.log();
-  };
-
-  return (
-    <View style={styles.container}>
-      <ImageBackground source = {backgroundImage} style = {styles.background_image}>
-        <View style = {styles.menu_container}>
-          <Text adjustsFontSizeToFit style = {styles.title}>
-            Foodie
-          </Text>
-          <View style = {styles.login_container}>
-            <TextInput onChangeText = {username_input_changed} style = {styles.input} placeholder = "Username" textContentType = "username" />
-            <TextInput onChangeText = {password_input_changed} style = {styles.input} placeholder = "Password" textContentType = "password" secureTextEntry />
-          </View>
-          <TouchableOpacity>
-            <Text style = {styles.signin} onPress = {toLogin}>
-              Login
-            </Text>
-          </TouchableOpacity>
-          <View style = {styles.bar} />
-          <TouchableOpacity onPress = {toSignUp}>
-            <Text style = {styles.signup}>
-              Register
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </ImageBackground>
-    </View>
-  );
-};
-export default App;

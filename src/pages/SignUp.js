@@ -87,7 +87,8 @@ export default (props) => {
           value = {name} 
           placeholder = "Name.."
           placeholderTextColor = "#003f5c"
-          onChangeText = {text => auth.setName(text)} />
+          onChangeText = {text => auth.setName(text)}
+          autoCapitalize = 'none' />
       </View>
       <View style = {styles.inputView} >
         <TextInput 
@@ -95,7 +96,9 @@ export default (props) => {
           value = {email} 
           placeholder = "email.."
           placeholderTextColor = "#003f5c"
-          onChangeText = {text => auth.setEmail(text)} />
+          onChangeText = {text => auth.setEmail(text)}
+          autoCapitalize = 'none'
+           />
       </View>
       <View style = {styles.inputView} >
         <TextInput 
@@ -103,7 +106,9 @@ export default (props) => {
           value = {userName}
           placeholder = "username.."
           placeholderTextColor = "#003f5c"
-          onChangeText = {text => auth.setUserName(text)} />
+          onChangeText = {text => auth.setUserName(text)}
+          autoCapitalize = 'none'
+           />
       </View>
       <View style = {styles.inputView} >
         <TextInput 
@@ -112,7 +117,9 @@ export default (props) => {
           placeholder = "password.."
           value = {password}
           placeholderTextColor = "#003f5c"
-          onChangeText = {text => auth.setPassword(text)} />
+          onChangeText = {text => auth.setPassword(text)}
+          autoCapitalize = 'none'
+           />
       </View>
       <View style = {styles.inputView} >
         <TextInput 
@@ -121,7 +128,9 @@ export default (props) => {
           value = {confirmPassword}
           placeholder = "retype password.."
           placeholderTextColor = "#003f5c"
-          onChangeText = {text => auth.setConfirmPassword(text)} />
+          onChangeText = {text => auth.setConfirmPassword(text)}
+          autoCapitalize = 'none'
+           />
       </View>
 
 
