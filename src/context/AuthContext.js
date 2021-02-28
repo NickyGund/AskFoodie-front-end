@@ -52,7 +52,7 @@ const AuthProvider = props => {
   
   const signIn = async () => {
     try{
-      const res = await axios.post('http://192.168.1.8:3000/api/login', {
+      const res = await axios.post('http://localhost:3000/api/login', {
         email:email,
         password:password
       });

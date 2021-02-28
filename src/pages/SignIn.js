@@ -32,10 +32,10 @@ export default (props) =>  {
   const login = async () => {
     try{
     const res = await auth.signIn();
-    Alert.alert('Authentication confirmed', 'welcome!',
-    [{text:'Close', style:'default'}], 
-        {cancelable:false})
-        //navigation.navigate('Home')
+    // Alert.alert('Authentication confirmed', 'welcome!',
+    // [{text:'Close', style:'default'}], 
+    //     {cancelable:false})
+      res && props.navigation.navigate('questionaire')
       
     
   } catch(err) {
