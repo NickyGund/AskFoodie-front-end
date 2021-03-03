@@ -63,7 +63,11 @@ const AuthProvider = props => {
       }
       else{
       setLoggedIn(true);
+      console.log(res.data.data.email + 'EMAIL')
+      AsyncStorage.setItem('email', res.data.data.email)
+      console.log(await AsyncStorage.getItem('email') + " ASYNC")
       return res.data.data;
+     
       }
     }
       catch (err) {

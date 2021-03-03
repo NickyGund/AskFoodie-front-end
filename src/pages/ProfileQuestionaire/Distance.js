@@ -11,8 +11,23 @@ export default (props) => {
     const [distance, setDistance] = useState('')
 
     const submit = async () => {
-        await questionaire.submit()
-        props.navigation.navigate('main')
+        try {
+            await questionaire.submit()
+            props.navigation.navigate('main')
+        } catch (error) {
+            Alert.alert(
+                'Error',
+                error,
+                [
+                  {
+                    text: 'Cancel',
+                    style: 'cancel'
+                  }
+                ],
+                { cancelable: false }
+              );
+        }
+       
     }
   return (
     <View style = {{flex:1, alignItems:'center', paddingTop:50, backgroundColor:'white'}}>
