@@ -63,7 +63,7 @@ const AuthProvider = props => {
       }
       else{
       setLoggedIn(true);
-      return res.data;
+      return res.data.data;
       }
     }
       catch (err) {
