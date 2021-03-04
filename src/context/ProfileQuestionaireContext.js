@@ -12,16 +12,17 @@ const ProfileProvider = props => {
 
  const submit = async () => {
      const body = {foodTypes, price, distance, dining}
-    //  try {
-    //      const res = await axios.post('http://192.168.1.246:3000/api/register', {
-    //         foodTypes,
-    //         price,
-    //         distance,
-    //         dining 
-    //      }) 
-    //  } catch (error) {
-    //      console.log(error.message)
-    //  }
+     try {
+         const res = await axios.post('http://localhost:3000/api/addProfileInfo', {
+            foodTypes,
+            price,
+            distance,
+            dining 
+         }, { headers: { email: await AsyncStorage.getItem('email') } })
+         console.log(res.data) 
+     } catch (error) {
+         console.log(error.message)
+     }
     console.log(body)
  }
 

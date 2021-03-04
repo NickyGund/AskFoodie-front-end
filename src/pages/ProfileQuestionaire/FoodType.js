@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import {Picker} from '@react-native-picker/picker';
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, PixelRatio, Text, View, Dimensions, TouchableOpacity } from 'react-native';
 import MultiSelect from 'react-native-multiple-select';
 import { ProfileQuestionaireContext } from '../../context'
 
@@ -43,6 +43,10 @@ export default (props) => {
       const onSelectedItemsChange = (selected) => {
         questionaire.setFoodTypes(selected)
       }
+      const get_font_size = (size)  => {
+        return size / PixelRatio.getFontScale();
+      };
+      
 
       const toDining = async () => {
         console.log(selectedItems)
@@ -53,8 +57,8 @@ export default (props) => {
 
     return (
         <View style={{ flex: 1, alignItems:'center' }}>
-            <View style = {{marginTop:30}}>
-                <Text style = {{fontSize: 17}}>Which cuisines are your go to?</Text>
+            <View style = {{marginTop:'15%'}}>
+                <Text style = {{fontSize: get_font_size(17)}}>Which cuisines are your go to?</Text>
             </View>
         <MultiSelect
           hideTags
@@ -75,17 +79,17 @@ export default (props) => {
           searchInputStyle={{ color: '#CCC' }}
           submitButtonColor="#CCC"
           submitButtonText="Close"
-          searchInputStyle = {{padding:20,}}
-          styleMainWrapper = {{width: width, padding:20}}
-          styleDropdownMenuSubsection = {{padding:50}}
-          styleListContainer = {{padding:10}}
-          styleTextDropdown = {{paddingLeft:20}}
+          searchInputStyle = {{padding:'5%',}}
+          styleMainWrapper = {{width: width, padding:'5%'}}
+          styleDropdownMenuSubsection = {{padding:'10%'}}
+          styleListContainer = {{padding:'5%'}}
+          styleTextDropdown = {{paddingLeft:'10%'}}
         />
  
         <View style = {{flex:2,}}>
             <TouchableOpacity 
-                style = {{borderColor:'black', height:25, width:75, borderWidth:1, alignItems:'center', justifyContent:'center'}}
-                onPress = {toDining}
+            style = {{borderColor:'black', height:width*.08, width:width*.3, borderWidth:1, alignItems:'center', justifyContent:'center'}}
+            onPress = {toDining}
             >
                 <Text>Next</Text>
             </TouchableOpacity>

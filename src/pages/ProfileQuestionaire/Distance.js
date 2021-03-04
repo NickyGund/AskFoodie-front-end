@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import {Picker} from '@react-native-picker/picker';
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, PixelRatio, Text, View, Dimensions, TouchableOpacity } from 'react-native';
 import { ProfileQuestionaireContext } from '../../context'
 
 const { width, height } = Dimensions.get('window');
@@ -11,13 +11,33 @@ export default (props) => {
     const [distance, setDistance] = useState('')
 
     const submit = async () => {
-        await questionaire.submit()
-        props.navigation.navigate('main')
+        try {
+            await questionaire.submit()
+            props.navigation.navigate('main')
+        } catch (error) {
+            Alert.alert(
+                'Error',
+                error,
+                [
+                  {
+                    text: 'Cancel',
+                    style: 'cancel'
+                  }
+                ],
+                { cancelable: false }
+              );
+        }
+       
     }
+
+    const get_font_size = (size)  => {
+        return size / PixelRatio.getFontScale();
+      };
+      
   return (
-    <View style = {{flex:1, alignItems:'center', paddingTop:50, backgroundColor:'white'}}>
+    <View style = {{flex:1, alignItems:'center', paddingTop:'15%', backgroundColor:'white'}}>
         <View>
-            <Text style = {{fontSize: 17}}>How far are you willing to typically travel?</Text>
+            <Text style = {{fontSize: get_font_size(17)}}>How far are you willing to typically travel?</Text>
         </View>
         <View style = {{flex:1}}>
         <Picker
@@ -35,7 +55,7 @@ export default (props) => {
         </View>
         <View style = {{flex:2,}}>
         <TouchableOpacity 
-            style = {{borderColor:'black', height:25, width:75, borderWidth:1, alignItems:'center', justifyContent:'center'}}
+            style = {{borderColor:'black', height:width*.08, width:width*.3, borderWidth:1, alignItems:'center', justifyContent:'center'}}
             onPress = {submit}
         >
             <Text>Submit</Text>
