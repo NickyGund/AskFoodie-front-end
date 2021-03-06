@@ -1,74 +1,50 @@
 import React from 'react';
-import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, ImageBackground, Alert } from 'react-native';
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, ImageBackground, Alert} from 'react-native';
+import { findPlace, getPlaceDetails} from "../context/Places";
 
 export default (props) => {
-    async function getPlace() {
-        var textQuery = "bubble tea place"
+    const requestPlace = async function() {
+        var textQuery = "bubble tea place"; // Temporary
 
-        // Try to get the token from the async storage
-        var token;
+        // Try to find places given the query
+        // It returns an array of places, but I havent seen it return more than one before, so I'll assume it's max 1 place for now
+        var places;
         try {
-            token = await AsyncStorage.getItem("token")
-        } catch (error) {
-            console.log(`Failed to get token: ${error}`);
+            places = await findPlace(textQuery);
+        } catch(error) {
+            console.log(`Failed to find a place: ${error}`);
             Alert.alert(
-                "Failed to get token",
-                error
-            );
-            return props.navigation.navigate('sign in');
-        }
-
-        // Try to get place from back-end server
-        var res;
-        try {
-            // Returns an array of dictionaries of places
-            res = await axios({
-                method: "get",
-                url: "http://10.0.0.7:3000/api/places/find/",
-                headers: {
-                    Authorization: token
-                },
-                params: {
-                    textQuery: textQuery
-                }
-            })
-        } catch (error) {
-            console.log(`Failed get a place: ${error}`);
-            Alert.alert(
-                "Failed to get a place",
+                "Failed to find a place",
                 error
             );
             return;
         }
 
-        if (res.data.length == 0) {
-            console.log("No relevant places nearby");
+        // No relevant places found
+        if (places.length == 0) {
+            console.log("No relevant places");
             console.log(res.data);
-
+    
             Alert.alert(
                 "No places found",
-                "No relevant places nearby"
-            )
-        } else {
+                "No relevant places"
+            );
+        } else { // Atleast 1 place was found
             console.log("Successfully got a place from back-end server");
-            console.log(res.data);
-
+            console.log(places);
+    
             Alert.alert(
                 "We found you a place 😎",
-                `${res.data[0].name} at ${res.data[0].formatted_address}`
-            )
+                `${places[0].name}\n${places[0].formatted_address}`
+            );
         }
-        
         return;
     }
 
     return (
         <View style = {{flex:1,alignItems:'center', justifyContent: 'center'}}>
             <Text>Home</Text>
-            <TouchableOpacity onPress = {getPlace}>
+            <TouchableOpacity onPress = {requestPlace}>
                 <Text>
                     Test Foodie Button
                 </Text>
