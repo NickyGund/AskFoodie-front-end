@@ -19,10 +19,8 @@ async function findPlace(textQuery) {
             method: "get",
             url: "http://10.0.0.7:3000/api/places/find/",
             headers: {
-                Authorization: token
-            },
-            params: {
-                textQuery: textQuery
+                Authorization: "Bearer " + token,
+                email: await AsyncStorage.getItem('email')
             }
         })
     } catch (error) {
