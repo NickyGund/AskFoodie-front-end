@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, ImageBackground } from 'react-native';
- 
+import Filters from '../components/FoodFiltersList'
 const { width, height } = Dimensions.get('window');
 
 export default (props) => {
@@ -18,11 +18,16 @@ export default (props) => {
     return (
         
         <View style = {styles.screen}>
-        <TouchableOpacity
-          onPress={buttonClickedHandler}
-          style={styles.roundButton1}>
-           <Text style={styles.buttonText }>Ask Foodie!</Text>
-        </TouchableOpacity>
+            <View style = {{flexDirection:'row', marginBottom:height*.1}}>
+                <Filters/>
+            </View>
+            <View>
+                <TouchableOpacity
+                    onPress={buttonClickedHandler}
+                    style={styles.roundButton1}>
+                    <Text style={styles.buttonText }>Ask Foodie!</Text>
+                </TouchableOpacity>
+            </View>
 
         </View>
     )}
@@ -33,6 +38,7 @@ export default (props) => {
             flex: 1,
             justifyContent: 'center',
             alignItems: 'center',
+            backgroundColor:'white'
         
           },
           roundButton1: {
