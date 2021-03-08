@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import { View, PixelRatio, Dimensions, StyleSheet, ScrollView, Pressable, Text, ImageBackground } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import FoodFilter from './FoodFilter'
 import Filter from './filter'
 const { width, height } = Dimensions.get('window');
 
@@ -21,15 +23,36 @@ export default (props) => {
         {name:'Italian', icon:'Italian'},
         {name:'Asian', icon:'Asian'}
         ]
+    const filters = [
+        {name:'$'},
+        {name:'$$'},
+        {name:'$$$'},
+        {name:'Under 5 miles'},
+        {name:'Under 10 miles'},
+        {name:'Under 20 miles'},
+        {name:'Takeout'},
+        {name:'Dine In'},
+
+
+    ]
     
     return (
         
         <View>
-            <ScrollView horizontal = {true} showsHorizontalScrollIndicator = {false}>
+            <ScrollView horizontal = {true} showsHorizontalScrollIndicator = {false} marginBottom = {'10%'}>
                 {foodTypes.map((item,index) => {
                     return(
                         <View key = {index} >
-                            <Filter icon = {item.icon} name = {item.name}/>
+                            <FoodFilter icon = {item.icon} name = {item.name}/>
+                        </View>
+                    )
+                })}
+            </ScrollView>
+            <ScrollView horizontal = {true} showsHorizontalScrollIndicator = {false}>
+                {filters.map((item,index) => {
+                    return(
+                        <View key = {index} >
+                            <Filter name = {item.name} />
                         </View>
                     )
                 })}
