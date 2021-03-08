@@ -1,18 +1,39 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, ImageBackground, Alert } from 'react-native';
-import { findPlace, getPlaceDetails } from "./../context/Places.js"
+import { PlacesContext, PlacesProvider } from "./../context/"
  
 const { width, height } = Dimensions.get('window');
 
 export default (props) => {
+    const placesContext = useContext(PlacesContext);
+    
     const buttonClickedHandler = async function() {
-        var textQuery = "bubble tea place"; // Temporary
+        // Try to get the token from the async storage
+        var token;
+        try {
+            token = await AsyncStorage.getItem("token");
+        } catch (error) {
+            console.log(`Failed to get token: ${error}`);
+            throw("Failed to get auth token");
+        }
+        placesContext.setToken(token);
+
+        // Try to get the email from the async storage
+        var email;
+        try {
+            email = await AsyncStorage.getItem('email');
+        } catch (error) {
+            console.log(`Failed to get email: ${error}`);
+            throw("Failed to get email");
+        }
+        placesContext.setEmail(email);
 
         // Try to find places given the query
-        // It returns an array of places, but I havent seen it return more than one before, so I'll assume it's max 1 place for now
+        // It returns an array of places
         var places;
         try {
-            places = await findPlace(textQuery);
+            places = await placesContext.findPlace();
         } catch(error) {
             console.log(`Failed to find a place: ${error}`);
             Alert.alert(
