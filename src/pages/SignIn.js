@@ -30,31 +30,24 @@ export default (props) =>  {
   }
 
   const login = async () => {
-    try{
-    const res = await auth.signIn();
-    console.log(res)
-    // Alert.alert('Authentication confirmed', 'welcome!',
-    // [{text:'Close', style:'default'}], 
-    //     {cancelable:false})
-    if(res.signedIn) {
-      props.navigation.navigate('main')
-    }else{
-      props.navigation.navigate('questionaire')
+    try {
+      const res = await auth.signIn();
+        if(res.signedIn) {
+          props.navigation.navigate('main')
+        } else {
+        props.navigation.navigate('questionaire')
+      }
+    } catch(err) {
+      Alert.alert(
+        'Log in failed', 
+        err.toString(),
+        [
+          {text: 'Ok', style: 'Ok'} // no idea what these are for
+        ],
+        {cancelable:false}
+      );
     }
-      
-    
-  } catch(err) {
-    Alert.alert('Log in failed', 
-    err.toString(),
-    [{
-      text: 'Ok',
-      style: 'Ok'
-    }
-  ],
-  {cancelable:false}
-  );
-}
-};
+  };
   
 
   return (

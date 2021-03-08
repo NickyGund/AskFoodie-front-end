@@ -22,7 +22,7 @@ const AuthProvider = props => {
 
   const signUp = async () => {
     try {
-      const res = await axios.post('http://192.168.1.246:3000/api/register', {
+      const res = await axios.post('http://10.0.0.7:3000/api/register', {
         email:email,
         firstName:name,
         userName:userName,
@@ -52,25 +52,25 @@ const AuthProvider = props => {
   
   const signIn = async () => {
     try{
-      const res = await axios.post('http://localhost:3000/api/login', {
+      // Send the email and password to login
+      const res = await axios.post('http://10.0.0.7:3000/api/login', {
         email:email,
         password:password
       });
-      console.log(res.data)
-      if(res.data.error){
-        console.log(res.data.data)
+
+      // Output the result
+      console.log(`Logged in as ${res.data.data.userName}`);
+
+      if(res.data.error) { // If error, throw
         throw new Error(res.data.data);
+      } else { // Else, set as logged in and store token
+        setLoggedIn(true);
+        AsyncStorage.setItem('token', res.data.data.token);
+        AsyncStorage.setItem('userName', res.data.data.userName);
+        return res.data.data;
       }
-      else{
-      setLoggedIn(true);
-      console.log(res.data.data.email + 'EMAIL')
-      AsyncStorage.setItem('email', res.data.data.email)
-      console.log(await AsyncStorage.getItem('email') + " ASYNC")
-      return res.data.data;
-     
-      }
-    }
-      catch (err) {
+
+    } catch (err) { // Output error
       setError(err.message);
       console.log(err.message)
       throw err;
