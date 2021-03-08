@@ -44,11 +44,11 @@ export default (props) => {
             selectedValue={questionaire.state.distance}
             style={{ height:50, width: width*.8, }}
             onValueChange={async (itemValue, itemIndex) => await questionaire.setDistance(itemValue)}>
-            <Picker.Item label="No Preference" value={1} />
-            <Picker.Item label="5 Miles" value={2}/>
-            <Picker.Item label="10 Miles" value={3} />
-            <Picker.Item label="15 Miles" value={4} />
-            <Picker.Item label="20 Miles" value={5} />
+            <Picker.Item label="No Preference" value={0} />
+            <Picker.Item label="3 km" value={3}/>
+            <Picker.Item label="10 km" value={10} />
+            <Picker.Item label="25 km" value={25} />
+            <Picker.Item label="50 km" value={50} />
 
             
         </Picker>
