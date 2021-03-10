@@ -53,7 +53,7 @@ const AuthProvider = props => {
   const signIn = async () => {
     try{
       // Send the email and password to login
-      const res = await axios.post('http://10.0.0.7:3000/api/login', {
+      const res = await axios.post('http://10.0.0.13:3000/api/login', {
         email:email,
         password:password
       });

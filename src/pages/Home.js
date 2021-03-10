@@ -1,12 +1,13 @@
 import React, { useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, ImageBackground, Alert } from 'react-native';
-import { PlacesContext, PlacesProvider } from "./../context/"
+import { PlacesContext, LocationContext } from "./../context/"
  
 const { width, height } = Dimensions.get('window');
 
 export default (props) => {
     const placesContext = useContext(PlacesContext);
+    const locationContext = useContext(LocationContext);
     
     const buttonClickedHandler = async function() {
         // Try to get the token from the async storage
@@ -15,7 +16,12 @@ export default (props) => {
             token = await AsyncStorage.getItem("token");
         } catch (error) {
             console.log(`Failed to get token: ${error}`);
-            throw("Failed to get auth token");
+            Alert.alert(
+                "Failed to get your auth token",
+                error
+            );
+            props.navigation.navigate('signin');
+            return;
         }
         placesContext.setToken(token);
 
@@ -25,9 +31,27 @@ export default (props) => {
             email = await AsyncStorage.getItem('email');
         } catch (error) {
             console.log(`Failed to get email: ${error}`);
-            throw("Failed to get email");
+            Alert.alert(
+                "Failed to get your email",
+                error
+            );
+            return;
         }
         placesContext.setEmail(email);
+
+        // Get the location
+        try {
+            await locationContext.getLocation();
+        } catch (error) {
+            console.log(`Failed to get location: ${error}`);
+            Alert.alert(
+                "Failed to get your location",
+                error
+            );
+            return;
+        }
+        placesContext.setLatitude(locationContext.state.latitude);
+        placesContext.setLongitude(locationContext.state.longitude);
 
         // Try to find places given the query
         // It returns an array of places
