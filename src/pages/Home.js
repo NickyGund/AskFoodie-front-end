@@ -1,18 +1,19 @@
 import React, { useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, ImageBackground, Alert } from 'react-native';
+import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, ImageBackground, Alert, useWindowDimensions } from 'react-native';
 import { PlacesContext, PlacesProvider } from "./../context/"
- 
-const { width, height } = Dimensions.get('window');
+import Filters from '../components/FoodFiltersList'
 
 export default (props) => {
     const placesContext = useContext(PlacesContext);
-    
+    const width = useWindowDimensions().width;
+    const height = useWindowDimensions().width;
     const buttonClickedHandler = async function() {
         // Try to get the token from the async storage
         var token;
         try {
             token = await AsyncStorage.getItem("token");
+            console.log(token)
         } catch (error) {
             console.log(`Failed to get token: ${error}`);
             throw("Failed to get auth token");
@@ -63,35 +64,17 @@ export default (props) => {
         }
         return;
     }
-    
-    return (
-        <View style = {styles.screen}>
-            <View style = {{flexDirection:'row', marginBottom:height*.1}}>
-                <Filters/>
-            </View>
-            <View>
-                <TouchableOpacity
-                    onPress={buttonClickedHandler}
-                    style={styles.roundButton1}>
-                    <Text style={styles.buttonText }>Ask Foodie!</Text>
-                </TouchableOpacity>
-            </View>
-
-        </View>
-    )
-}
 
     const styles = StyleSheet.create({
    
         screen: {
             flex: 1,
-            justifyContent: 'center',
+            paddingVertical:height*.15,
             alignItems: 'center',
-            backgroundColor:'white'
+            backgroundColor:'white',
           },
 
           roundButton1: {
-            marginBottom: height/3,
             width: 200,
             height: 200,
             justifyContent: 'center',
@@ -108,3 +91,22 @@ export default (props) => {
           },
 
 });
+    
+    return (
+        <View style = {styles.screen}>
+            <View style = {{flexDirection:'row', }}>
+                <Filters/>
+            </View>
+            <View style = {{flex:1, justifyContent:'center'}}>
+                <TouchableOpacity
+                    onPress={buttonClickedHandler}
+                    style={styles.roundButton1}>
+                    <Text style={styles.buttonText }>Ask Foodie!</Text>
+                </TouchableOpacity>
+            </View>
+
+        </View>
+    )
+}
+
+    

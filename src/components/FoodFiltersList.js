@@ -1,12 +1,14 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import { View, PixelRatio, Dimensions, StyleSheet, ScrollView, Pressable, Text, ImageBackground } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import FoodFilter from './FoodFilter'
 import Filter from './filter'
+import { PlacesContext, PlacesProvider } from "./../context/"
+
 const { width, height } = Dimensions.get('window');
 
 export default (props) => {
-
+    const placesContext = useContext(PlacesContext);
     const foodTypes = [
         {name:'Fast Food', icon:'FastFood'}, 
         {name:'Burgers', icon:'Burgers'}, 
@@ -32,14 +34,13 @@ export default (props) => {
         {name:'Under 20 miles'},
         {name:'Takeout'},
         {name:'Dine In'},
-
-
     ]
-    
+
+ 
     return (
         
         <View>
-            <ScrollView horizontal = {true} showsHorizontalScrollIndicator = {false} marginBottom = {'10%'}>
+            <ScrollView horizontal = {true} showsHorizontalScrollIndicator = {false} marginBottom = {'5%'}>
                 {foodTypes.map((item,index) => {
                     return(
                         <View key = {index} >
@@ -60,30 +61,3 @@ export default (props) => {
         </View>
     )}
 
-    const styles = StyleSheet.create({
-   
-        screen: {
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-        
-          },
-          roundButton1: {
-        
-            marginBottom: height/3,
-            width: 200,
-            height: 200,
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: 10,
-            borderRadius: 100,
-            backgroundColor: "red",
-            
-          },
-          buttonText:{
-             color:"white",
-             fontSize:20,
-             fontWeight:"bold",
-          },
-    
-    });

@@ -28,7 +28,7 @@ export default () => {
     <>
       {/* {!loaded ? null : ( */}
         <NavigationContainer>
-          <Stack.Navigator initialRouteName='main' screenOptions={{ headerShown: false, gestureEnabled:false }}>
+          <Stack.Navigator initialRouteName='sign in' screenOptions={{ headerShown: false, gestureEnabled:false }}>
             <Stack.Screen name="questionaire" component={ProfileQuestionaire} />
             <Stack.Screen name="sign in" component={SignIn} />
             <Stack.Screen name="sign up" component={SignUp} />

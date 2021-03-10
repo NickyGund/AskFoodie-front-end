@@ -1,19 +1,19 @@
-import React, {useState, useContext, useEffect } from 'react';
-import { View, SafeAreaView, Dimensions, StyleSheet, Text, TextInput , Platform, Button, TouchableOpacity, Alert} from 'react-native';
+import React, {useState, useContext, useEffect, } from 'react';
+import { View, SafeAreaView, Dimensions, StyleSheet, Text, TextInput, useWindowDimensions, Platform, Button, TouchableOpacity, Alert} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { AuthContext, AuthProvider } from '../context'
 //INSTALL THIS
 //expo install @react-native-community/datetimepicker
-const { width, height } = Dimensions.get('window');
-const cross = Math.sqrt(width * width + height * height);
+// const { width, height } = Dimensions.get('window');
+// const cross = Math.sqrt(width * width + height * height);
 
 export default (props) => {
   const auth = useContext(AuthContext);
   const [show, setShow] = useState(false);
   const [error, setError] = useState(null);
-
+  const width = useWindowDimensions().width;
+  const height = useWindowDimensions().width;
   const { email, password , name, userName, confirmPassword,birthdate} = auth.state;
-
 
   const createAccount = async () => {
     if (!passwordCheck()) return;
@@ -75,12 +75,71 @@ export default (props) => {
     return true;
   };
 
+  const styles = StyleSheet.create({
+
+    backButton: {
+      elevation: 8,
+      backgroundColor: "#B22222",
+      borderRadius: 10,
+      paddingVertical: 4,
+      paddingHorizontal: 18,
+      marginTop: 15
+    },
+  
+    appButtonContainer: {
+      elevation: 8,
+      backgroundColor: "#009688",
+      borderRadius: 10,
+      paddingVertical: 10,
+      paddingHorizontal: 12,
+      marginTop: 20
+    },
+    appButtonText: {
+      fontSize: 18,
+      color: "#fff",
+      fontWeight: "bold",
+      alignSelf: "center",
+      textTransform: "uppercase"
+    },
+  
+    message:{
+      fontWeight:"bold",
+      fontSize:50,
+      color:"#fb5b5a",
+      marginBottom:40
+    },
+  
+    container: {
+      flex: 1,
+      backgroundColor: '#003f5c',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  
+    inputView:{
+      width:width*.9,
+      backgroundColor:"#465881",
+      borderRadius:height*.1/2,
+      height:height*.1,
+      justifyContent:"center",
+      marginBottom:height*.02,
+      alignItems:'center',
+    },
+  
+    inputText:{
+      flexDirection:'row',
+      color:"white"
+    },
+  
+  });
+
 
   return (
     <View style = {styles.container}>
 
       <Text style={styles.message }>Become a Foodie!</Text>
 
+    <View>
       <View style = {styles.inputView} >
         <TextInput 
           style={styles.inputText}
@@ -132,7 +191,7 @@ export default (props) => {
           autoCapitalize = 'none'
            />
       </View>
-
+    </View>
 
       
       <View style = {{ alignItems:'center'}}>
@@ -150,7 +209,7 @@ export default (props) => {
             onChange={(event, selected) => auth.setDate(selected)}
             maximumDate = {new Date()}
             minimumDate={new Date(1900, 1, 1)}
-            style = {{height:height*.3,borderRadius:25, width: width*.75,}}
+            style = {{height:height*.5,borderRadius:25, width: width*.75,}}
           />
         )}
       </View>
@@ -171,111 +230,8 @@ export default (props) => {
 
     </View>
   );
+
+ 
 };
 
 
-const styles = StyleSheet.create({
-
-  backButton: {
-    elevation: 8,
-    backgroundColor: "#B22222",
-    borderRadius: 10,
-    paddingVertical: 4,
-    paddingHorizontal: 18,
-    marginTop: 15
-  },
-
-  appButtonContainer: {
-    elevation: 8,
-    backgroundColor: "#009688",
-    borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    marginTop: 20
-  },
-  appButtonText: {
-    fontSize: 18,
-    color: "#fff",
-    fontWeight: "bold",
-    alignSelf: "center",
-    textTransform: "uppercase"
-  },
-
-  dateOne: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  logo:{
-    fontWeight:"bold",
-    fontSize:70,
-    color:"#fb5b5a",
-    marginBottom:40
-  },
-
-  message:{
-    fontWeight:"bold",
-    fontSize:50,
-    color:"#fb5b5a",
-    marginBottom:40
-  },
-
-  container: {
-    flex: 1,
-    backgroundColor: '#003f5c',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  inputView:{
-    width:width*.8,
-    backgroundColor:"#465881",
-    borderRadius:25,
-    height:height*.5,
-    justifyContent:"center",
-    marginBottom:10,
-    alignItems:'center',
-  },
-
-  inputView2:{
-    width:"110%",
-    backgroundColor:"#465881",
-    borderRadius:25,
-    height:50,
-    marginBottom:20,
-    justifyContent:"center",
-    padding:20,
-    alignContent:'center', 
-    alignItems:'center',
-  },
-
-  inputText:{
-    flexDirection:'row',
-    color:"white"
-  },
-
-  set: {
-    alignContent:'center',
-    alignItems:'center',
-    flex:1,
-    backgroundColor: '#ADD8E6'
-  },
-  header: {
-    fontSize: 20,
-    color: '#fff',
-    paddingBottom:10,
-    marginBottom: 40,
-    borderBottomColor: '#199187',
-    borderBottomWidth: .7,
-  },
-
-  Textinput: {
-    alignSelf: 'stretch',
-    height: 40,
-    marginBottom: 30,
-    color: '#fff',
-    borderBottomColor: '#f8f8f8',
-    borderBottomWidth: .7,
-  }
-
-});
