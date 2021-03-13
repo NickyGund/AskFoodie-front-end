@@ -25,10 +25,10 @@ export default (props) => {
         <View>
             <Text style = {{fontSize: get_font_size(17)}}>How much do you typically spend when you eat out?</Text>
         </View>
-        <View style = {{flex:1}}>
+        <View>
         <Picker
             selectedValue={questionaire.state.price}
-            style={{ height:width*.8, width: width*.8, }}
+            style={{ width: width*.8, marginBottom:height*.05,}}
             onValueChange={async (itemValue, itemIndex) => await questionaire.setPrice(itemValue)}>
             <Picker.Item label="No Preference" value="none" />
             <Picker.Item label="$" value="$" />
@@ -39,7 +39,7 @@ export default (props) => {
             
         </Picker>
         </View>
-        <View style = {{flex:2,}}>
+        <View>
         <TouchableOpacity 
             style = {{borderColor:'black', height:width*.08, width:width*.3, borderWidth:1, alignItems:'center', justifyContent:'center'}}
             onPress = {toFoodQuestion}

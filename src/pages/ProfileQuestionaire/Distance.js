@@ -41,21 +41,19 @@ export default (props) => {
         <View>
             <Text style = {{fontSize: get_font_size(17)}}>How far are you willing to typically travel?</Text>
         </View>
-        <View style = {{flex:1}}>
-        <Picker
-            selectedValue={questionaire.state.distance}
-            style={{ height:width*.8, width: width*.8, }}
-            onValueChange={async (itemValue, itemIndex) => await questionaire.setDistance(itemValue)}>
-            <Picker.Item label="No Preference" value={0} />
-            <Picker.Item label="3 km" value={3}/>
-            <Picker.Item label="10 km" value={10} />
-            <Picker.Item label="25 km" value={25} />
-            <Picker.Item label="50 km" value={50} />
-
-            
-        </Picker>
+        <View>
+            <Picker
+                selectedValue={questionaire.state.distance}
+                style={{ width: width*.8,marginBottom:height*.05, backgroundColor:'red'}}
+                onValueChange={async (itemValue, itemIndex) => await questionaire.setDistance(itemValue)}>
+                <Picker.Item label="No Preference" value={0} />
+                <Picker.Item label="3 km" value={3}/>
+                <Picker.Item label="10 km" value={10} />
+                <Picker.Item label="25 km" value={25} />
+                <Picker.Item label="50 km" value={50} />
+            </Picker>
         </View>
-        <View style = {{flex:2,}}>
+        <View>
         <TouchableOpacity 
             style = {{borderColor:'black', height:width*.08, width:width*.3, borderWidth:1, alignItems:'center', justifyContent:'center'}}
             onPress = {submit}

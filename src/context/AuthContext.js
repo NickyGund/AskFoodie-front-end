@@ -67,6 +67,7 @@ const AuthProvider = props => {
         setLoggedIn(true);
         await AsyncStorage.setItem('token', res.data.data.token);
         await AsyncStorage.setItem('userName', res.data.data.userName);
+        await AsyncStorage.setItem('email', res.data.data.email);
         return res.data.data;
       }
 
