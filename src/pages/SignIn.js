@@ -3,6 +3,7 @@ import React, { useState, useContext } from 'react';
 import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, ImageBackground, Alert } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { AuthContext, AuthProvider } from '../context';
+import {MainNav} from '../navigation/mainNav';
 
 
 
@@ -18,7 +19,7 @@ const backgroundImage = {
 export default (props) =>  {
   const auth = useContext(AuthContext)
   const toSignUp = () => {
-    props.navigation.navigate('sign up');
+    props.navigation.navigate('restaurant display'); //sign up
   };
 
   var username, password;
@@ -33,9 +34,9 @@ export default (props) =>  {
     try {
       const res = await auth.signIn();
         if(res.signedIn) {
-          props.navigation.navigate('main')
+          props.navigation.navigate('main') //changed from main
         } else {
-        props.navigation.navigate('questionaire')
+        props.navigation.navigate('questionaire') //questionaire
       }
     } catch(err) {
       Alert.alert(
@@ -48,6 +49,7 @@ export default (props) =>  {
       );
     }
   };
+
   
 
   return (

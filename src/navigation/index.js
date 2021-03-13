@@ -5,6 +5,7 @@ import { AuthContext } from '../context';
 
 import MainNav from './mainNav';
 import { SignUp, SignIn, ProfileQuestionaire} from '../pages';
+import RestaurantDisplay from '../pages/RestaurantDisplay';
 
 const Stack = createStackNavigator();
 
@@ -29,6 +30,7 @@ export default () => {
       {/* {!loaded ? null : ( */}
         <NavigationContainer>
           <Stack.Navigator initialRouteName='sign in' screenOptions={{ headerShown: false, gestureEnabled:false }}>
+            <Stack.Screen name="restaurant display" component ={RestaurantDisplay} />
             <Stack.Screen name="questionaire" component={ProfileQuestionaire} />
             <Stack.Screen name="sign in" component={SignIn} />
             <Stack.Screen name="sign up" component={SignUp} />
