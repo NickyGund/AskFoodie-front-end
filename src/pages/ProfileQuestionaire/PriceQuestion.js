@@ -1,13 +1,14 @@
 import React, { useState, useContext } from 'react';
 import {Picker} from '@react-native-picker/picker';
-import { StyleSheet, PixelRatio, Text, View, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, PixelRatio, Text, View, Dimensions, useWindowDimensions, TouchableOpacity } from 'react-native';
 import { ProfileQuestionaireContext } from '../../context'
-const { width, height } = Dimensions.get('window');
 
 
 export default (props) => {
     const questionaire = useContext(ProfileQuestionaireContext)
     const [price, setPrice] = useState('')
+    const width = useWindowDimensions().width;
+    const height = useWindowDimensions().height;
 
     const toFoodQuestion = async () => {
         // await questionaire.setPrice(price)

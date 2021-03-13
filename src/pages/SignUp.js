@@ -12,7 +12,7 @@ export default (props) => {
   const [show, setShow] = useState(false);
   const [error, setError] = useState(null);
   const width = useWindowDimensions().width;
-  const height = useWindowDimensions().width;
+  const height = useWindowDimensions().height;
   const { email, password , name, userName, confirmPassword,birthdate} = auth.state;
 
   const createAccount = async () => {

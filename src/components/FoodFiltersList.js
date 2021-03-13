@@ -29,9 +29,9 @@ export default (props) => {
         {name:'$'},
         {name:'$$'},
         {name:'$$$'},
-        {name:'Under 5 miles'},
-        {name:'Under 10 miles'},
-        {name:'Under 20 miles'},
+        {name:'Under 5 km'},
+        {name:'Under 10 km'},
+        {name:'Under 20 km'},
         {name:'Takeout'},
         {name:'Dine In'},
     ]

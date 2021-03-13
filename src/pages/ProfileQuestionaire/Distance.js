@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import {Picker} from '@react-native-picker/picker';
-import { StyleSheet, PixelRatio, Text, View, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, PixelRatio, Text, View, Dimensions, useWindowDimensions, TouchableOpacity } from 'react-native';
 import { ProfileQuestionaireContext } from '../../context'
 
 const { width, height } = Dimensions.get('window');
@@ -9,6 +9,8 @@ const { width, height } = Dimensions.get('window');
 export default (props) => {
     const questionaire = useContext(ProfileQuestionaireContext)
     const [distance, setDistance] = useState('')
+    const width = useWindowDimensions().width;
+    const height = useWindowDimensions().height;
 
     const submit = async () => {
         try {
@@ -42,7 +44,7 @@ export default (props) => {
         <View style = {{flex:1}}>
         <Picker
             selectedValue={questionaire.state.distance}
-            style={{ height:50, width: width*.8, }}
+            style={{ height:width*.8, width: width*.8, }}
             onValueChange={async (itemValue, itemIndex) => await questionaire.setDistance(itemValue)}>
             <Picker.Item label="No Preference" value={0} />
             <Picker.Item label="3 km" value={3}/>
