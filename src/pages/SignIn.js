@@ -19,7 +19,7 @@ const backgroundImage = {
 export default (props) =>  {
   const auth = useContext(AuthContext)
   const toSignUp = () => {
-    props.navigation.navigate('restaurant display'); //sign up
+    props.navigation.navigate('sign up'); //sign up
   };
 
   var username, password;
