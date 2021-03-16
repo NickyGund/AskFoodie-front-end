@@ -234,4 +234,110 @@ export default (props) => {
  
 };
 
+<<<<<<< HEAD
+=======
+const styles = StyleSheet.create({
+
+  backButton: {
+    elevation: 8,
+    backgroundColor: "#B22222",
+    borderRadius: 10,
+    paddingVertical: 4,
+    paddingHorizontal: 18,
+    marginTop: 15
+  },
+
+  appButtonContainer: {
+    elevation: 8,
+    backgroundColor: "#009688",
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    marginTop: 20
+  },
+  appButtonText: {
+    fontSize: 18,
+    color: "#fff",
+    fontWeight: "bold",
+    alignSelf: "center",
+    textTransform: "uppercase"
+  },
+
+  dateOne: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  logo:{
+    fontWeight:"bold",
+    fontSize:70,
+    color:"#fb5b5a",
+    marginBottom:40
+  },
+
+  message:{
+    fontWeight:"bold",
+    fontSize:50,
+    color:"#fb5b5a",
+    marginBottom:40
+  },
+
+  container: {
+    flex: 1,
+    backgroundColor: '#003f5c',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  inputView:{
+    width:width*.8,
+    backgroundColor:"#465881",
+    borderRadius:25,
+    height:height*.1,
+    justifyContent:"center",
+    marginBottom:10,
+    alignItems:'center',
+  },
+
+  inputView2:{
+    width:"110%",
+    backgroundColor:"#465881",
+    borderRadius:25,
+    height:50,
+    marginBottom:20,
+    justifyContent:"center",
+    padding:20,
+    alignContent:'center', 
+    alignItems:'center',
+  },
+
+  inputText:{
+    flexDirection:'row',
+    color:"white"
+  },
+
+  set: {
+    alignContent:'center',
+    alignItems:'center',
+    flex:1,
+    backgroundColor: '#ADD8E6'
+  },
+  header: {
+    fontSize: 20,
+    color: '#fff',
+    paddingBottom:10,
+    marginBottom: 40,
+    borderBottomColor: '#199187',
+    borderBottomWidth: .7,
+  },
+
+  Textinput: {
+    alignSelf: 'stretch',
+    height: 40,
+    marginBottom: 30,
+    color: '#fff',
+    borderBottomColor: '#f8f8f8',
+    borderBottomWidth: .7,
+  }
+>>>>>>> f17f0e4a543ea614c3d4e42a1ac02935a5fbc0f4
 
