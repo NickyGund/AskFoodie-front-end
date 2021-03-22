@@ -3,9 +3,6 @@ import React, { useState, useContext } from 'react';
 import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, ImageBackground, Alert } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { AuthContext, AuthProvider } from '../context';
-import {MainNav} from '../navigation/mainNav';
-
-
 
 function get_font_size(size) {
   return size / PixelRatio.getFontScale();
