@@ -8,6 +8,8 @@ const PlacesProvider = function(props) {
     const [token, setToken] = useState("");
     const [email, setEmail] = useState("");
     const [details, setDetails] = useState({});
+    const [foodFilters, setFoodFilters] = useState([])
+    const [filters, setFilters] = useState([])
 
     // https://developers.google.com/maps/documentation/places/web-service/search#nearby-search-and-text-search-responses
     const findPlace = async function() {
@@ -19,14 +21,18 @@ const PlacesProvider = function(props) {
         // Try to get place from back-end server
         var res;
         try {
+            console.log(filters + ' ' + foodFilters)
             // Returns an array of dictionaries of places
-            res = await axios({
-                method: "get",
-                url: "http://10.0.0.7:3000/api/places/find/",
+            res = await axios.get(`http://192.168.1.246:3000/api/places/find`,{
+                params : {
+                    filters:filters,
+                    foodFilters:foodFilters
+                }, 
                 headers: {
                     Authorization: "Bearer " + token,
                     email: email
                 }
+                  
             })
         } catch (error) {
             console.log(`Failed get a place: ${error}`);
@@ -50,7 +56,7 @@ const PlacesProvider = function(props) {
             // Returns an array of dictionaries of places
             res = await axios({
                 method: "get",
-                url: "http://10.0.0.7:3000/api/places/info/",
+                url: "http://localhost:3000/api/places/info/",
                 headers: {
                     Authorization: "Bearer " + token,
                     email: email
@@ -65,19 +71,31 @@ const PlacesProvider = function(props) {
         return res.data;
     }
 
+    // const test  = (name) => {
+    //     const newFilters = [...filters, name]
+    //     setFilters(newFilters)
+
+    //     console.log('Test ' + filters)
+    // }
+
     const state = {
         state: {
             places,
             token,
             email,
-            details
+            details,
+            filters,
+            foodFilters
         },
         setPlaces,
         setToken,
         setEmail,
         setDetails,
         findPlace,
-        getPlaceDetails
+        getPlaceDetails,
+        setFilters,
+        setFoodFilters
+        
     }
     
     return <PlacesContext.Provider value={state}>{props.children}</PlacesContext.Provider>;

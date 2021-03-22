@@ -53,7 +53,7 @@ const AuthProvider = props => {
   const signIn = async () => {
     try{
       // Send the email and password to login
-      const res = await axios.post('http://10.0.0.7:3000/api/login', {
+      const res = await axios.post('http://192.168.1.246:3000/api/login', {
         email:email,
         password:password
       });
@@ -65,8 +65,9 @@ const AuthProvider = props => {
         throw new Error(res.data.data);
       } else { // Else, set as logged in and store token
         setLoggedIn(true);
-        AsyncStorage.setItem('token', res.data.data.token);
-        AsyncStorage.setItem('userName', res.data.data.userName);
+        await AsyncStorage.setItem('token', res.data.data.token);
+        await AsyncStorage.setItem('userName', res.data.data.userName);
+        await AsyncStorage.setItem('email', res.data.data.email);
         return res.data.data;
       }
 
