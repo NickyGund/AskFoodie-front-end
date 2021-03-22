@@ -22,7 +22,7 @@ const AuthProvider = props => {
 
   const signUp = async () => {
     try {
-      const res = await axios.post('http://10.0.0.7:3000/api/register', {
+      const res = await axios.post('http://10.0.0.6:3000/api/register', {
         email:email,
         firstName:name,
         userName:userName,
@@ -53,7 +53,7 @@ const AuthProvider = props => {
   const signIn = async () => {
     try{
       // Send the email and password to login
-      const res = await axios.post('http://10.0.0.13:3000/api/login', {
+      const res = await axios.post('http://10.0.0.6:3000/api/login', {
         email:email,
         password:password
       });
@@ -65,8 +65,9 @@ const AuthProvider = props => {
         throw new Error(res.data.data);
       } else { // Else, set as logged in and store token
         setLoggedIn(true);
-        AsyncStorage.setItem('token', res.data.data.token);
-        AsyncStorage.setItem('userName', res.data.data.userName);
+        await AsyncStorage.setItem('token', res.data.data.token);
+        await AsyncStorage.setItem('userName', res.data.data.userName);
+        await AsyncStorage.setItem('email', res.data.data.email);
         return res.data.data;
       }
 

@@ -1,16 +1,17 @@
 import React, { useContext, useState } from 'react';
 import {Picker} from '@react-native-picker/picker';
-import { StyleSheet, PixelRatio, Text, View, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, PixelRatio, Text, View, Dimensions,useWindowDimensions, TouchableOpacity } from 'react-native';
 import MultiSelect from 'react-native-multiple-select';
 import { ProfileQuestionaireContext } from '../../context'
 
 
-const { width, height } = Dimensions.get('window');
 
 
 export default (props) => {
    const questionaire = useContext(ProfileQuestionaireContext)
-    const [selectedItems, setSelectedItems] = useState([])
+  const [selectedItems, setSelectedItems] = useState([])
+    const width = useWindowDimensions().width;
+    const height = useWindowDimensions().height;
     const items = [{
         id: 'chinese',
         name: 'Chinese',

@@ -1,13 +1,14 @@
 import React, { useState, useContext } from 'react';
 import {Picker} from '@react-native-picker/picker';
-import { StyleSheet, PixelRatio, Text, View, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, PixelRatio, Text, View, Dimensions, useWindowDimensions, TouchableOpacity } from 'react-native';
 import { ProfileQuestionaireContext } from '../../context'
-const { width, height } = Dimensions.get('window');
 
 
 export default (props) => {
     const questionaire = useContext(ProfileQuestionaireContext)
     const [price, setPrice] = useState('')
+    const width = useWindowDimensions().width;
+    const height = useWindowDimensions().height;
 
     const toFoodQuestion = async () => {
         // await questionaire.setPrice(price)
@@ -24,10 +25,10 @@ export default (props) => {
         <View>
             <Text style = {{fontSize: get_font_size(17)}}>How much do you typically spend when you eat out?</Text>
         </View>
-        <View style = {{flex:1}}>
+        <View>
         <Picker
             selectedValue={questionaire.state.price}
-            style={{ height:width*.8, width: width*.8, }}
+            style={{ width: width*.8, marginBottom:height*.05,}}
             onValueChange={async (itemValue, itemIndex) => await questionaire.setPrice(itemValue)}>
             <Picker.Item label="No Preference" value="none" />
             <Picker.Item label="$" value="$" />
@@ -38,7 +39,7 @@ export default (props) => {
             
         </Picker>
         </View>
-        <View style = {{flex:2,}}>
+        <View>
         <TouchableOpacity 
             style = {{borderColor:'black', height:width*.08, width:width*.3, borderWidth:1, alignItems:'center', justifyContent:'center'}}
             onPress = {toFoodQuestion}
