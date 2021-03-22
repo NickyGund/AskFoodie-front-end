@@ -1,8 +1,7 @@
 import React, { useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, ImageBackground, Alert } from 'react-native';
-import { PlacesContext, PlacesProvider } from "./../context/";
-import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick';
+import { PlacesContext, PlacesProvider } from "./../context/"
  
 const { width, height } = Dimensions.get('window');
 
@@ -65,49 +64,41 @@ export default (props) => {
         return;
     }
     
-   /* return (
+    return (
         <View style = {styles.screen}>
             <TouchableOpacity
                 onPress={buttonClickedHandler}
-                style={styles.roundButton1}>
+                style={styles.roundButton1}
+            >
                 <Text style={styles.buttonText }>Ask Foodie!</Text>
             </TouchableOpacity>
-        </View>
-    )*/
-   
-    return (
-        <View style = {styles.screen}>
-            <AwesomeButtonRick
-            type='primary'
-            onPress={buttonClickedHandler}
-            stretch={false}
-            height={width/3}
-            width={width/2}
-            textSize={10}
-            textFamily="sans-seriff"
-            raiseLevel={6}
-            backgroundColor="red"
-            backgroundDarker="#BF0000"> 
-                
-                <Text style={styles.buttonText}>Ask Foodie!</Text>
-            </AwesomeButtonRick>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
+
     screen: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    
         },
         roundButton1: {
-            
+    
+        marginBottom: height/3,
+        width: 200,
+        height: 200,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 10,
+        borderRadius: 100,
+        backgroundColor: "red",
+        
         },
         buttonText:{
             color:"white",
-            fontSize:25,
-            fontFamily: "Helvetica", 
+            fontSize:20,
             fontWeight:"bold",
         },
 
