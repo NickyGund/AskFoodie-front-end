@@ -60,7 +60,7 @@ const PlacesProvider = function(props) {
             // Returns an array of dictionaries of places
             res = await axios({
                 method: "get",
-                url: "http://localhost:3000/api/places/info/",
+                url: "http://10.0.0.6:3000/api/places/info/",
                 headers: {
                     Authorization: "Bearer " + token,
                     email: email
