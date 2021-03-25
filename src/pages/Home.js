@@ -10,26 +10,6 @@ export default (props) => {
     const height = useWindowDimensions().width;
     const buttonClickedHandler = async function() {
         // Try to get the token from the async storage
-        var token;
-        try {
-            token = await AsyncStorage.getItem("token");
-            console.log(token)
-        } catch (error) {
-            console.log(`Failed to get token: ${error}`);
-            throw("Failed to get auth token");
-        }
-        placesContext.setToken(token);
-
-        // Try to get the email from the async storage
-        var email;
-        try {
-            email = await AsyncStorage.getItem('email');
-        } catch (error) {
-            console.log(`Failed to get email: ${error}`);
-            throw("Failed to get email");
-        }
-        placesContext.setEmail(email);
-
         // Try to find places given the query
         // It returns an array of places
         var places;
