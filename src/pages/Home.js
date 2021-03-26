@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, ImageBackground, Alert, useWindowDimensions } from 'react-native';
-import { PlacesContext, PlacesProvider } from "./../context/"
+import { PlacesContext, PlacesProvider, LocationContext } from "./../context/"
 import Filters from '../components/FoodFiltersList'
 
 export default (props) => {
