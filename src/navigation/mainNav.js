@@ -8,8 +8,6 @@ const MainNav = () => {
   return (
     <Stack.Navigator headerMode="none" mode="modal" initialRouteName = 'home'>
       <Stack.Screen name="home" component={Home}></Stack.Screen>
-      <Stack.Screen name="test" component={Test}></Stack.Screen>
-
     </Stack.Navigator>
   );
 };

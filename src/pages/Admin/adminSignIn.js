@@ -2,7 +2,7 @@
 import React, { useState, useContext } from 'react';
 import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, ImageBackground, Alert } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
-import { AuthContext, AuthProvider } from '../context';
+import { AuthContext, AuthProvider } from '../../context';
 
 function get_font_size(size) {
   return size / PixelRatio.getFontScale();
@@ -30,11 +30,11 @@ export default (props) =>  {
   const login = async () => {
     try {
       const res = await auth.signIn();
-        if(res.signedIn) {
-          props.navigation.navigate('main') //changed from main
+        if(res.signedIn && res.admin) {
+          props.navigation.navigate('adminHome') //changed from main
         } else {
-        props.navigation.navigate('questionaire') //questionaire
-      }
+            throw('Not an admin')
+        }
     } catch(err) {
       Alert.alert(
         'Log in failed', 
@@ -51,10 +51,10 @@ export default (props) =>  {
 
   return (
     <View style={styles.container}>
-      <ImageBackground source = {backgroundImage} style = {styles.background_image}>
+     
         <View style = {styles.menu_container}>
           <Text adjustsFontSizeToFit style = {styles.title}>
-            Foodie
+            Foodie Admin
           </Text>
           <View style = {styles.login_container}>
             <TextInput 
@@ -78,18 +78,12 @@ export default (props) =>  {
             </Text>
           </TouchableOpacity>
           <View style = {styles.bar} />
-          <TouchableOpacity onPress = {toSignUp}>
+          <TouchableOpacity onPress = {() => props.navigation.navigate('sign in')}>
             <Text style = {styles.signup}>
-              Register
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress = {() => props.navigation.navigate('admin sign in')}>
-            <Text style = {styles.signup}>
-              Admin Sign In
+              Sign In
             </Text>
           </TouchableOpacity>
         </View>
-      </ImageBackground>
     </View>
   );
 };
@@ -104,6 +98,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     flexDirection: "column",
+    backgroundColor:'grey'
   },
   menu_container: {
     width: "100%",
@@ -111,9 +106,9 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   title: {
-    fontSize: get_font_size(72),
+    fontSize: get_font_size(60),
     margin: 2,
-    marginTop: "10%",
+    marginTop: "12%",
     marginBottom: "10%",
     color: "#66aaffff",
     fontWeight: "bold",
