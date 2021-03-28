@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import * as Location from "expo-location"
 
 const getLonLatURL = "http://ip-api.com/json/";
 const getMyIpURL = "http://ipv4bot.whatismyipaddress.com"
@@ -7,10 +8,26 @@ const getMyIpURL = "http://ipv4bot.whatismyipaddress.com"
 const LocationContext = React.createContext()
 
 const LocationProvider = function(props) {
-    const [latitude, setLatitude] = useState(0);
-    const [longitude, setLongitude] = useState(0);
+    const [latitude, setLatitude] = useState(undefined);
+    const [longitude, setLongitude] = useState(undefined);
 
-    async function getLocation() {
+    async function getLocation(is_refresh) {
+        if (!is_refresh && latitude != undefined && longitude != undefined)
+            return;
+    
+        let status = await Location.requestPermissionsAsync();
+        if (status != 'granted')
+            return getLocationByIP()
+
+        let location = await Location.getCurrentPositionAsync({});
+        setLatitude(location.coords.latitude);
+        setLongitude(location.coords.longitude);
+
+        console.log(location.coords);
+        return
+    }
+
+    async function getLocationByIP() {
         var ip;
         try {
             ip = await axios({

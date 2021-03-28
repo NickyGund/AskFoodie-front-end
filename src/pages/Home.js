@@ -42,7 +42,7 @@ export default (props) => {
 
         // Get the location
         try {
-            await locationContext.getLocation();
+            await locationContext.getLocation(false);
         } catch (error) {
             console.log(`Failed to get location: ${error}`);
             Alert.alert(
