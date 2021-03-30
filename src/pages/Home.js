@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, ImageBackground, Alert, useWindowDimensions } from 'react-native';
 import { PlacesContext, PlacesProvider, LocationContext } from "./../context/"
@@ -9,6 +9,36 @@ export default (props) => {
     const locationContext = useContext(LocationContext);
     const width = useWindowDimensions().width;
     const height = useWindowDimensions().width;
+
+    // Function is called when Home.js is rendered
+    useEffect(function() {
+        // Get the location
+        locationContext.getLocation(false)
+        .then(function() {
+            placesContext.setLatitude(locationContext.state.latitude);
+            placesContext.setLongitude(locationContext.state.longitude);
+
+            // Get the email
+            AsyncStorage.getItem('email')
+            .then(placesContext.setEmail)
+            .catch(function(error) {
+                console.log(`Failed to get email: ${error}`);
+                Alert.alert(
+                    "Failed to get your email",
+                    error
+                );
+                return;
+            })
+        }).catch(function(error) {
+            console.log(`Failed to get location: ${error}`);
+            Alert.alert(
+                "Failed to get your location",
+                error
+            );
+            return;
+        })
+    });
+
     const buttonClickedHandler = async function() {
         // Try to get the token from the async storage
         var token;
@@ -25,34 +55,6 @@ export default (props) => {
             return;
         }
         placesContext.setToken(token);
-
-        // Try to get the email from the async storage
-        var email;
-        try {
-            email = await AsyncStorage.getItem('email');
-        } catch (error) {
-            console.log(`Failed to get email: ${error}`);
-            Alert.alert(
-                "Failed to get your email",
-                error
-            );
-            return;
-        }
-        placesContext.setEmail(email);
-
-        // Get the location
-        try {
-            await locationContext.getLocation(false);
-        } catch (error) {
-            console.log(`Failed to get location: ${error}`);
-            Alert.alert(
-                "Failed to get your location",
-                error
-            );
-            return;
-        }
-        placesContext.setLatitude(locationContext.state.latitude);
-        placesContext.setLongitude(locationContext.state.longitude);
 
         // Try to find places given the query
         // It returns an array of places
