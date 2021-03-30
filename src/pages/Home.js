@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, ImageBackground, Alert, useWindowDimensions } from 'react-native';
 import { PlacesContext, PlacesProvider } from "./../context/"
@@ -8,6 +8,15 @@ export default (props) => {
     const placesContext = useContext(PlacesContext);
     const width = useWindowDimensions().width;
     const height = useWindowDimensions().width;
+
+    useEffect(() => {
+        (async () => {
+          const getToken = await AsyncStorage.getItem('token');
+          const getEmail = await AsyncStorage.getItem('email');
+          placesContext.setToken(getToken);
+          placesContext.setEmail(getEmail);
+        })();
+      }, []);
     const buttonClickedHandler = async function() {
         // Try to get the token from the async storage
         // Try to find places given the query

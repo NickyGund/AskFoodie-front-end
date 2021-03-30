@@ -14,14 +14,7 @@ const PlacesProvider = function(props) {
 
     // https://developers.google.com/maps/documentation/places/web-service/search#nearby-search-and-text-search-responses
 
-    useEffect(() => {
-        (async () => {
-          const getToken = await AsyncStorage.getItem('token');
-          const getEmail = await AsyncStorage.getItem('email');
-          setToken(getToken);
-          setEmail(getEmail);
-        })();
-      },[]);
+
     const findPlace = async function() {
         if (token == "")
             throw("Missing token");
@@ -66,7 +59,7 @@ const PlacesProvider = function(props) {
             // Returns an array of dictionaries of places
             res = await axios({
                 method: "get",
-                url: "http://localhost:3000/api/places/info/",
+                url: "http://192.168.1.246:3000/api/places/info/",
                 headers: {
                     Authorization: "Bearer " + token,
                     email: email
