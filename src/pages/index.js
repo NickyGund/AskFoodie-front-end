@@ -3,3 +3,4 @@ export SignUp from './SignUp';
 export ProfileQuestionaire from './ProfileQuestionaire'
 export Home from './Home'
 export Test from './Test'
+export Profile from './Profile'

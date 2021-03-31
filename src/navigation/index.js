@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { AuthContext } from '../context';
 
 import MainNav from './mainNav';
-import { SignUp, SignIn, ProfileQuestionaire} from '../pages';
+import { SignUp, SignIn, ProfileQuestionaire, Profile} from '../pages';
 import RestaurantDisplay from '../pages/RestaurantDisplay';
 
 const Stack = createStackNavigator();
@@ -35,6 +35,7 @@ export default () => {
             <Stack.Screen name="sign in" component={SignIn} />
             <Stack.Screen name="sign up" component={SignUp} />
             <Stack.Screen name="main" component={MainNav} />
+            <Stack.Screen name="profile" component={Profile} />
           </Stack.Navigator>
         </NavigationContainer>
       {/*/)}*/}

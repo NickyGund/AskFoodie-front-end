@@ -9,6 +9,8 @@ export default (props) => {
     const width = useWindowDimensions().width;
     const height = useWindowDimensions().width;
     const buttonClickedHandler = async function() {
+
+   
         // Try to get the token from the async storage
         var token;
         try {
@@ -65,6 +67,16 @@ export default (props) => {
         return;
     }
 
+    const toProfile = function(){
+        try{
+        props.navigation.navigate('profile');
+        }
+        catch(error) {
+            console.log(`Failed to go to profile: ${error}`);
+            throw('failed to move');
+        }
+    }
+    
     const styles = StyleSheet.create({
    
         screen: {
@@ -102,6 +114,12 @@ export default (props) => {
                     onPress={buttonClickedHandler}
                     style={styles.roundButton1}>
                     <Text style={styles.buttonText }>Ask Foodie!</Text>
+                </TouchableOpacity>
+            </View>
+            <View style = {{flex:1, justifyContent:'center', bottom:5}}>
+                <TouchableOpacity
+                onPress={toProfile}>
+                   <Text>Profile page</Text>
                 </TouchableOpacity>
             </View>
 
