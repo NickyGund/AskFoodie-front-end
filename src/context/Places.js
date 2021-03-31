@@ -1,5 +1,6 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect, useState } from 'react';
 
 const PlacesContext = React.createContext()
 
@@ -14,6 +15,8 @@ const PlacesProvider = function(props) {
     const [filters, setFilters] = useState([])
 
     // https://developers.google.com/maps/documentation/places/web-service/search#nearby-search-and-text-search-responses
+
+
     const findPlace = async function() {
         if (token == "")
             throw("Missing token");
@@ -25,7 +28,7 @@ const PlacesProvider = function(props) {
         try {
             console.log(filters + ' ' + foodFilters)
             // Returns an array of dictionaries of places
-            res = await axios.get(`http://10.0.0.6:3000/api/places/find`,{
+            res = await axios.get(`http://192.168.1.246:3000/api/places/find`,{
                 params : {
                     filters:filters,
                     foodFilters:foodFilters,
@@ -60,7 +63,7 @@ const PlacesProvider = function(props) {
             // Returns an array of dictionaries of places
             res = await axios({
                 method: "get",
-                url: "http://10.0.0.6:3000/api/places/info/",
+                url: "http://192.168.1.246:3000/api/places/info/",
                 headers: {
                     Authorization: "Bearer " + token,
                     email: email

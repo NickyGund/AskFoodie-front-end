@@ -12,6 +12,18 @@ export default (props) => {
 
     // Function is called when Home.js is rendered
     useEffect(function() {
+        //get token
+         AsyncStorage.getItem('token')
+         .then(placesContext.setToken)
+         .catch(function(error) {
+            console.log(`Failed to get token: ${error}`);
+            Alert.alert(
+                "Failed to get token",
+                error
+            );
+            return;
+        })
+        
         // Get the location
         locationContext.getLocation(false)
         .then(function() {
@@ -39,23 +51,9 @@ export default (props) => {
         })
     });
 
+
     const buttonClickedHandler = async function() {
         // Try to get the token from the async storage
-        var token;
-        try {
-            token = await AsyncStorage.getItem("token");
-            console.log(token)
-        } catch (error) {
-            console.log(`Failed to get token: ${error}`);
-            Alert.alert(
-                "Failed to get your auth token",
-                error
-            );
-            props.navigation.navigate('signin');
-            return;
-        }
-        placesContext.setToken(token);
-
         // Try to find places given the query
         // It returns an array of places
         var places;

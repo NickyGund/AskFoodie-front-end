@@ -6,6 +6,7 @@ import { AuthContext } from '../context';
 import MainNav from './mainNav';
 import { SignUp, SignIn, ProfileQuestionaire} from '../pages';
 import RestaurantDisplay from '../pages/RestaurantDisplay';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
 
@@ -14,16 +15,6 @@ export default () => {
   const [loaded, setLoaded] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
 
-  // useEffect(() => {
-  //   const check = async () => {
-  //   const res = await auth.checkAuth();
-  //     setLoggedIn(res);
-  //     setLoaded(true);
-  //   };
-  //   check();
-
-  //   // get user information from DB by passing token
-  // }, []);
 
   return (
     <>
