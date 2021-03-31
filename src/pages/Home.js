@@ -29,22 +29,22 @@ export default (props) => {
         .then(function() {
             placesContext.setLatitude(locationContext.state.latitude);
             placesContext.setLongitude(locationContext.state.longitude);
-
-            // Get the email
-            AsyncStorage.getItem('email')
-            .then(placesContext.setEmail)
-            .catch(function(error) {
-                console.log(`Failed to get email: ${error}`);
-                Alert.alert(
-                    "Failed to get your email",
-                    error
-                );
-                return;
-            })
         }).catch(function(error) {
             console.log(`Failed to get location: ${error}`);
             Alert.alert(
                 "Failed to get your location",
+                error
+            );
+            return;
+        })
+
+        // Get the email
+        AsyncStorage.getItem('email')
+        .then(placesContext.setEmail)
+        .catch(function(error) {
+            console.log(`Failed to get email: ${error}`);
+            Alert.alert(
+                "Failed to get your email",
                 error
             );
             return;
