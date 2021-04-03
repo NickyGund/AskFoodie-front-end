@@ -29,10 +29,10 @@ const PlacesProvider = function(props) {
             // Returns an array of dictionaries of places
             res = await axios.get(`http://192.168.1.246:3000/api/places/find`,{
                 params : {
-                    filters:filters,
-                    foodFilters:foodFilters,
                     latitude:latitude,
-                    longitude:longitude
+                    longitude:longitude,
+                    filters:JSON.stringify(filters),
+                    foodFilters:JSON.stringify(foodFilters)
                 }, 
                 headers: {
                     Authorization: "Bearer " + token,
