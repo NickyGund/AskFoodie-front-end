@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, ImageBackground, Alert, useWindowDimensions } from 'react-native';
 import { PlacesContext, PlacesProvider, LocationContext } from "./../context/"
 import Filters from '../components/FoodFiltersList'
+import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick';
 
 export default (props) => {
     const placesContext = useContext(PlacesContext);
@@ -122,11 +123,20 @@ export default (props) => {
                 <Filters/>
             </View>
             <View style = {{flex:1, justifyContent:'center'}}>
-                <TouchableOpacity
+                <AwesomeButtonRick
+                    type='primary'
                     onPress={buttonClickedHandler}
-                    style={styles.roundButton1}>
-                    <Text style={styles.buttonText }>Ask Foodie!</Text>
-                </TouchableOpacity>
+                    stretch={false}
+                    height={width/3}
+                    width={width/2}
+                    textSize={10}
+                    textFamily="sans-seriff"
+                    raiseLevel={6}
+                    backgroundColor="red"
+                    backgroundDarker="#BF0000"> 
+
+                    <Text style={styles.buttonText}>Ask Foodie!</Text>
+                </AwesomeButtonRick>
             </View>
 
         </View>
