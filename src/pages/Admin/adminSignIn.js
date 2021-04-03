@@ -48,7 +48,6 @@ export default (props) =>  {
   };
 
   
-
   return (
     <View style={styles.container}>
      
