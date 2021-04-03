@@ -44,7 +44,7 @@ export default (props) => {
         <View>
             <Picker
                 selectedValue={questionaire.state.distance}
-                style={{ width: width*.8,marginBottom:height*.05, backgroundColor:'red'}}
+                style={{ width: width*.8,marginBottom:height*.05,}}
                 onValueChange={async (itemValue, itemIndex) => await questionaire.setDistance(itemValue)}>
                 <Picker.Item label="No Preference" value={0} />
                 <Picker.Item label="3 km" value={3}/>

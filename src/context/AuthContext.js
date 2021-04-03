@@ -49,11 +49,28 @@ const AuthProvider = props => {
       throw err;
     }
   };
+
+  const tryLocalSignin = async () => {
+    const tkn = await AsyncStorage.getItem('token');
+    setToken(tkn);
+    return tkn;
+  };
+
+  const checkAuth = async () => {
+    const tkn = await tryLocalSignin();
+    console.log(tkn)
+
+    if (tkn) {
+      return true;
+    } else {
+      return false;
+    }
+  };
   
   const signIn = async () => {
     try{
       // Send the email and password to login
-      const res = await axios.post('http://localhost:3000/api/login', {
+      const res = await axios.post('http://192.168.1.246:3000/api/login', {
         email:email,
         password:password
       });
@@ -104,7 +121,8 @@ const AuthProvider = props => {
     setConfirmPassword,
     setToken,
     setDate,
-    setShow
+    setShow,
+    checkAuth
   };
 
   return <AuthContext.Provider value={state}>{props.children}</AuthContext.Provider>;

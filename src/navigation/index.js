@@ -7,6 +7,7 @@ import MainNav from './mainNav';
 import AdminNav from './adminNav'
 import { SignUp, SignIn, ProfileQuestionaire, adminSignIn} from '../pages';
 import RestaurantDisplay from '../pages/RestaurantDisplay';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
 
@@ -15,22 +16,23 @@ export default () => {
   const [loaded, setLoaded] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
 
-  // useEffect(() => {
-  //   const check = async () => {
-  //   const res = await auth.checkAuth();
-  //     setLoggedIn(res);
-  //     setLoaded(true);
-  //   };
-  //   check();
+  useEffect(() => {
+    const check = async () => {
+      const res = await auth.checkAuth();
+      setLoggedIn(res);
+      setLoaded(true)
+      console.log(res)
+    };
+    check();
 
-  //   // get user information from DB by passing token
-  // }, []);
+    // get user information from DB by passing token
+  }, [loggedIn]);
 
   return (
     <>
-      {/* {!loaded ? null : ( */}
+      {!loaded ? null : ( 
         <NavigationContainer>
-          <Stack.Navigator initialRouteName='sign in' screenOptions={{ headerShown: false, gestureEnabled:false }}>
+          <Stack.Navigator initialRouteName = {loggedIn ? 'main' : 'sign in'} screenOptions={{ headerShown: false, gestureEnabled:false }}>
             <Stack.Screen name="restaurant display" component ={RestaurantDisplay} />
             <Stack.Screen name="questionaire" component={ProfileQuestionaire} />
             <Stack.Screen name="sign in" component={SignIn} />
@@ -40,7 +42,7 @@ export default () => {
             <Stack.Screen name = 'adminHome' component = {AdminNav}/>
           </Stack.Navigator>
         </NavigationContainer>
-      {/*/)}*/}
+      )}
     </>
   );
 };

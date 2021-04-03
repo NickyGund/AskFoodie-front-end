@@ -21,12 +21,11 @@ const PlacesProvider = function(props) {
         // Try to get place from back-end server
         var res;
         try {
-            console.log(filters + ' ' + foodFilters)
             // Returns an array of dictionaries of places
-            res = await axios.get(`http://10.0.0.6:3000/api/places/find`,{
+            res = await axios.get(`http://192.168.1.246:3000/api/places/find`,{
                 params : {
-                    filters:filters,
-                    foodFilters:foodFilters
+                    filters:JSON.stringify(filters),
+                    foodFilters:JSON.stringify(foodFilters)
                 }, 
                 headers: {
                     Authorization: "Bearer " + token,
@@ -56,7 +55,7 @@ const PlacesProvider = function(props) {
             // Returns an array of dictionaries of places
             res = await axios({
                 method: "get",
-                url: "http://10.0.0.6:3000/api/places/info/",
+                url: "http://localhost:3000/api/places/info/",
                 headers: {
                     Authorization: "Bearer " + token,
                     email: email
