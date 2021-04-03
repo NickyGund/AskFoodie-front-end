@@ -5,6 +5,7 @@ import axios from 'axios';
 const CommentContext = React.createContext();
 
 const CommentProvider = props => {
+    const[comments, setComments] = useState([])
     const[poster, setPoster] = useState('');
     const[type, setType] = useState('');
     const[restaurant, setRestaurant] = useState('');
@@ -36,19 +37,19 @@ const CommentProvider = props => {
     }
     const findComments = async() => {
         try{
-            const res = await axios.get('http://192.168.1.8:3000/api/findComments', {
-                poster:poster
+            res = await axios.get('http://192.168.1.8:3000/api/findComments', {
+                params:{
+                    poster:poster
+                }
             });
             console.log(res.data);
-            if(res.data.error){
-                console.log(res.data.data);
-                throw new Error(res.data.data);
-            }
-            return res.data;
         }catch(error){
-            setError(error.message);
-            console.log(error.message);
+            console.log(`Failed get comments: ${error}`);
+            throw("Failed to get from back-end server")
         }
+        setComments(res.data)
+        return res.data;
+
     }
     const state = {
         state: {
