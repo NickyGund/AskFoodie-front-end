@@ -64,8 +64,31 @@ var [comments, setComments] = useState([]);
     }
 
     const loadComments = function() {
-        var parsedcomments;
-        console.log(comments.data[0].content)
+        var newcomment;
+        var commentlist = [];
+        try{
+        for(let i=0; i <comments.data.length; i++){
+            newposter = comments.data[i].poster
+            console.log(newposter);
+            newcontent = comments.data[i].content
+            console.log(newcontent);
+            newcomment = <View><Text>{newposter}</Text>
+                               <Text>{newcontent} {"\n"}</Text></View>
+
+            commentlist.push(newcomment);
+            //return newcomment;
+        }
+        console.log(commentlist);
+        console.log(newcomment);
+        return commentlist;
+        console.log('comment list?' + commentlist);
+        
+       // console.log(content)
+        //return content;
+        }catch(error){
+            console.log(`Failed to load poster/content: ${error}`);
+            //throw('failed to load poster/content');
+        }
        // console.log("comments" + comments.data.content)
        // console.log("testeees" + comments.data.content);
       
@@ -95,7 +118,7 @@ var [comments, setComments] = useState([]);
                     <Text>{userName}</Text>
                 </View>
                 <View>
-                    <Text>{loadComments()}</Text>
+                    <View><Text>{loadComments()}</Text></View>
                 </View>
                 <View>
                     <TouchableOpacity
