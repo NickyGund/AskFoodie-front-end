@@ -1,13 +1,15 @@
 import React, {useState, useContext, useEffect, Component } from 'react';
-import { View, SafeAreaView, Dimensions, StyleSheet, Text, TextInput , Platform, Button, TouchableOpacity, Alert, Image, Animated, Linking} from 'react-native';
+import { View, SafeAreaView, Dimensions, StyleSheet, Text, TextInput , Platform, Button, TouchableOpacity, Alert, Image, Animated, Linking, ImageBackground} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { AuthContext, AuthProvider } from '../context';
 import logo from '../images/ru.jpg';
 import { ScrollView } from 'react-native-gesture-handler';
 import openMap from 'react-native-open-maps';
-//import { PlacesContext, PlacesProvider } from '../context/Places';
 
-//const places = useContext(PlacesContext);
+import { PlacesContext, PlacesProvider } from '../context/Places';
+
+
+
 
 class ImageLoader extends Component {
     state = {
@@ -52,6 +54,8 @@ class ImageLoader extends Component {
   const restaurantType = "";
   const restaurantPrice = "";
   const restaurantRating = "";
+  const restaurantWebsite = "";
+  const googleRestaurantAddress = "";
 
   const getRestaurantPhoneNumber = async () => {
     try {
@@ -121,6 +125,32 @@ class ImageLoader extends Component {
     }
   }
 
+  const getRestaurantWebsite = async () => {
+    try {
+      restaurantName = places.details[0].website;
+    } catch (error) {
+      restaurantName = "N/A";
+    }
+  }
+
+  const backgroundImage = "https://wallpaperaccess.com/full/629233.jpg"
+  ;
+
+  const background = {
+    uri: "https://previews.123rf.com/images/olenayepifanova/olenayepifanova1712/olenayepifanova171200041/92051683-set-of-vector-cartoon-doodle-icons-junk-food-illustration-of-comic-fast-food-seamless-texture-patter.jpg"
+  };
+
+
+const getRestaurantPhoto = async() => {
+  try {
+    places.setPhoto_reference = places.details[0].photos[0].photo_reference;
+    backgroundImage = "data:image/jpeg;base64," + places.getPhoto();
+
+  } catch (error) {
+    
+  }
+}
+
   
 
   const GPS = async () => {
@@ -128,7 +158,7 @@ class ImageLoader extends Component {
   }
 
   const phoneNumber = async (restaurantPhoneNumber) => {
-    var formatted_number = myString.restaurantPhoneNumber(/\D/g,'');
+    var formatted_number = restaurantPhoneNumber.replace(/\D/g,'');
     var int_formatted_number = parseInt(formatted_number);
     try {
       Linking.openURL(`tel:${int_formatted_number}`)
@@ -136,6 +166,17 @@ class ImageLoader extends Component {
 
     }
   }
+
+/*
+getRestaurantPhoneNumber();
+getRestaurantName();
+getRestaurantAddress();
+getRestaurantType();
+getRestaurantPrice();
+getRestaurantRating();
+getRestaurantWebsite();
+getRestaurantPhoto();
+*/
 
 
   
@@ -153,40 +194,64 @@ const maped = "https://www.google.com/maps/search/?api=1&query='Mcdonalds+160+br
 const openGoogleMaps = async (address) => {
   var googleQuery = "https://www.google.com/maps/search/?api=1&query=";
   var restaurantEncoded = encodeURIComponent(address);
-  return googleQuery + restaurantEncoded;
-}
+  try {
+    Linking.openURL(googleQuery + "'" + restaurantEncoded + "'");
 
-const backgroundImage = {
-    uri: "https://i.pinimg.com/originals/7a/48/6a/7a486a9b264a2bb474c5635748f26105.png"
-    
-  };
+  } catch(error) {
+
+  }}
+
+  const openRestaurantWebsite = async (website) => {
+    try {
+      Linking.openURL(restaurantWebsite)
+    } catch (error) {
+
+    }
+  }
+
+
 
 export default (props) => {
     const auth = useContext(AuthContext);
+    const places = useContext(PlacesContext);
 
+    getRestaurantPhoneNumber();
+    getRestaurantName();
+    getRestaurantAddress();
+    getRestaurantType();
+    getRestaurantPrice();
+    getRestaurantRating();
+    getRestaurantWebsite();
+    getRestaurantPhoto();
+
+  
 
     return (
         <SafeAreaView style={{flex:1, backgroundColor:"#000000"}}>
 
+
         <View style = {styles.container}>
+          
             <View style={{backgroundColor: '#DC143C'}}>
             <Text style={styles.message}s>{restaurantName}</Text>
             </View>
             <View style = {styles.logoContainer}>
+            <TouchableOpacity onPress={() => openRestaurantWebsite(restaurantWebsite)}>
                 <ImageLoader 
                     style = {styles.logo}
                     source={{
-                    uri: 'https://i.imgur.com/BW4003E.jpg',
+                    uri: backgroundImage,
                 }} />
+                 </TouchableOpacity>
             </View>
             <Text style = {styles.header}>Info</Text>
             <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:1}}>
-            <TouchableOpacity onPress={() => Linking.openURL(openGoogleMaps(restaurantAddress))}>
+            <TouchableOpacity onPress={() => openGoogleMaps(restaurantAddress)}>
             <Text style={styles.innerText }>{restaurantAddress}</Text> 
             </TouchableOpacity>
             </View>
             <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}>
-                <TouchableOpacity onPress={phoneNumber(restaurantPhoneNumber)}>
+                <TouchableOpacity onPress={() => phoneNumber(restaurantPhoneNumber)}>
                 <Text style={styles.innerText }>{restaurantPhoneNumber}</Text>  
 
                 </TouchableOpacity>
@@ -197,7 +262,7 @@ export default (props) => {
             <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}>
             <Text style={styles.innerText }>{restaurantType}</Text>  
             </View>
-     
+  
         </View>
         </SafeAreaView>
 
@@ -205,6 +270,12 @@ export default (props) => {
 }
 
 const styles = StyleSheet.create({
+  background_image: {
+    flexGrow: 1,
+    justifyContent: "flex-start",
+    width: "100%",
+    resizeMode: "cover",
+  },
     container: {
         flex: 1,
         backgroundColor: '#FFFAFA',

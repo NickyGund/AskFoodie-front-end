@@ -60,6 +60,9 @@ export default (props) => {
                 "We found you a place 😎",
                 `${places[0].name}\n${places[0].vicinity}`
             );
+
+            //navigate to display?
+            props.navigation.navigate('restaurant display');
         }
         return;
     }
