@@ -72,7 +72,6 @@ const PlacesProvider = function(props) {
         setLongitude,
         setDetails,
         findPlace,
-        getPlaceDetails,
         setFilters,
         setFoodFilters
         
