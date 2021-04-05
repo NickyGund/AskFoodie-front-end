@@ -22,6 +22,7 @@ const [modalVisible, setModalVisible] = useState(false);
         var username
     try{
         username = await AsyncStorage.getItem('userName');
+        commentContext.setPoster(username);
         setUserName(username);
 
     }catch(error){
@@ -106,6 +107,7 @@ const [modalVisible, setModalVisible] = useState(false);
     const addComments = async function() {
         try{
             commentContext.addParentComment()
+            getMyData();
         }catch(error){
             console.log(`Failed to add comment: ${error}`);
         }
