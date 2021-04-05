@@ -111,6 +111,11 @@ const [modalVisible, setModalVisible] = useState(false);
         }
     }
 
+    const logOut = async () => {
+        await AsyncStorage.removeItem('token')
+        props.navigation.navigate('sign in')
+    }
+
 
     const styles = StyleSheet.create({
         screen: {
@@ -221,6 +226,13 @@ const [modalVisible, setModalVisible] = useState(false);
                      </View>
 
             </ScrollView>
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                <TouchableOpacity style = {{backgroundColor:'grey', padding:'5%', borderRadius:'7%'}} onPress = {() => logOut()}>
+                    <Text>
+                        Sign Out
+                    </Text>
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     )
     
