@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthContext } from '../context';
 
-import MainNav from './mainNav';
+import MainNav from './bottomTabNav';
 import AdminNav from './adminNav'
 import { SignUp, SignIn, ProfileQuestionaire, adminSignIn} from '../pages';
 import RestaurantDisplay from '../pages/RestaurantDisplay';
