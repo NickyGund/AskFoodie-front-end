@@ -1,6 +1,6 @@
 import React from 'react';
 import Main from './src/navigation';
-import { AuthProvider, ProfileProvider, PlacesProvider, AdminProvider, LocationProvider } from './src/context';
+import { AuthProvider, ProfileProvider, PlacesProvider, AdminProvider, LocationProvider,CommentProvider } from './src/context';
 
 export default function App() {
   return (
@@ -9,7 +9,9 @@ export default function App() {
         <LocationProvider>
           <PlacesProvider>
             <AdminProvider>
-              <Main/>
+              <CommentProvider>
+                <Main/>
+              </CommentProvider>
             </AdminProvider>
           </PlacesProvider>
         </LocationProvider>

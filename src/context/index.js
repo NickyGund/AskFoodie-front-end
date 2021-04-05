@@ -3,3 +3,4 @@ export { ProfileQuestionaireContext, ProfileProvider } from './ProfileQuestionai
 export { PlacesContext, PlacesProvider } from "./Places";
 export { AdminContext, AdminProvider } from "./AdminContext";
 export { LocationContext, LocationProvider } from "./LocationContext"
+export { CommentContext, CommentProvider } from "./CommentContext";

@@ -90,6 +90,16 @@ export default (props) => {
         return;
     }
 
+    const toProfile = function(){
+        try{
+        props.navigation.navigate('profile');
+        }
+        catch(error) {
+            console.log(`Failed to go to profile: ${error}`);
+            throw('failed to move');
+        }
+    }
+    
     const styles = StyleSheet.create({
    
         screen: {
@@ -137,6 +147,12 @@ export default (props) => {
 
                     <Text style={styles.buttonText}>Ask Foodie!</Text>
                 </AwesomeButtonRick>
+            </View>
+            <View style = {{flex:1, justifyContent:'center', bottom:5}}>
+                <TouchableOpacity
+                onPress={toProfile}>
+                   <Text>Profile page</Text>
+                </TouchableOpacity>
             </View>
 
         </View>
