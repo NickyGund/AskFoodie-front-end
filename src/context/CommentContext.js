@@ -36,19 +36,21 @@ const CommentProvider = props => {
         }
         console.log(body);
     }
-    const findComments = async() => {
+    const findComments = async(user) => {
+        var res;
         try{
-            res = await axios.get('http://192.168.1.8:3000/api/findComments', {
+            res = await axios.get('http://192.168.1.26:3000/api/findComments', {
                 params:{
-                    poster:poster
+                    poster:user
                 }
             });
-            console.log(res.data);
+            
         }catch(error){
             console.log(`Failed get comments: ${error}`);
             throw("Failed to get from back-end server")
         }
         setComments(res.data)
+        console.log(res.data);
         return res.data;
 
     }

@@ -19,24 +19,25 @@ const [modalVisible, setModalVisible] = useState(false);
 
 
     async function getMyData() {
-    var username
+        var username
     try{
-    username = await AsyncStorage.getItem('userName');
+        username = await AsyncStorage.getItem('userName');
+        setUserName(username);
+
     }catch(error){
         console.log(`Failed to get username: ${error}`);
         throw("Failed to get auth username");
     }
-    setUserName(username);
-    commentContext.setPoster(username);
-    var mycomments
+    
     try{
-        mycomments = await commentContext.findComments();
+        const mycomments = await commentContext.findComments(username);
+        console.log(await commentContext.state.comments)
+        setComments(mycomments);
         
     }catch(e){
         console.log(`No comments to load: ${e}`);
         throw('failed to load comments');
     }
-    setComments(mycomments);
     }    
 
    /* async function findComments() {
@@ -50,10 +51,11 @@ const [modalVisible, setModalVisible] = useState(false);
         setComments(mycomments);
     }*/
 
-    useEffect(() =>{
-
-       getMyData();
-       console.log('UseEffect done..');
+    useEffect( () =>{
+        
+        (async () => { 
+            await getMyData()
+        })();
        //[] indicates that this is loads/unloads once and will not continuously update
     }, [])
     
@@ -70,20 +72,22 @@ const [modalVisible, setModalVisible] = useState(false);
     const loadComments = function() {
         var newcomment;
         var commentlist = [];
+        var count = 0
         try{
         for(let i=0; i < comments.data.length; i++){
-            newposter = comments.data[i].poster
+           var newposter = comments.data[i].poster
             console.log(newposter);
-            newcontent = comments.data[i].content
+           var newcontent = comments.data[i].content
             console.log(newcontent);
-            newcomment = <View style = {styles.basicview}><Text>{newposter}</Text>
+            count++
+            newcomment = <View key = {count} style = {styles.basicview}><Text>{newposter}</Text>
                                <Text>{newcontent} {"\n"}</Text></View>
 
             commentlist.push(newcomment);
             //return newcomment;
         }
-        console.log(commentlist);
-        console.log(newcomment);
+        // console.log(commentlist);
+        // console.log(newcomment);
         return commentlist;
         console.log('comment list?' + commentlist);
         
