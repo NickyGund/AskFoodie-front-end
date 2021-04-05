@@ -1,9 +1,10 @@
 import React, { useContext, Component, useEffect, useState, Suspense} from 'react';
-import {StyleSheet,Text,ScrollView,SafeAreaView, TouchableOpacity, View} from 'react-native';
+import {StyleSheet,Text,ScrollView,SafeAreaView, TouchableOpacity, View, Modal, Pressable} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext, AuthProvider } from '../context';
 import useWindowDimensions from 'react-native/Libraries/Utilities/useWindowDimensions';
 import { CommentContext, CommmentProvider } from "./../context/"
+import { TextInput } from 'react-native-gesture-handler';
 
 
 export default (props) => {
@@ -13,6 +14,9 @@ const height = useWindowDimensions.height;
 const commentContext = useContext(CommentContext);
 var [userName, setUserName] = useState("");
 var [comments, setComments] = useState([]);
+var [parent, setParent] = useState('');
+const [modalVisible, setModalVisible] = useState(false);
+
 
     async function getMyData() {
     var username
@@ -67,12 +71,12 @@ var [comments, setComments] = useState([]);
         var newcomment;
         var commentlist = [];
         try{
-        for(let i=0; i <comments.data.length; i++){
+        for(let i=0; i < comments.data.length; i++){
             newposter = comments.data[i].poster
             console.log(newposter);
             newcontent = comments.data[i].content
             console.log(newcontent);
-            newcomment = <View><Text>{newposter}</Text>
+            newcomment = <View style = {styles.basicview}><Text>{newposter}</Text>
                                <Text>{newcontent} {"\n"}</Text></View>
 
             commentlist.push(newcomment);
@@ -94,15 +98,25 @@ var [comments, setComments] = useState([]);
       
        // return displaycomments.content;
     }
+    
+    const addComments = async function() {
+        try{
+            commentContext.addParentComment()
+        }catch(error){
+            console.log(`Failed to add comment: ${error}`);
+        }
+    }
+
 
     const styles = StyleSheet.create({
         screen: {
             flex: 1,
             padding: 10,
-            flexDirection: 'column',
+            justifyContent: "center",
+            alignItems: "center"
         },
         profileDetails: {
-            justifyContent: 'center'
+            alignItems: "center"
         },
         backButton: {
             width: 50,
@@ -110,23 +124,97 @@ var [comments, setComments] = useState([]);
             justifyContent: 'center',
             backgroundColor : 'pink',
         },
+        modalView: {
+            margin: 20,
+            backgroundColor: "white",
+            borderRadius: 20,
+            padding: 35,
+            alignItems: "center",
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 2
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 4,
+            elevation: 5
+        },
+        button: {
+            borderRadius: 20,
+            padding: 10,
+            elevation: 2,
+            alignContent: 'center'
+          },
+        buttonOpen: {
+            backgroundColor: "#F194FF",
+          },
+        buttonClose: {
+            backgroundColor: "#2196F3",
+          },
+        contentinput: {
+            flexDirection: "column",
+            alignContent: "center",
+            maxHeight: 100,
+            borderColor: "#1ca0ff", 
+            borderWidth: 1, 
+            padding: 10, 
+            width: "75%",
+        },
+        basicview: {
+            flex:1,
+
+        }
     });
     return (
-        <SafeAreaView>
+        <SafeAreaView style = {styles.screen}>
             <ScrollView>
-                <View>
+                <View stlye = {styles.basicview}>
                     <Text>{userName}</Text>
                 </View>
-                <View>
-                    <View><Text>{loadComments()}</Text></View>
-                </View>
+                    <View style = {styles.basicview}>{loadComments()}</View>
                 <View>
                     <TouchableOpacity
                         onPress = {goHome}>
                     <Text>Back</Text>
                 </TouchableOpacity>
-                </View>
+            </View>
+                <View>
+                    <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        Alert.alert("Modal has been closed.");
+                        setModalVisible(!modalVisible);
+                      }}>
+                    <View>
+                    <View style={styles.modalView}>
+                        <Text>Post a comment on your profile!</Text>
+                            <TextInput
+                            multiline
+                            onChangeText = {(text) => commentContext.setContent(text)}
+                            style = {styles.contentinput} placeholder = "Write your comment here"
+                            autoCapitalize = 'none' />
+                            <Pressable
+                                style={[styles.button, styles.buttonClose]}
+                                onPress={() => setModalVisible(!modalVisible)}>
+                            <Text>Go Back</Text>
+                            </Pressable>
+                            <Pressable
+                                style={[styles.button, styles.buttonClose]}
+                                onPress={() => {addComments(); setModalVisible(!modalVisible);}}>
+                            <Text>Add Comment</Text>
+                            </Pressable>
+                    </View>
+                    </View>
 
+                    </Modal>
+                    <Pressable
+                        style={[styles.button, styles.buttonOpen, styles.screen]}
+                        onPress={() => setModalVisible(true)}>
+                     <Text>Add a comment</Text>
+                    </Pressable>
+                     </View>
 
             </ScrollView>
         </SafeAreaView>

@@ -10,6 +10,7 @@ const CommentProvider = props => {
     const[type, setType] = useState('');
     const[restaurant, setRestaurant] = useState('');
     const[content, setContent] = useState('');
+    const[parent, setParent] = useState('');
     const [error, setError] = useState(null);
 
     const addParentComment = async() => {
@@ -51,19 +52,38 @@ const CommentProvider = props => {
         return res.data;
 
     }
+    const findChildComments = async() => {
+        try{
+            res = await axios.get('http://192.168.1.8:3000/api/findChildComments', {
+                params:{
+                    parent:parent
+                }
+            });
+            console.log(res.data);
+        }catch(error){
+            console.log(`Failed get child comments: ${error}`);
+            throw("Failed to get from back-end server")
+        }
+        return res.data;
+        //possibly setChildComments(res.data)?
+        
+    }
     const state = {
         state: {
             type,
             poster,
             restaurant,
-            content
+            content,
+            parent
         },
         setType,
         setPoster,
         setRestaurant,
         setContent,
+        setParent,
         addParentComment,
-        findComments
+        findComments,
+        findChildComments
     }
     return <CommentContext.Provider value={state}>{props.children}</CommentContext.Provider>
     };
