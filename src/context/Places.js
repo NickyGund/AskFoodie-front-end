@@ -27,7 +27,7 @@ const PlacesProvider = function(props) {
         var res;
         try {
             // Returns an array of dictionaries of places
-            res = await axios.get(`http://192.168.1.246:3000/api/places/find`,{
+            res = await axios.get(`http://192.168.1.26:3000/api/places/find`,{
                 params : {
                     latitude:latitude,
                     longitude:longitude,
@@ -50,39 +50,9 @@ const PlacesProvider = function(props) {
     }
 
     // https://developers.google.com/maps/documentation/places/web-service/details
-    const getPlaceDetails = async function() {
-        if (token == null)
-            throw("Missing token");
-        if (email == null)
-            throw("Missing email");
+    
 
-        // Try to get place from back-end server
-        var res;
-        try {
-            // Returns an array of dictionaries of places
-            res = await axios({
-                method: "get",
-                url: "http://localhost:3000/api/places/info/",
-                headers: {
-                    Authorization: "Bearer " + token,
-                    email: email
-                }
-            })
-        } catch (error) {
-            console.log(`Failed get a place: ${error}`);
-            throw("Failed to get from back-end server")
-        }
-        
-        setDetails(res.data);
-        return res.data;
-    }
-
-    // const test  = (name) => {
-    //     const newFilters = [...filters, name]
-    //     setFilters(newFilters)
-
-    //     console.log('Test ' + filters)
-    // }
+ 
 
     const state = {
         state: {
@@ -102,7 +72,6 @@ const PlacesProvider = function(props) {
         setLongitude,
         setDetails,
         findPlace,
-        getPlaceDetails,
         setFilters,
         setFoodFilters
         
