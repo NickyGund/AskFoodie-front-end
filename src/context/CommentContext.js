@@ -16,7 +16,7 @@ const CommentProvider = props => {
     const addParentComment = async() => {
         //const body = {poster, restaurant, content}
         try{
-            const res = await axios.post('http://192.168.1.8:3000/api/addParentComment', {
+            const res = await axios.post('http://192.168.1.26:3000/api/addParentComment', {
                 poster: poster,
                 restaurant: restaurant,
                 content: content

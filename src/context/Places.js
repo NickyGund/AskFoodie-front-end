@@ -27,7 +27,7 @@ const PlacesProvider = function(props) {
         var res;
         try {
             // Returns an array of dictionaries of places
-            res = await axios.get(`http://192.168.1.246:3000/api/places/find`,{
+            res = await axios.get(`http://192.168.1.26:3000/api/places/find`,{
                 params : {
                     latitude:latitude,
                     longitude:longitude,
