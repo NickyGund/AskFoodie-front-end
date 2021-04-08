@@ -1,19 +1,27 @@
 import React, { useContext, Component, useEffect, useState, Suspense} from 'react';
 import {StyleSheet,Text,ScrollView,SafeAreaView, TouchableOpacity, View, Modal, Pressable} from 'react-native';
+import { SearchBar } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext, AuthProvider } from '../context';
 import useWindowDimensions from 'react-native/Libraries/Utilities/useWindowDimensions';
 import { CommentContext, CommmentProvider } from "./../context/"
-import { TextInput } from 'react-native-gesture-handler';
+import { RestaurantContext, RestaurantProvider } from "./../context/"
+import { FlatList, TextInput } from 'react-native-gesture-handler';
 
 
 export default (props) => {
 
+const commentContext = useContext(CommentContext);
+const restaurantContext = useContext(RestaurantContext);
+
 const width = useWindowDimensions.width;
 const height = useWindowDimensions.height;
-const commentContext = useContext(CommentContext);
 var [userName, setUserName] = useState("");
+const [search, setSearch] = useState('');
+const [filteredDataSource, setFilteredDataSource] = useState([]);
+const [masterDataSource, setMasterDataSource] = useState([]);
 var [comments, setComments] = useState([]);
+var [restaurants, setRestaurants] = useState([]);
 var [parent, setParent] = useState('');
 const [modalVisible, setModalVisible] = useState(false);
 
@@ -24,20 +32,26 @@ const [modalVisible, setModalVisible] = useState(false);
         username = await AsyncStorage.getItem('userName');
         commentContext.setPoster(username);
         setUserName(username);
-
     }catch(error){
         console.log(`Failed to get username: ${error}`);
         throw("Failed to get auth username");
     }
-    
     try{
         const mycomments = await commentContext.findComments(username);
         console.log(await commentContext.state.comments)
         setComments(mycomments);
-        
     }catch(e){
         console.log(`No comments to load: ${e}`);
-        throw('failed to load comments');
+    }
+    try{
+        const myrestaurants = await restaurantContext.findRestaurant();
+        console.log(myrestaurants);
+        setRestaurants(myrestaurants);
+        setMasterDataSource(myrestaurants);
+        setFilteredDataSource(myrestaurants);
+
+    }catch(e){
+        console.log(`No restaurants to load: ${e}`);
     }
     }    
 
@@ -99,7 +113,6 @@ const [modalVisible, setModalVisible] = useState(false);
             //throw('failed to load poster/content');
         }
        // console.log("comments" + comments.data.content)
-       // console.log("testeees" + comments.data.content);
       
        // return displaycomments.content;
     }
@@ -111,6 +124,57 @@ const [modalVisible, setModalVisible] = useState(false);
         }catch(error){
             console.log(`Failed to add comment: ${error}`);
         }
+    }
+
+
+    const ItemView = ({ item }) => {
+        return (
+        // Flat List Item
+        <Text style={styles.itemStyle} /*onPress={() => getItem(item)}*/>
+            {item.id}
+            {'.'}
+            {item.name.toUpperCase()}
+        </Text>
+        );
+  };
+
+    const ItemSeparatorView = () => {
+        return (
+        // Flat List Item Separator
+        <View
+            style={{
+            height: 0.5,
+            width: '100%',
+            backgroundColor: '#C8C8C8',
+            }}
+        />
+        );
+    };
+
+    
+
+    const searchFilterFunction  = (text) => {
+        if (text) {
+            // Inserted text is not blank
+            // Filter the masterDataSource
+            // Update FilteredDataSource
+            const newData = masterDataSource.data.filter(function (item) {
+              const itemData = item.name
+                ? item.name.toUpperCase()
+                : ''.toUpperCase();
+                console.log(itemData);
+              const textData = text.toUpperCase();
+              return itemData.indexOf(textData) > -1;
+            });
+            console.log(newData);
+            setFilteredDataSource(newData);
+            setSearch(text);
+          } else {
+            // Inserted text is blank
+            // Update FilteredDataSource with masterDataSource
+            setFilteredDataSource(masterDataSource);
+            setSearch(text);
+          }
     }
 
     const logOut = async () => {
@@ -140,7 +204,7 @@ const [modalVisible, setModalVisible] = useState(false);
             backgroundColor: "white",
             borderRadius: 20,
             padding: 35,
-            alignItems: "center",
+            //alignItems: "center",
             shadowColor: "#000",
             shadowOffset: {
               width: 0,
@@ -173,9 +237,12 @@ const [modalVisible, setModalVisible] = useState(false);
         },
         basicview: {
             flex:1,
-
-        }
+        },
+        itemStyle: {
+            padding: 10,
+          },
     });
+
     return (
         <SafeAreaView style = {styles.screen}>
             <ScrollView>
@@ -201,6 +268,20 @@ const [modalVisible, setModalVisible] = useState(false);
                     <View>
                     <View style={styles.modalView}>
                         <Text>Post a comment on your profile!</Text>
+                            <SearchBar style = {styles.searchbar}
+                            round
+                            searchIcon={{ size: 18 }}
+                            onChangeText={(text) => searchFilterFunction(text)}
+                            onClear={(text) => searchFilterFunction('')}
+                            placeholder = "find a restaurant"
+                            value = {search}>
+                            </SearchBar>
+                                <FlatList 
+                                data={filteredDataSource}
+                                keyExtractor={(item, index) => index.toString()}
+                                ItemSeparatorComponent={ItemSeparatorView}
+                                renderItem={ItemView}>
+                                </FlatList>
                             <TextInput
                             multiline
                             onChangeText = {(text) => commentContext.setContent(text)}
@@ -237,8 +318,4 @@ const [modalVisible, setModalVisible] = useState(false);
             </View>
         </SafeAreaView>
     )
-    
-
-
-
 }
