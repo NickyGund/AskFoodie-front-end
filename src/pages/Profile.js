@@ -8,9 +8,8 @@ import { CommentContext, CommmentProvider } from "./../context/"
 import { RestaurantContext, RestaurantProvider } from "./../context/"
 import { FlatList, TextInput } from 'react-native-gesture-handler';
 
-
 export default (props) => {
-
+   
 const commentContext = useContext(CommentContext);
 const restaurantContext = useContext(RestaurantContext);
 
@@ -24,7 +23,7 @@ var [comments, setComments] = useState([]);
 var [restaurants, setRestaurants] = useState([]);
 var [parent, setParent] = useState('');
 const [modalVisible, setModalVisible] = useState(false);
-
+const [selectedId, setSelectedId] = useState(null);
 
     async function getMyData() {
         var username
@@ -45,6 +44,7 @@ const [modalVisible, setModalVisible] = useState(false);
     }
     try{
         const myrestaurants = await restaurantContext.findRestaurant();
+        commentContext.setRestaurant('');
         console.log(myrestaurants);
         setRestaurants(myrestaurants);
         setMasterDataSource(myrestaurants);
@@ -55,19 +55,7 @@ const [modalVisible, setModalVisible] = useState(false);
     }
     }    
 
-   /* async function findComments() {
-        var mycomments
-        try{
-            mycomments = await commentContext.findComments();
-        }catch(e){
-            console.log(`No comments to load: ${e}`);
-            throw('failed to load comments');
-        }
-        setComments(mycomments);
-    }*/
-
     useEffect( () =>{
-        
         (async () => { 
             await getMyData()
         })();
@@ -90,12 +78,14 @@ const [modalVisible, setModalVisible] = useState(false);
         var count = 0
         try{
         for(let i=0; i < comments.data.length; i++){
-           var newposter = comments.data[i].poster
+            var newposter = comments.data[i].poster
             console.log(newposter);
-           var newcontent = comments.data[i].content
+            var newcontent = comments.data[i].content
             console.log(newcontent);
+            var newrest = comments.data[i].restaurant
             count++
             newcomment = <View key = {count} style = {styles.basicview}><Text>{newposter}</Text>
+                                <Text>{newrest}</Text>
                                <Text>{newcontent} {"\n"}</Text></View>
 
             commentlist.push(newcomment);
@@ -126,11 +116,18 @@ const [modalVisible, setModalVisible] = useState(false);
         }
     }
 
+    const getItem = (item) => {
+        commentContext.setRestaurant(item.name)
+        // Function for click on an item
+        alert('Id : ' + item.id + ' Title : ' + item.name);
+      };
 
     const ItemView = ({ item }) => {
+        const bgcolor = item._id === selectedId ? "#6e3b6e" : "#f9c2ff";
         return (
         // Flat List Item
-        <Text style={styles.itemStyle} /*onPress={() => getItem(item)}*/>
+        <Text style={styles.itemStyle, {backgroundColor:bgcolor}}
+         onPress={() => {getItem(item); setSelectedId(item._id);}}>
             {item.id}
             {'.'}
             {item.name.toUpperCase()}
@@ -139,19 +136,17 @@ const [modalVisible, setModalVisible] = useState(false);
   };
 
     const ItemSeparatorView = () => {
-        return (
+        return ( 
         // Flat List Item Separator
         <View
             style={{
             height: 0.5,
             width: '100%',
-            backgroundColor: '#C8C8C8',
+            backgroundColor: 'white',
             }}
         />
         );
     };
-
-    
 
     const searchFilterFunction  = (text) => {
         if (text) {
@@ -289,12 +284,12 @@ const [modalVisible, setModalVisible] = useState(false);
                             autoCapitalize = 'none' />
                             <Pressable
                                 style={[styles.button, styles.buttonClose]}
-                                onPress={() => setModalVisible(!modalVisible)}>
+                                onPress={() => {setModalVisible(!modalVisible); getMyData();}}>
                             <Text>Go Back</Text>
                             </Pressable>
                             <Pressable
                                 style={[styles.button, styles.buttonClose]}
-                                onPress={() => {addComments(); setModalVisible(!modalVisible);}}>
+                                onPress={() => {addComments(); setModalVisible(!modalVisible); setSelectedId(null);}}>
                             <Text>Add Comment</Text>
                             </Pressable>
                     </View>
