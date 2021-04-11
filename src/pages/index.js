@@ -1,5 +1,5 @@
 export SignIn from './SignIn';
-export SignUp from './SignUp';
+export SignUp from './signup';
 export ProfileQuestionaire from './ProfileQuestionaire'
 export Home from './Home'
 export AdminHome from './Admin/AdminHome'

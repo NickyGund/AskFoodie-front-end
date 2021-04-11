@@ -15,14 +15,13 @@ const AuthProvider = props => {
   const [token, setToken] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [userID, setUserID] = useState('');
-
   const [birthdate, setDate] = useState(new Date());
   //const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
 
   const signUp = async () => {
     try {
-      const res = await axios.post('http://192.168.1.246:3000/api/register', {
+      const res = await axios.post('http://192.168.1.26:3000/api/register', {
         email:email,
         firstName:name,
         userName:userName,
@@ -70,7 +69,7 @@ const AuthProvider = props => {
   const signIn = async () => {
     try{
       // Send the email and password to login
-      const res = await axios.post('http://192.168.1.246:3000/api/login', {
+      const res = await axios.post('http://192.168.1.26:3000/api/login', {
         email:email,
         password:password
       });
@@ -94,6 +93,27 @@ const AuthProvider = props => {
       throw err;
     }
   };
+
+  const checkUserName = async value => {
+    try {
+      const res = await axios.get(`http://192.168.1.26:3000/api/check_username/${value}`);
+      if (res.data.error) throw new Error('something bad');
+      return res.data.exists;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  const checkEmail = async value => {
+    try {
+      const res = await axios.get(`http://192.168.1.26:3000/api/check_email/${value}`);
+      if (res.data.error) throw new Error('bad email');
+      return res.data.exists;
+    } catch (err) {
+      throw err;
+    }
+  };
+
   
   
 
@@ -122,7 +142,9 @@ const AuthProvider = props => {
     setToken,
     setDate,
     setShow,
-    checkAuth
+    checkAuth,
+    checkEmail,
+    checkUserName
   };
 
   return <AuthContext.Provider value={state}>{props.children}</AuthContext.Provider>;
