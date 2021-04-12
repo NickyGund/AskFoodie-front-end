@@ -5,7 +5,7 @@ import { AuthContext } from '../context';
 
 import MainNav from './mainNav';
 import AdminNav from './adminNav'
-import { SignUp, SignIn, ProfileQuestionaire, Profile, adminSignIn} from '../pages';
+import { SignUp, SignIn, ProfileQuestionaire, Profile, adminSignIn, Home} from '../pages';
 import RestaurantDisplay from '../pages/RestaurantDisplay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -38,6 +38,7 @@ export default () => {
             <Stack.Screen name="sign in" component={SignIn} />
             <Stack.Screen name="sign up" component={SignUp} />
             <Stack.Screen name = 'admin sign in' component = {adminSignIn}/>
+            <Stack.Screen name="home" component={Home}></Stack.Screen>
             <Stack.Screen name="main" component={MainNav} />
             <Stack.Screen name = 'adminHome' component = {AdminNav}/>
             <Stack.Screen name="profile" component={Profile} />

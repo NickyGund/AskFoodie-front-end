@@ -46,80 +46,25 @@ class ImageLoader extends Component {
     }
   }
 
-  const restaurantPhoneNumber = "";
-  const restaurantName = "";
-  const restaurantAddress = "";
-  const restaurantType = "";
-  const restaurantPrice = "";
-  const restaurantRating = "";
+  const backgroundImage = "https://wallpaperaccess.com/full/629233.jpg"
+  ;
 
-  const getRestaurantPhoneNumber = async () => {
-    try {
-      restaurantPhoneNumber = places.details[0].formatted_phone_number;
-    } catch (error) {
-      restaurantPhoneNumber = "N/A";
-    }
+  /*
+  const background = {
+    uri: "https://previews.123rf.com/images/olenayepifanova/olenayepifanova1712/olenayepifanova171200041/92051683-set-of-vector-cartoon-doodle-icons-junk-food-illustration-of-comic-fast-food-seamless-texture-patter.jpg"
+  };
+  */
+
+
+const getRestaurantPhoto = async(p) => {
+  try {
+    p.setPhoto_reference = p.details[0].photos[0].photo_reference;
+    backgroundImage = "data:image/jpeg;base64," + p.getPhoto();
+
+  } catch (error) {
+    
   }
-
-  const getRestaurantName = async () => {
-    try {
-      restaurantName = places.details[0].name;
-    } catch (error) {
-      restaurantName = "N/A";
-    }
-  }
-
-  const getRestaurantAddress = async () => {
-    try {
-      restaurantAddress = places.details[0].formatted_address;
-    } catch (error) {
-      restaurantAddress = "N/A";
-    }
-  }
-
-  const getRestaurantType = async () => {
-    try {
-      restaurantType = places.details[0].types[0];
-    } catch (error) {
-      restaurantType = "N/A";
-    }
-  }
-
-  const getRestaurantPrice = async () => {
-    try {
-      var temp = places.details[0].price_level;
-      if ( temp == 0) {
-        restaurantPrice = "Free";
-      }
-
-      if ( temp == 1) {
-        restaurantPrice = "Inexpensive ($)";
-      }
-
-      if ( temp == 2) {
-        restaurantPrice = "Moderate ($$)";
-      }
-
-      if ( temp == 3) {
-        restaurantPrice = "Expensive ($$$)";
-      }
-
-      if ( temp == 4) {
-        restaurantPrice = "Very Expensive ($$$$)";
-      }
-
-    } catch (error) {
-      restaurantPrice = "N/A";
-    }
-  }
-
-  const getRestaurantRating = async () => {
-    try {
-      restaurantRating = places.details[0].rating;
-    } catch (error) {
-      restaurantRating = "N/A";
-    }
-  }
+}
 
   
 
@@ -127,8 +72,8 @@ class ImageLoader extends Component {
     openMap({ latitude: 40.520710, longitude: -74.285720 });
   }
 
-  const phoneNumber = async (restaurantPhoneNumber) => {
-    var formatted_number = myString.restaurantPhoneNumber(/\D/g,'');
+  const phoneNumber = async (number) => {
+    var formatted_number = number.replace(/\D/g,'');
     var int_formatted_number = parseInt(formatted_number);
     try {
       Linking.openURL(`tel:${int_formatted_number}`)
@@ -136,9 +81,6 @@ class ImageLoader extends Component {
 
     }
   }
-
-
-  
 
 //const { width, height } = Dimensions.get('window');
 
@@ -153,51 +95,67 @@ const maped = "https://www.google.com/maps/search/?api=1&query='Mcdonalds+160+br
 const openGoogleMaps = async (address) => {
   var googleQuery = "https://www.google.com/maps/search/?api=1&query=";
   var restaurantEncoded = encodeURIComponent(address);
-  return googleQuery + restaurantEncoded;
-}
+  try {
+    Linking.openURL(googleQuery + "'" + restaurantEncoded + "'");
 
-const backgroundImage = {
-    uri: "https://i.pinimg.com/originals/7a/48/6a/7a486a9b264a2bb474c5635748f26105.png"
-    
-  };
+  } catch(error) {
+
+  }}
+
+  
+const openRestaurantWebsite = async (website) => {
+  try {
+    Linking.openURL(website)
+  } catch (error) {
+
+  }
+}
+  
+
+
 
 export default (props) => {
     const auth = useContext(AuthContext);
-
+    const places = useContext(PlacesContext);
+  
 
     return (
         <SafeAreaView style={{flex:1, backgroundColor:"#000000"}}>
 
+
         <View style = {styles.container}>
+          
             <View style={{backgroundColor: '#DC143C'}}>
-            <Text style={styles.message}s>{restaurantName}</Text>
+            <Text style={styles.message}s>{places.restaurantName}</Text>
             </View>
             <View style = {styles.logoContainer}>
+            <TouchableOpacity onPress={() => openRestaurantWebsite(places.restaurantWebsite)}>
                 <ImageLoader 
                     style = {styles.logo}
                     source={{
-                    uri: 'https://i.imgur.com/BW4003E.jpg',
+                    uri: backgroundImage,
                 }} />
+                 </TouchableOpacity>
             </View>
             <Text style = {styles.header}>Info</Text>
             <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:1}}>
-            <TouchableOpacity onPress={() => Linking.openURL(openGoogleMaps(restaurantAddress))}>
-            <Text style={styles.innerText }>{restaurantAddress}</Text> 
+            <TouchableOpacity onPress={() => openGoogleMaps(places.restaurantAddress)}>
+            <Text style={styles.innerText }>{places.restaurantAddress}</Text> 
             </TouchableOpacity>
             </View>
             <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}>
-                <TouchableOpacity onPress={phoneNumber(restaurantPhoneNumber)}>
-                <Text style={styles.innerText }>{restaurantPhoneNumber}</Text>  
+                <TouchableOpacity onPress={() => phoneNumber(places.restaurantPhoneNumber)}>
+                <Text style={styles.innerText }>{places.restaurantPhoneNumber}</Text>  
 
                 </TouchableOpacity>
             </View>
             <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}>
-            <Text style={styles.innerText }>{restaurantPrice}</Text>  
+            <Text style={styles.innerText }>{places.restaurantPrice}</Text>  
             </View>
             <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}>
-            <Text style={styles.innerText }>{restaurantType}</Text>  
+            <Text style={styles.innerText }>{places.restaurantType}</Text>  
             </View>
-     
+  
         </View>
         </SafeAreaView>
 
@@ -205,6 +163,12 @@ export default (props) => {
 }
 
 const styles = StyleSheet.create({
+  background_image: {
+    flexGrow: 1,
+    justifyContent: "flex-start",
+    width: "100%",
+    resizeMode: "cover",
+  },
     container: {
         flex: 1,
         backgroundColor: '#FFFAFA',
