@@ -39,7 +39,7 @@ export default () => {
       {!loaded ? null : (
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName={loggedIn ? "adminHome" : "sign in"}
+            initialRouteName={loggedIn ? "main" : "sign in"}
             screenOptions={{ headerShown: false, gestureEnabled: false }}
           >
             <Stack.Screen
