@@ -10,15 +10,6 @@ const AdminProvider = (props) => {
   const [comments, setComments] = useState([]);
   const [token, setToken] = useState("");
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const getToken = await AsyncStorage.getItem('token');
-  //     const getEmail = await AsyncStorage.getItem('email');
-  //     setToken(getToken);
-  //     setEmail(getEmail);
-  //   })();
-  // },[]);
-
   const getComments = async (id) => {
     const commentsList = [
       {
@@ -31,19 +22,23 @@ const AdminProvider = (props) => {
     ];
     setComments(commentsList);
     console.log(id);
-    // try {
-    //     const res = await axios.get(`http://10.0.0.6:3000/api/places/find`,{
-    //         params : {
-    //             restaurant: ''
-    //         },
-    //         headers: {
-    //             Authorization: "Bearer " + token,
-    //         }
-
-    //     })
-    // }catch (error) {
-    //     throw("Failed to get Comments")
-    // }
+    var res;
+    try {
+      res = await axios.get(
+        "http://192.168.1.11:3000/api/findCommentsForRestaurant",
+        {
+          params: {
+            restaurant: id,
+          },
+        }
+      );
+    } catch (error) {
+      console.log(`Failed get comments: ${error}`);
+      throw "Failed to get from back-end server";
+    }
+    console.log(res.data);
+    setComments(res.data.data);
+    return res.data;
   };
 
   const getRestaurants = async () => {
@@ -64,10 +59,21 @@ const AdminProvider = (props) => {
   };
 
   const deleteComment = async (id) => {
-    var filtered = comments.filter(function (value, index, arr) {
-      return value.id != id;
-    });
-    setComments(filtered);
+    var res;
+    try {
+      res = await axios.get("http://192.168.1.11:3000/api/deleteComment", {
+        params: {
+          id: id,
+        },
+      });
+      var filtered = comments.filter(function (value, index, arr) {
+        return value._id != id;
+      });
+      setComments(filtered);
+    } catch (error) {
+      console.log(`Failed get comments: ${error}`);
+      throw "Failed to delete comment";
+    }
   };
 
   const state = {

@@ -68,11 +68,11 @@ export default ({ route }) => {
                     // alignItems:'center'
                   }}
                 >
-                  <Text>User: {item.userName}</Text>
-                  <Text>Comment: {item.comment}</Text>
+                  <Text>User: {item.poster}</Text>
+                  <Text>Comment: {item.content}</Text>
                 </View>
                 <TouchableOpacity
-                  onPress={() => adminContext.deleteComment(item.id)}
+                  onPress={() => adminContext.deleteComment(item._id)}
                 >
                   <View
                     style={{
