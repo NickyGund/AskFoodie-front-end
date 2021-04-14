@@ -24,6 +24,7 @@ var [restaurants, setRestaurants] = useState([]);
 var [parent, setParent] = useState('');
 const [modalVisible, setModalVisible] = useState(false);
 const [selectedId, setSelectedId] = useState(null);
+const [dictionary, setDictionary] = useState({});
 
     async function getMyData() {
         var username
@@ -44,12 +45,19 @@ const [selectedId, setSelectedId] = useState(null);
     }
     try{
         const myrestaurants = await restaurantContext.findRestaurant();
+        var dict = {};
         commentContext.setRestaurant('');
         console.log(myrestaurants);
         setRestaurants(myrestaurants);
         setMasterDataSource(myrestaurants);
         setFilteredDataSource(myrestaurants);
-
+        //make a dictionary here to map out _ids to names
+        //forloop
+        for(let k=0; k < myrestaurants.data.length; k++){
+            dict[myrestaurants.data[k]._id] = myrestaurants.data[k].name
+        }
+        setDictionary(dict);
+       
     }catch(e){
         console.log(`No restaurants to load: ${e}`);
     }
@@ -73,8 +81,10 @@ const [selectedId, setSelectedId] = useState(null);
     }
 
     const loadComments = function() {
+        console.log("testing dictionary: " + dictionary["605cb8ffce48184456f25a21"])
         var newcomment;
         var commentlist = [];
+        var visiblename;
         var count = 0
         try{
         for(let i=0; i < comments.data.length; i++){
@@ -83,21 +93,29 @@ const [selectedId, setSelectedId] = useState(null);
             var newcontent = comments.data[i].content
             console.log(newcontent);
             var newrest = comments.data[i].restaurant
+            console.log(newrest)
+            if(newrest != ''){ 
+                console.log('newrest is not empty')
+                console.log("testing dictionary2: " + dictionary[newrest])
+                visiblename = dictionary[newrest];
+                //getName(newrest);
+                //visiblename = name;
+            }
+            else{
+                console.log('newrest is empty');
+                visiblename = ''
+            }
+           
             count++
             newcomment = <View key = {count} style = {styles.basicview}><Text>{newposter}</Text>
-                                <Text>{newrest}</Text>
+                                <Text>{visiblename}</Text>
                                <Text>{newcontent} {"\n"}</Text></View>
 
             commentlist.push(newcomment);
-            //return newcomment;
         }
         // console.log(commentlist);
         // console.log(newcomment);
         return commentlist;
-        console.log('comment list?' + commentlist);
-        
-       // console.log(content)
-        //return content;
         }catch(error){
             console.log(`Failed to load poster/content: ${error}`);
             //throw('failed to load poster/content');
@@ -110,14 +128,13 @@ const [selectedId, setSelectedId] = useState(null);
     const addComments = async function() {
         try{
             commentContext.addParentComment()
-            getMyData();
         }catch(error){
             console.log(`Failed to add comment: ${error}`);
         }
     }
 
     const getItem = (item) => {
-        commentContext.setRestaurant(item.name)
+        commentContext.setRestaurant(item._id)
         // Function for click on an item
         alert('Id : ' + item.id + ' Title : ' + item.name);
       };
@@ -289,7 +306,7 @@ const [selectedId, setSelectedId] = useState(null);
                             </Pressable>
                             <Pressable
                                 style={[styles.button, styles.buttonClose]}
-                                onPress={() => {addComments(); setModalVisible(!modalVisible); setSelectedId(null);}}>
+                                onPress={() => {addComments(); setModalVisible(!modalVisible); setSelectedId(null); getMyData();}}>
                             <Text>Add Comment</Text>
                             </Pressable>
                     </View>
