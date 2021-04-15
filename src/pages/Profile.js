@@ -37,6 +37,7 @@ const [dictionary, setDictionary] = useState({});
         throw("Failed to get auth username");
     }
     try{
+        commentContext.setContent('');
         const mycomments = await commentContext.findComments(username);
         console.log(await commentContext.state.comments)
         setComments(mycomments);
@@ -46,7 +47,7 @@ const [dictionary, setDictionary] = useState({});
     try{
         const myrestaurants = await restaurantContext.findRestaurant();
         var dict = {};
-        commentContext.setRestaurant('');
+        commentContext.setRestaurant('null');
         console.log(myrestaurants);
         setRestaurants(myrestaurants);
         setMasterDataSource(myrestaurants);
@@ -57,6 +58,7 @@ const [dictionary, setDictionary] = useState({});
             dict[myrestaurants.data[k]._id] = myrestaurants.data[k].name
         }
         setDictionary(dict);
+    
        
     }catch(e){
         console.log(`No restaurants to load: ${e}`);
@@ -81,7 +83,6 @@ const [dictionary, setDictionary] = useState({});
     }
 
     const loadComments = function() {
-        console.log("testing dictionary: " + dictionary["605cb8ffce48184456f25a21"])
         var newcomment;
         var commentlist = [];
         var visiblename;
@@ -94,15 +95,10 @@ const [dictionary, setDictionary] = useState({});
             console.log(newcontent);
             var newrest = comments.data[i].restaurant
             console.log(newrest)
-            if(newrest != ''){ 
-                console.log('newrest is not empty')
-                console.log("testing dictionary2: " + dictionary[newrest])
+            if(newrest != 'null'){ 
                 visiblename = dictionary[newrest];
-                //getName(newrest);
-                //visiblename = name;
             }
             else{
-                console.log('newrest is empty');
                 visiblename = ''
             }
            
