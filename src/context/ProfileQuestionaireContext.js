@@ -13,7 +13,7 @@ const ProfileProvider = props => {
  const submit = async () => {
      const body = {foodTypes, price, distance, dining}
      try {
-         const res = await axios.post('http://192.168.1.246:3000/api/addProfileInfo', {
+         const res = await axios.post('http://192.168.1.201:3000/api/addProfileInfo', {
             foodTypes,
             price,
             distance,

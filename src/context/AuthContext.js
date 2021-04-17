@@ -21,7 +21,7 @@ const AuthProvider = props => {
 
   const signUp = async () => {
     try {
-      const res = await axios.post('http://192.168.1.26:3000/api/register', {
+      const res = await axios.post('http://192.168.1.201:3000/api/register', {
         email:email,
         firstName:name,
         userName:userName,
@@ -69,7 +69,7 @@ const AuthProvider = props => {
   const signIn = async () => {
     try{
       // Send the email and password to login
-      const res = await axios.post('http://192.168.1.26:3000/api/login', {
+      const res = await axios.post('http://192.168.1.201:3000/api/login', {
         email:email,
         password:password
       });
@@ -96,7 +96,7 @@ const AuthProvider = props => {
 
   const checkUserName = async value => {
     try {
-      const res = await axios.get(`http://192.168.1.26:3000/api/check_username/${value}`);
+      const res = await axios.get(`http://192.168.1.201:3000/api/check_username/${value}`);
       if (res.data.error) throw new Error('something bad');
       return res.data.exists;
     } catch (err) {
@@ -106,7 +106,7 @@ const AuthProvider = props => {
 
   const checkEmail = async value => {
     try {
-      const res = await axios.get(`http://192.168.1.26:3000/api/check_email/${value}`);
+      const res = await axios.get(`http://192.168.1.201:3000/api/check_email/${value}`);
       if (res.data.error) throw new Error('bad email');
       return res.data.exists;
     } catch (err) {

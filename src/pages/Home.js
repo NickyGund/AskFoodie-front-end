@@ -80,12 +80,15 @@ export default (props) => {
             );
         } else { // Atleast 1 place was found
             console.log(`Successfully got ${places.length} place(s) from back-end server`);
-            console.log(places);
+            //console.log(places);
     
             Alert.alert(
                 "We found you a place 😎",
                 `${places[0].name}\n${places[0].vicinity}`
             );
+
+            props.navigation.navigate('restaurant display');
+
         }
         return;
     }
