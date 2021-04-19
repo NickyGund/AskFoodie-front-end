@@ -1,11 +1,12 @@
 import React from 'react';
 import Main from './src/navigation';
-import { AuthProvider, ProfileProvider, PlacesProvider, AdminProvider, LocationProvider,CommentProvider } from './src/context';
+import { AuthProvider, ProfileProvider, PlacesProvider, AdminProvider, LocationProvider,CommentProvider, RestaurantProvider } from './src/context';
 
 export default function App() {
   return (
     <AuthProvider>
       <ProfileProvider>
+        <RestaurantProvider>
         <LocationProvider>
           <PlacesProvider>
             <AdminProvider>
@@ -15,6 +16,7 @@ export default function App() {
             </AdminProvider>
           </PlacesProvider>
         </LocationProvider>
+        </RestaurantProvider>
       </ProfileProvider>
     </AuthProvider>
   );
