@@ -1,5 +1,5 @@
 import React, { useContext, Component, useEffect, useState, Suspense} from 'react';
-import {StyleSheet,Text,ScrollView,SafeAreaView, TouchableOpacity, View, Modal, Pressable} from 'react-native';
+import {StyleSheet,Text,ScrollView,SafeAreaView, TouchableOpacity, View, Modal, Pressable, PixelRatio} from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext, AuthProvider } from '../context';
@@ -9,12 +9,10 @@ import { RestaurantContext, RestaurantProvider } from "./../context/"
 import { FlatList, TextInput } from 'react-native-gesture-handler';
 
 export default (props) => {
-   
+const width = useWindowDimensions.width;
+const height = useWindowDimensions.height;   
 const commentContext = useContext(CommentContext);
 const restaurantContext = useContext(RestaurantContext);
-
-const width = useWindowDimensions.width;
-const height = useWindowDimensions.height;
 var [userName, setUserName] = useState("");
 const [search, setSearch] = useState('');
 const [filteredDataSource, setFilteredDataSource] = useState([]);
@@ -25,6 +23,11 @@ var [parent, setParent] = useState('');
 const [modalVisible, setModalVisible] = useState(false);
 const [selectedId, setSelectedId] = useState(null);
 const [dictionary, setDictionary] = useState({});
+
+    //function to get
+    function get_font_size(size) {
+        return size / PixelRatio.getFontScale();
+    };
 
     async function getMyData() {
         var username
@@ -37,6 +40,7 @@ const [dictionary, setDictionary] = useState({});
         throw("Failed to get auth username");
     }
     try{
+        commentContext.setContent('');
         const mycomments = await commentContext.findComments(username);
         console.log(await commentContext.state.comments)
         setComments(mycomments);
@@ -46,7 +50,7 @@ const [dictionary, setDictionary] = useState({});
     try{
         const myrestaurants = await restaurantContext.findRestaurant();
         var dict = {};
-        commentContext.setRestaurant('');
+        commentContext.setRestaurant('null');
         console.log(myrestaurants);
         setRestaurants(myrestaurants);
         setMasterDataSource(myrestaurants);
@@ -57,6 +61,7 @@ const [dictionary, setDictionary] = useState({});
             dict[myrestaurants.data[k]._id] = myrestaurants.data[k].name
         }
         setDictionary(dict);
+    
        
     }catch(e){
         console.log(`No restaurants to load: ${e}`);
@@ -81,7 +86,6 @@ const [dictionary, setDictionary] = useState({});
     }
 
     const loadComments = function() {
-        console.log("testing dictionary: " + dictionary["605cb8ffce48184456f25a21"])
         var newcomment;
         var commentlist = [];
         var visiblename;
@@ -94,35 +98,24 @@ const [dictionary, setDictionary] = useState({});
             console.log(newcontent);
             var newrest = comments.data[i].restaurant
             console.log(newrest)
-            if(newrest != ''){ 
-                console.log('newrest is not empty')
-                console.log("testing dictionary2: " + dictionary[newrest])
+            if(newrest != 'null'){ 
                 visiblename = dictionary[newrest];
-                //getName(newrest);
-                //visiblename = name;
             }
             else{
-                console.log('newrest is empty');
                 visiblename = ''
             }
            
             count++
-            newcomment = <View key = {count} style = {styles.basicview}><Text>{newposter}</Text>
-                                <Text>{visiblename}</Text>
-                               <Text>{newcontent} {"\n"}</Text></View>
+            newcomment = <View key = {count} style = {styles.commentview}>
+                                <Text style = {{alignSelf:"center", marginTop: 3, marginBottom:2, fontWeight:"bold", fontFamily: "Georgia"}}>{visiblename}</Text>
+                               <Text style = {{marginTop: 3,}}>{newcontent} {"\n"}</Text></View>
 
             commentlist.push(newcomment);
         }
-        // console.log(commentlist);
-        // console.log(newcomment);
         return commentlist;
         }catch(error){
             console.log(`Failed to load poster/content: ${error}`);
-            //throw('failed to load poster/content');
         }
-       // console.log("comments" + comments.data.content)
-      
-       // return displaycomments.content;
     }
     
     const addComments = async function() {
@@ -135,18 +128,16 @@ const [dictionary, setDictionary] = useState({});
 
     const getItem = (item) => {
         commentContext.setRestaurant(item._id)
-        // Function for click on an item
-        alert('Id : ' + item.id + ' Title : ' + item.name);
+        alert(' Restaurant : ' + item.name + '\n' + ' Address : ' + item.address);
       };
 
+    //this function defines the actions when a use4r clicks an item in the restaurant flatlist
     const ItemView = ({ item }) => {
-        const bgcolor = item._id === selectedId ? "#6e3b6e" : "#f9c2ff";
+        const bgcolor = item._id === selectedId ? "#f6b7ff" : "#aedbff";
         return (
         // Flat List Item
-        <Text style={styles.itemStyle, {backgroundColor:bgcolor}}
+        <Text style={styles.itemStyle, {backgroundColor:bgcolor, fontSize: get_font_size(15), padding: 5}}
          onPress={() => {getItem(item); setSelectedId(item._id);}}>
-            {item.id}
-            {'.'}
             {item.name.toUpperCase()}
         </Text>
         );
@@ -198,12 +189,8 @@ const [dictionary, setDictionary] = useState({});
     const styles = StyleSheet.create({
         screen: {
             flex: 1,
-            padding: 10,
-            justifyContent: "center",
-            alignItems: "center"
-        },
-        profileDetails: {
-            alignItems: "center"
+            padding: 5,
+            alignItems: "center",
         },
         backButton: {
             width: 50,
@@ -229,7 +216,8 @@ const [dictionary, setDictionary] = useState({});
         button: {
             borderRadius: 20,
             padding: 10,
-            elevation: 2,
+            margin: 3,
+            alignSelf: "center",
             alignContent: 'center'
           },
         buttonOpen: {
@@ -238,36 +226,79 @@ const [dictionary, setDictionary] = useState({});
         buttonClose: {
             backgroundColor: "#2196F3",
           },
+        buttonLogOut: {
+            backgroundColor: "grey"
+        },
         contentinput: {
+            fontSize: get_font_size(17),
             flexDirection: "column",
             alignContent: "center",
+            alignSelf: "center",
             maxHeight: 100,
-            borderColor: "#1ca0ff", 
-            borderWidth: 1, 
-            padding: 10, 
-            width: "75%",
+            borderColor: "#000",
+            borderWidth: 1,
+            marginTop: 15, 
+            padding: 20, 
+            width: "100%",
+            borderRadius: 15
         },
         basicview: {
             flex:1,
+            padding:4
         },
-        itemStyle: {
+        commentview:{
+            backgroundColor: "white",
+            flex:1,
+            padding: 5,
+            marginVertical: 8,
+            marginBottom: 8,
+            justifyContent: "space-between",
+            borderRadius: 15,
+            shadowColor: "#000",
+            shadowOffset: {
+	            width: 0,
+	            height: 3,
+                        },
+            shadowOpacity: 0.29,
+            shadowRadius: 4.65,
+            elevation: 7,
+        },
+        userview:{
+            marginBottom: 10,
+            borderBottomWidth: 10,
+            borderBottomColor: "black",   
+            borderWidth: 5,
+            padding: 10, 
+            width: "75%",
+        },
+        itemStyle: {   
             padding: 10,
+          },
+        name:{
+            fontSize: 30,
+            fontFamily: 'Georgia'
+        },
+        commentParent:{
+            height: "75%",
+            width: "80%",
+            padding: 5,
+        },
+        title: {
+            fontSize: get_font_size(40),
+            color: "#66aaffff",
+            fontWeight: "bold",
+            textAlign: "center",
+            textAlignVertical: "bottom",
           },
     });
 
     return (
         <SafeAreaView style = {styles.screen}>
-            <ScrollView>
-                <View stlye = {styles.basicview}>
-                    <Text>{userName}</Text>
+                <View stlye = {styles.userview}>
+                    <Text adjustsFontSizeToFit style = {styles.title}>{userName}</Text>
                 </View>
-                    <View style = {styles.basicview}>{loadComments()}</View>
-                <View>
-                    <TouchableOpacity
-                        onPress = {goHome}>
-                    <Text>Back</Text>
-                </TouchableOpacity>
-            </View>
+                <ScrollView
+                     style = {styles.commentParent}>{loadComments()}</ScrollView>
                 <View>
                     <Modal
                     animationType="slide"
@@ -279,13 +310,14 @@ const [dictionary, setDictionary] = useState({});
                       }}>
                     <View>
                     <View style={styles.modalView}>
-                        <Text>Post a comment on your profile!</Text>
+                        <Text style = {{alignSelf: "center", fontSize: get_font_size(17), fontWeight:'bold'}}>Post a comment on your profile!</Text>
                             <SearchBar style = {styles.searchbar}
-                            round
+                            containerStyle = {{backgroundColor: "white", borderRadius: "15"}}
+                            inputStyle = {{backgroundColor: "white"}}
                             searchIcon={{ size: 18 }}
                             onChangeText={(text) => searchFilterFunction(text)}
                             onClear={(text) => searchFilterFunction('')}
-                            placeholder = "find a restaurant"
+                            placeholder = "Find a restaurant"
                             value = {search}>
                             </SearchBar>
                                 <FlatList 
@@ -299,9 +331,10 @@ const [dictionary, setDictionary] = useState({});
                             onChangeText = {(text) => commentContext.setContent(text)}
                             style = {styles.contentinput} placeholder = "Write your comment here"
                             autoCapitalize = 'none' />
+                            <View style = {{flexDirection:"row", alignSelf: "center", padding: 4, marginTop: 10}}>
                             <Pressable
                                 style={[styles.button, styles.buttonClose]}
-                                onPress={() => {setModalVisible(!modalVisible); getMyData();}}>
+                                onPress={() => {setModalVisible(!modalVisible); getMyData(); setSelectedId(null);}}>
                             <Text>Go Back</Text>
                             </Pressable>
                             <Pressable
@@ -309,24 +342,24 @@ const [dictionary, setDictionary] = useState({});
                                 onPress={() => {addComments(); setModalVisible(!modalVisible); setSelectedId(null); getMyData();}}>
                             <Text>Add Comment</Text>
                             </Pressable>
+                            </View>
                     </View>
                     </View>
 
                     </Modal>
-                    <Pressable
-                        style={[styles.button, styles.buttonOpen, styles.screen]}
-                        onPress={() => setModalVisible(true)}>
-                     <Text>Add a comment</Text>
-                    </Pressable>
                      </View>
 
-            </ScrollView>
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                <TouchableOpacity style = {{backgroundColor:'grey', padding:'5%', borderRadius:'7%'}} onPress = {() => logOut()}>
+            <View style={{ flex: 1, flexDirection:'row', justifyContent: "center", alignItems: "center", marginBottom: "1%"}}>
+                <TouchableOpacity style = {[styles.button, styles.buttonLogOut]} onPress = {() => logOut()}>
                     <Text>
                         Sign Out
                     </Text>
                 </TouchableOpacity>
+                <Pressable
+                        style={[styles.button, styles.buttonOpen]}
+                        onPress={() => setModalVisible(true)}>
+                     <Text>Add a comment</Text>
+                    </Pressable>
             </View>
         </SafeAreaView>
     )
