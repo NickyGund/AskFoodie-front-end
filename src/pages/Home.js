@@ -77,16 +77,10 @@ export default (props) => {
       Alert.alert("No places found", "No relevant places");
     } else {
       // Atleast 1 place was found
-      console.log(
-        `Successfully got ${places.length} place(s) from back-end server`
-      );
-      console.log(places);
+      props.navigation.navigate('restaurant display');
 
-      Alert.alert(
-        "We found you a place 😎",
-        `${places[0].name}\n${places[0].vicinity}`
-      );
     }
+
     return;
   };
 

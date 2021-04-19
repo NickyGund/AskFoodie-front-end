@@ -1,11 +1,16 @@
 import React, {useState, useContext, useEffect, Component } from 'react';
-import { View, SafeAreaView, Dimensions, StyleSheet, Text, TextInput , Platform, Button, TouchableOpacity, Alert, Image, Animated, Linking} from 'react-native';
+import { View, SafeAreaView, Dimensions, StyleSheet, Text, TextInput , Platform, Button, TouchableOpacity, TouchableHighlight, Alert, Image, Animated, Linking} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { AuthContext, AuthProvider } from '../context';
 import logo from '../images/ru.jpg';
 import { ScrollView } from 'react-native-gesture-handler';
 import openMap from 'react-native-open-maps';
-//import { PlacesContext, PlacesProvider } from '../context/Places';
+import { PlacesContext, PlacesProvider } from '../context/Places';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import useWindowDimensions from 'react-native/Libraries/Utilities/useWindowDimensions';
+import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick';
+
+
 
 //const places = useContext(PlacesContext);
 
@@ -45,80 +50,50 @@ class ImageLoader extends Component {
       );
     }
   }
+  var backgroundImage = "https://wallpaperaccess.com/full/629233.jpg"
+  ;
 
-  const restaurantPhoneNumber = "";
-  const restaurantName = "";
-  const restaurantAddress = "";
-  const restaurantType = "";
-  const restaurantPrice = "";
-  const restaurantRating = "";
+  /*
+  const background = {
+    uri: "https://previews.123rf.com/images/olenayepifanova/olenayepifanova1712/olenayepifanova171200041/92051683-set-of-vector-cartoon-doodle-icons-junk-food-illustration-of-comic-fast-food-seamless-texture-patter.jpg"
+  };
+  */
 
-  const getRestaurantPhoneNumber = async () => {
-    try {
-      restaurantPhoneNumber = places.details[0].formatted_phone_number;
-    } catch (error) {
-      restaurantPhoneNumber = "N/A";
-    }
+
+const getRestaurantPhoto = async(p) => {
+  try {
+    p.setPhoto_reference = p.details[0].photos[0].photo_reference;
+    backgroundImage = "data:image/jpeg;base64," + p.getPhoto();
+
+  } catch (error) {
+    
   }
+}
 
-  const getRestaurantName = async () => {
-    try {
-      restaurantName = places.details[0].name;
-    } catch (error) {
-      restaurantName = "N/A";
+  const getPrice = async(temp) => {
+    if ( temp == 0) {
+      return "Free";
     }
-  }
 
-  const getRestaurantAddress = async () => {
-    try {
-      restaurantAddress = places.details[0].formatted_address;
-    } catch (error) {
-      restaurantAddress = "N/A";
+    if ( temp == 1) {
+      return "Inexpensive ($)";
     }
-  }
 
-  const getRestaurantType = async () => {
-    try {
-      restaurantType = places.details[0].types[0];
-    } catch (error) {
-      restaurantType = "N/A";
+    if ( temp == 2) {
+      return "Moderate ($$)";
     }
-  }
 
-  const getRestaurantPrice = async () => {
-    try {
-      var temp = places.details[0].price_level;
-      if ( temp == 0) {
-        restaurantPrice = "Free";
-      }
-
-      if ( temp == 1) {
-        restaurantPrice = "Inexpensive ($)";
-      }
-
-      if ( temp == 2) {
-        restaurantPrice = "Moderate ($$)";
-      }
-
-      if ( temp == 3) {
-        restaurantPrice = "Expensive ($$$)";
-      }
-
-      if ( temp == 4) {
-        restaurantPrice = "Very Expensive ($$$$)";
-      }
-
-    } catch (error) {
-      restaurantPrice = "N/A";
+    if ( temp == 3) {
+      return "Expensive ($$$)";
     }
-  }
 
-  const getRestaurantRating = async () => {
-    try {
-      restaurantRating = places.details[0].rating;
-    } catch (error) {
-      restaurantRating = "N/A";
+    if ( temp == 4) {
+      return "Very Expensive ($$$$)";
     }
+
+    return "";
+
+
   }
 
   
@@ -127,8 +102,8 @@ class ImageLoader extends Component {
     openMap({ latitude: 40.520710, longitude: -74.285720 });
   }
 
-  const phoneNumber = async (restaurantPhoneNumber) => {
-    var formatted_number = myString.restaurantPhoneNumber(/\D/g,'');
+  const phoneNumber = async (number) => {
+    var formatted_number = number.replace(/\D/g,'');
     var int_formatted_number = parseInt(formatted_number);
     try {
       Linking.openURL(`tel:${int_formatted_number}`)
@@ -137,15 +112,8 @@ class ImageLoader extends Component {
     }
   }
 
-
-  
-
 //const { width, height } = Dimensions.get('window');
 
-const width = 20;
-const height = 40;
-
-const cross = Math.sqrt(width * width + height * height);
 
 const maped = "https://www.google.com/maps/search/?api=1&query='Mcdonalds+160+broadway+newyork+city+ny'";
 
@@ -153,69 +121,345 @@ const maped = "https://www.google.com/maps/search/?api=1&query='Mcdonalds+160+br
 const openGoogleMaps = async (address) => {
   var googleQuery = "https://www.google.com/maps/search/?api=1&query=";
   var restaurantEncoded = encodeURIComponent(address);
-  return googleQuery + restaurantEncoded;
+  try {
+    Linking.openURL(googleQuery + "'" + restaurantEncoded + "'");
+
+  } catch(error) {
+
+  }}
+
+  
+const openRestaurantWebsite = async (website) => {
+  try {
+    Linking.openURL(website)
+  } catch (error) {
+
+  }
 }
 
-const backgroundImage = {
-    uri: "https://i.pinimg.com/originals/7a/48/6a/7a486a9b264a2bb474c5635748f26105.png"
-    
-  };
+const test = () => {
+  return "hello";
+}
+
+const test2 = () => {
+  placesContext.setPhoto("https://wallpaperaccess.com/full/629233.jpg");
+}
+
+//const width = useWindowDimensions.width;
+//const height = useWindowDimensions.height; 
+
+const { width, height } = Dimensions.get('window');
 
 export default (props) => {
     const auth = useContext(AuthContext);
+    const placesContext = useContext(PlacesContext);
 
+    
+  const width = useWindowDimensions.width;
+  const height = useWindowDimensions.height; 
+  
+
+
+    const {
+      restaurantPhoneNumber,
+      restaurantName,
+      restaurantAddress,
+      restaurantType,
+      restaurantPrice,
+      restaurantRating,
+      restaurantWebsite,
+      googleRestaurantAddress,
+      places,
+      priceColor,
+      photo,
+      GOOGLE_API_KEY,
+    } = placesContext.state;
+
+      //var restaurantPrice2 = getPrice(places[0].price_level);
+
+      //placesContext.getPhoto(places[0].photos[0].photo_reference, places[0].photos[0].height, places[0].photos[0].width)
+      //placesContext.setInfo();
+      //console.log(photo);
+
+      const styles = StyleSheet.create({
+        background_image: {
+          flexGrow: 1,
+          justifyContent: "flex-start",
+          width: "100%",
+          resizeMode: "cover",
+        },
+          container: {
+              flex: 1,
+              backgroundColor: '#FFFAFA',
+              marginBottom: 0,
+            },
+            message:{
+              fontWeight:"bold",
+              fontSize:35 ,
+              color:"#FF6347",
+              //marginTop:10,
+              //marginBottom:10,
+              textAlign: 'center',
+              textAlignVertical:"center",
+              //flex: 1,
+              //width: width,
+              //height: height,
+              width: "100%",
+    
+            },
+            logo: {
+              width: height*8,
+              height: height*8,
+              borderRadius: height*8 / 2,
+              overflow: "hidden",
+              borderWidth: 3,
+              borderColor: "#DC143C",
+              marginTop:10,
+              marginBottom:10,
+            },
+            header:{
+              fontWeight:"bold",
+              fontSize:25,
+              color:"#FF6347",
+              textAlign: 'center',
+              marginBottom: 5,
+              marginTop: 5,
+            },
+            logoContainer: {
+              //justifyContent: 'center',
+              //alignItems: 'center',
+              flex:3
+            },
+            innerText: {
+                fontSize:20,
+                color: '#696969',
+                textAlign: 'left',
+                marginTop:12,
+                marginBottom:12,
+            },
+            inputView:{
+              width:width*.8,
+              backgroundColor:"#465881",
+              borderRadius:25,
+              height:height*.1,
+              justifyContent:"center",
+              marginBottom:10,
+              alignItems:'center',
+            },
+            innerText2: {
+              fontSize:20,
+              color: '#7FFF00',
+              textAlign: 'left',
+              marginTop:12,
+              marginBottom:12,
+          },
+
+          card:{
+            height:"30%",
+            width:"80%",
+            backgroundColor:"white",
+            borderRadius:15,
+            padding:10,
+            elevation:10,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 3 },
+            shadowOpacity: 0.5,
+            shadowRadius: 5, 
+            
+          },
+
+          backButton: {
+            //elevation: 8,
+            backgroundColor: "#FF6347",
+            borderRadius: 10,
+            paddingVertical: 4,
+            paddingHorizontal: 18,
+            marginTop: 15,
+            //alignSelf: "flex-end",
+            //position: 'absolute',
+            bottom: 0,
+          },
+
+          appButtonText: {
+            fontSize: 18,
+            color: "#fff",
+            fontWeight: "bold",
+            alignSelf: "center",
+            textTransform: "uppercase"
+          },
+
+      
+      });
+
+  
 
     return (
-        <SafeAreaView style={{flex:1, backgroundColor:"#000000"}}>
+        <SafeAreaView style={{flex:1, backgroundColor:"#FFFFFF"}}>
+
 
         <View style = {styles.container}>
-            <View style={{backgroundColor: '#DC143C'}}>
-            <Text style={styles.message}s>{restaurantName}</Text>
+
+            { places[0].hasOwnProperty('name') &&
+            <View style={{backgroundColor: '#FFFFFF', width: width, alignContent: 'center'}}>
+            <Text style={styles.message}>{places[0].name}</Text>
             </View>
+            }
+
             <View style = {styles.logoContainer}>
-                <ImageLoader 
+              
+            
+                {/*<ImageLoader 
                     style = {styles.logo}
                     source={{
-                    uri: 'https://i.imgur.com/BW4003E.jpg',
-                }} />
+                    uri: "https://maps.googleapis.com/maps/api/place/photo?maxwidth=" + places[0].photos[0].width +
+                    "&photoreference=" + places[0].photos[0].photo_reference + "&key=" + GOOGLE_API_KEY,
+                }} />*/}
+
+                
+                <Image source = {{ uri:"https://maps.googleapis.com/maps/api/place/photo?maxwidth=" + places[0].photos[0].width +
+                    "&photoreference=" + places[0].photos[0].photo_reference + "&key=" + GOOGLE_API_KEY
+                
+              }} style = {{width:"100%",height:"65%", flex: 1}} />
+              
             </View>
-            <Text style = {styles.header}>Info</Text>
+          
+              <Text style = {styles.header}>  Info</Text>
+            
+            <View style= {{flex:3}}>
+
+            { places[0].hasOwnProperty('vicinity') &&
             <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:1}}>
-            <TouchableOpacity onPress={() => Linking.openURL(openGoogleMaps(restaurantAddress))}>
-            <Text style={styles.innerText }>{restaurantAddress}</Text> 
+            <TouchableOpacity onPress={() => openGoogleMaps(places[0].vicinity)}>
+            <Text style={styles.innerText }>{"Address: " + places[0].vicinity}</Text> 
             </TouchableOpacity>
             </View>
-            <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}>
-                <TouchableOpacity onPress={phoneNumber(restaurantPhoneNumber)}>
-                <Text style={styles.innerText }>{restaurantPhoneNumber}</Text>  
+            }
+            { places[0].hasOwnProperty('formatted_phone_number') &&
+            <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}> 
+                <TouchableOpacity onPress={() => phoneNumber(places[0].formatted_phone_number)}>
+                <Text style={styles.innerText }>{places[0].formatted_phone_number}</Text>  
 
                 </TouchableOpacity>
             </View>
+            }
+
+            { places[0].hasOwnProperty('price_level') &&
             <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}>
-            <Text style={styles.innerText }>{restaurantPrice}</Text>  
+            <Text style={{   fontSize:20,
+              textAlign: 'left',
+              marginTop:12,
+              marginBottom:12, color: '#696969'} }>{"Price Level: " + places[0].price_level + "/4"}</Text>  
             </View>
+            }
+
+            
+            { places[0].hasOwnProperty('types') &&
             <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}>
-            <Text style={styles.innerText }>{restaurantType}</Text>  
+            <Text style={styles.innerText }>{"Type: " + places[0].types[0]}</Text>  
             </View>
-     
+            }
+
+            
+            { places[0].hasOwnProperty('rating') &&
+            <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}>
+            <Text style={styles.innerText }>{ "Rating: " + places[0].rating}</Text>  
+            </View>
+            }
+
+      
+            
+
+            </View>
+            <View style={{alignItems:'center'}}>
+
+            
+
+            <View style = {styles.card} >
+              <Text styles = {{fontWeight:"Bold"}}>
+                Top Comment:
+              </Text>
+              <Text>
+                Gus says, I love this place! I go here every Friday!
+              </Text>
+            </View>
+
+            <View style={{flexDirection: 'column', flex: 1}}>
+        <TouchableOpacity onPress ={() => props.navigation.navigate('home')} style={styles.backButton}>
+          <Text style = {styles.appButtonText}>{'Retry'} </Text>
+        </TouchableOpacity>
+      </View>
+    
+            </View>
+
+            
+            {/*}
+            { places[0].hasOwnProperty('vicinity') &&
+            <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:1}}>
+            <TouchableOpacity onPress={() => openGoogleMaps(places[0].vicinity)}>
+            <Text style={styles.innerText }>{"Address: " + places[0].vicinity}</Text> 
+            </TouchableOpacity>
+            </View>
+            }
+            
+            { places[0].hasOwnProperty('formatted_phone_number') &&
+            <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}> 
+                <TouchableOpacity onPress={() => phoneNumber(places[0].formatted_phone_number)}>
+                <Text style={styles.innerText }>{places[0].formatted_phone_number}</Text>  
+
+                </TouchableOpacity>
+            </View>
+            }
+
+            { places[0].hasOwnProperty('price_level') &&
+            <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}>
+            <Text style={{   fontSize:20,
+          textAlign: 'left',
+          marginTop:12,
+          marginBottom:12, color: '#696969'} }>{"Price Level: " + places[0].price_level + "/4"}</Text>  
+            </View>
+            }
+
+            { places[0].hasOwnProperty('types') &&
+            <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}>
+            <Text style={styles.innerText }>{"Type: " + places[0].types[0]}</Text>  
+            </View>
+            }
+
+            { places[0].hasOwnProperty('rating') &&
+            <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}>
+            <Text style={styles.innerText }>{ "Rating: " + places[0].rating}</Text>  
+            </View>
+            }
+          */}
+
+            
+  
         </View>
         </SafeAreaView>
 
     );
 }
 
-const styles = StyleSheet.create({
+/*const styles = StyleSheet.create({
+  background_image: {
+    flexGrow: 1,
+    justifyContent: "flex-start",
+    width: "100%",
+    resizeMode: "cover",
+  },
     container: {
         flex: 1,
         backgroundColor: '#FFFAFA',
+        marginBottom: 0,
       },
       message:{
         fontWeight:"bold",
-        fontSize:40,
-        color:"#F8F8FF",
+        fontSize:15,
+        color:"#FF6347",
         marginTop:10,
         marginBottom:10,
-        textAlign: 'left',
+        textAlign: 'center',
+        flex: 1,
       },
       logo: {
         width: height*8,
@@ -229,14 +473,16 @@ const styles = StyleSheet.create({
       },
       header:{
         fontWeight:"bold",
-        fontSize:20,
-        color:"#000000",
-        textAlign: 'left',
-        marginBottom: 0,
+        fontSize:35,
+        color:"#FF6347",
+        textAlign: 'center',
+        marginBottom: 5,
+        marginTop: 5,
       },
       logoContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
+        //justifyContent: 'center',
+        //alignItems: 'center',
+        flex:3
       },
       innerText: {
           fontSize:20,
@@ -254,5 +500,12 @@ const styles = StyleSheet.create({
         marginBottom:10,
         alignItems:'center',
       },
+      innerText2: {
+        fontSize:20,
+        color: '#7FFF00',
+        textAlign: 'left',
+        marginTop:12,
+        marginBottom:12,
+    },
 
-});
+});*/
