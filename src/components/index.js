@@ -1,1 +1,2 @@
-export Filters from './FoodFiltersList'
+export Filters from "./FoodFiltersList";
+export Likes from "./likes";

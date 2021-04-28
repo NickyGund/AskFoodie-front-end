@@ -1,37 +1,41 @@
-import React, {useState} from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import axios from "axios";
 
 const RestaurantContext = React.createContext();
-    
-const RestaurantProvider = props => {
-    const [error, setError] = useState(null);
-    const [restaurants, setRestaurants] = useState([]);
-    const [name, setName] = useState('');
 
-    const findRestaurant = async() => {
-        var res;
-        try{
-            res = await axios.get('http://192.168.1.8:3000/api/findRestaurant', {
-                params:{}
-            });
-        }catch(error){
-            console.log(`Failed get restaurants: ${error}`);
-            throw("Failed to get restaurants from back-end server")
-        }
-        console.log(res.data);
-        setRestaurants(res.data);
-        return res.data;
-    }
+const RestaurantProvider = (props) => {
+  const [error, setError] = useState(null);
+  const [restaurants, setRestaurants] = useState([]);
+  const [name, setName] = useState("");
 
-    const state = {
-        state: {
-            name,
-            restaurants
-        },
-        setName,
-        setRestaurants,
-        findRestaurant
+  const findRestaurant = async () => {
+    var res;
+    try {
+      res = await axios.get("http://172.31.75.183:3000/api/findRestaurant", {
+        params: {},
+      });
+    } catch (error) {
+      console.log(`Failed get restaurants: ${error}`);
+      throw "Failed to get restaurants from back-end server";
     }
-    return <RestaurantContext.Provider value={state}>{props.children}</RestaurantContext.Provider>
+    console.log(res.data);
+    setRestaurants(res.data);
+    return res.data;
+  };
+
+  const state = {
+    state: {
+      name,
+      restaurants,
+    },
+    setName,
+    setRestaurants,
+    findRestaurant,
+  };
+  return (
+    <RestaurantContext.Provider value={state}>
+      {props.children}
+    </RestaurantContext.Provider>
+  );
 };
-export {RestaurantContext, RestaurantProvider}
+export { RestaurantContext, RestaurantProvider };

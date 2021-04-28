@@ -41,7 +41,7 @@ const PlacesProvider = function (props) {
     var res;
     try {
       // Returns an array of dictionaries of places
-      res = await axios.get(`http://192.168.1.31:3000/api/places/find`, {
+      res = await axios.get(`http://172.31.75.183:3000/api/places/find`, {
         params: {
           latitude: latitude,
           longitude: longitude,
@@ -53,12 +53,12 @@ const PlacesProvider = function (props) {
           email: email,
         },
       });
+      console.log(res.data);
+      setPlaces(res.data);
     } catch (error) {
       console.log(`Failed get a place: ${error}`);
       throw "Failed to get from back-end server";
     }
-
-    setPlaces(res.data);
 
     //console.log("I fired");
     return res.data;
@@ -77,7 +77,7 @@ const PlacesProvider = function (props) {
       res = await axios({
         method: "get",
         responseType: "arraybuffer",
-        url: "http://192.168.1.31:3000/api/places/photos/",
+        url: "http://172.31.75.183:3000/api/places/photos/",
         params: {
           photo_reference: pf,
           maxwidth: w,
@@ -99,39 +99,6 @@ const PlacesProvider = function (props) {
   };
 
   const setInfo = async function () {
-    /*
-          try {
-            var temp = places[0].price_level;
-            if ( temp == "0") {
-              setRestaurantPrice("Free");
-              setPriceColor("#7CFC00");
-            }
-      
-            if ( temp == "1") {
-              setRestaurantPrice("Inexpensive ($)");
-              setPriceColor("#32CD32");
-            }
-      
-            if ( temp == "2") {
-              setRestaurantPrice("Moderate ($$)");
-              setPriceColor("#FFA500");
-            }
-      
-            if ( temp == "3") {
-              setRestaurantPrice("Expensive ($$$)");
-              setPriceColor("#FF4500");
-            }
-      
-            if ( temp == "4") {
-              setRestaurantPrice("Very Expensive ($$$$)");
-              setPriceColor("#DC143C");
-            }
-      
-          } catch (error) {
-            setRestaurantPrice("N/A");
-          }
-          */
-
     try {
       setPhoto(
         "data:image/jpeg;base64," +
@@ -141,34 +108,37 @@ const PlacesProvider = function (props) {
             places[0].photos[0].width
           )
       );
-      console.log("\n");
-      console.log("\n");
-      console.log("\n");
-      console.log("\n");
-      console.log("\n");
-      console.log("\n");
-      console.log("\n");
-      console.log("\n");
-      console.log(photo);
-      console.log("\n");
-      console.log("\n");
-      console.log("\n");
-      console.log("\n");
-      console.log("\n");
-      console.log("\n");
     } catch (error) {
       //setPhoto("https://wallpaperaccess.com/full/629233.jpg");
       setPhoto(
         "https://previews.123rf.com/images/olenayepifanova/olenayepifanova1712/olenayepifanova171200041/92051683-set-of-vector-cartoon-doodle-icons-junk-food-illustration-of-comic-fast-food-seamless-texture-patter.jpg"
       );
+    }
+  };
 
-      console.log("\n");
-      console.log("\n");
-      console.log("\n");
-      console.log("\n");
+  const sendLike = async (placeId) => {
+    try {
+      console.log(places[0]);
+      const userName = await AsyncStorage.getItem("userName");
+      const res = await axios.post("http://172.31.75.183:3000/api/addLike", {
+        restaurant: placeId,
+        userName: userName,
+      });
+    } catch (error) {
       console.log(error);
-      console.log("\n");
-      console.log("\n");
+    }
+  };
+
+  const sendDislike = async (placeId) => {
+    try {
+      console.log(places[0]);
+      const userName = await AsyncStorage.getItem("userName");
+      const res = await axios.post("http://172.31.75.183:3000/api/addDislike", {
+        restaurant: placeId,
+        userName: userName,
+      });
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -219,6 +189,8 @@ const PlacesProvider = function (props) {
     setPriceColor,
     getPhoto,
     setInfo,
+    sendLike,
+    sendDislike,
   };
 
   return (
