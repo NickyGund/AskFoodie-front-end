@@ -342,6 +342,7 @@ const [dictionary, setDictionary] = useState({});
                                 onPress={() => {addComments(); setModalVisible(!modalVisible); setSelectedId(null); getMyData();}}>
                             <Text>Add Comment</Text>
                             </Pressable>
+                  
                             </View>
                     </View>
                     </View>

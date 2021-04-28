@@ -41,7 +41,7 @@ const PlacesProvider = function (props) {
     var res;
     try {
       // Returns an array of dictionaries of places
-      res = await axios.get(`http://192.168.1.31:3000/api/places/find`, {
+      res = await axios.get(`http://192.168.1.201:3000/api/places/find`, {
         params: {
           latitude: latitude,
           longitude: longitude,
@@ -77,7 +77,7 @@ const PlacesProvider = function (props) {
       res = await axios({
         method: "get",
         responseType: "arraybuffer",
-        url: "http://192.168.1.31:3000/api/places/photos/",
+        url: "http://192.168.1.201:3000/api/places/photos/",
         params: {
           photo_reference: pf,
           maxwidth: w,

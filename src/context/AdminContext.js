@@ -14,18 +14,18 @@ const AdminProvider = (props) => {
     const commentsList = [
       {
         id: 1,
-        userName: "Ben",
-        comment:
+        poster: "Ben",
+        content:
           "letter words starting with “B” and not ending in “E”. Next I get “M” using the assumption that “From” is in the text. “W” is obtained by finding four letter words ending in “Ith” and assuming the most common word out of that list is “With”. Next I get “C” either with the word “Can” or “Which”, assuming one or both is in the text. Then I get “G” by finding all words that end in “in-” and the last letter is one that has not been found yet. This presumably gives all words ending in “ing”. Next “L",
       },
-      { id: 2, userName: "joe", comment: "This place is bad!" },
+      { id: 2, poster: "joe", content: "This place is bad!" },
     ];
     setComments(commentsList);
     console.log(id);
     var res;
     try {
       res = await axios.get(
-        "http://192.168.1.11:3000/api/findCommentsForRestaurant",
+        "http://192.168.1.201:3000/api/findCommentsForRestaurant",
         {
           params: {
             restaurant: id,
@@ -37,14 +37,14 @@ const AdminProvider = (props) => {
       throw "Failed to get from back-end server";
     }
     console.log(res.data);
-    setComments(res.data.data);
+    //setComments(res.data.data);
     return res.data;
   };
 
   const getRestaurants = async () => {
     try {
       const res = await axios.get(
-        `http://192.168.1.11:3000/api/findRestaurant`,
+        `http://192.168.1.201:3000/api/findRestaurant`,
         {
           headers: {
             Authorization: "Bearer " + token,
@@ -61,7 +61,7 @@ const AdminProvider = (props) => {
   const deleteComment = async (id) => {
     var res;
     try {
-      res = await axios.get("http://192.168.1.11:3000/api/deleteComment", {
+      res = await axios.get("http://192.168.1.201:3000/api/deleteComment", {
         params: {
           id: id,
         },

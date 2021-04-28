@@ -1,7 +1,7 @@
 import React, {useState, useContext, useEffect, Component } from 'react';
-import { View, SafeAreaView, Dimensions, StyleSheet, Text, TextInput , Platform, Button, TouchableOpacity, TouchableHighlight, Alert, Image, Animated, Linking} from 'react-native';
+import { View, SafeAreaView, Dimensions, StyleSheet, Text, TextInput , Platform, Button, TouchableOpacity, TouchableHighlight, Alert, Image, Animated, Linking, Share} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { AuthContext, AuthProvider } from '../context';
+import { AuthContext, AuthProvider } from '../context/AuthContext';
 import logo from '../images/ru.jpg';
 import { ScrollView } from 'react-native-gesture-handler';
 import openMap from 'react-native-open-maps';
@@ -9,7 +9,7 @@ import { PlacesContext, PlacesProvider } from '../context/Places';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import useWindowDimensions from 'react-native/Libraries/Utilities/useWindowDimensions';
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick';
-
+import {AdminContext, AdminProvider} from '../context/AdminContext';
 
 
 //const places = useContext(PlacesContext);
@@ -112,10 +112,12 @@ const getRestaurantPhoto = async(p) => {
     }
   }
 
+
 //const { width, height } = Dimensions.get('window');
 
 
 const maped = "https://www.google.com/maps/search/?api=1&query='Mcdonalds+160+broadway+newyork+city+ny'";
+
 
 
 const openGoogleMaps = async (address) => {
@@ -137,8 +139,8 @@ const openRestaurantWebsite = async (website) => {
   }
 }
 
-const test = () => {
-  return "hello";
+const test = (w) => {
+  Linking.openURL(w)
 }
 
 const test2 = () => {
@@ -153,6 +155,8 @@ const { width, height } = Dimensions.get('window');
 export default (props) => {
     const auth = useContext(AuthContext);
     const placesContext = useContext(PlacesContext);
+    const admin = useContext(AdminContext);
+    
 
     
   const width = useWindowDimensions.width;
@@ -174,6 +178,28 @@ export default (props) => {
       photo,
       GOOGLE_API_KEY,
     } = placesContext.state;
+
+    useEffect(() => {
+      (async () => {
+        admin.getComments(places[0].name);
+      })();
+    }, []);
+
+    //let comment = admin.state.comments.find(comment => comment.id == 2);
+    //console.log(comment)
+
+    let comment_list = admin.state.comments;
+
+    let websites = ["q","https://twitter.com/home","https://stackoverflow.com/questions/29452822/how-to-fetch-data-from-local-json-file-on-react-native"];
+
+    for (let comment in comment_list) {
+      console.log(`${comment_list[comment].comment}`);
+    }
+    //comment_list.forEach(comment => console.log(comment));
+    //console.log(comment_list[1].id);
+
+    //const comments = admin.getComments(places[0].name)
+    //console.log(typeof(comments))
 
       //var restaurantPrice2 = getPrice(places[0].price_level);
 
@@ -224,6 +250,7 @@ export default (props) => {
               textAlign: 'center',
               marginBottom: 5,
               marginTop: 5,
+              flex:1
             },
             logoContainer: {
               //justifyContent: 'center',
@@ -255,7 +282,7 @@ export default (props) => {
           },
 
           card:{
-            height:"30%",
+            height:"80%",
             width:"80%",
             backgroundColor:"white",
             borderRadius:15,
@@ -291,6 +318,29 @@ export default (props) => {
       
       });
 
+      const onShare = async () => {
+        try {
+          const result = await Share.share({
+            message:
+              'Just got recommended to eat at ' + places[0].name +' via Foodie',
+            url:"https://maps.googleapis.com/maps/api/place/photo?maxwidth=" + places[0].photos[0].width +
+            "&photoreference=" + places[0].photos[0].photo_reference + "&key=" + GOOGLE_API_KEY
+          });
+          if (result.action === Share.sharedAction) {
+            if (result.activityType) {
+              // shared with activity type of result.activityType
+            } else {
+              // shared
+            }
+          } else if (result.action === Share.dismissedAction) {
+            // dismissed
+          }
+        } catch (error) {
+          alert(error.message);
+        }
+      };
+
+      
   
 
     return (
@@ -322,9 +372,13 @@ export default (props) => {
               }} style = {{width:"100%",height:"65%", flex: 1}} />
               
             </View>
-          
+              <View style = {{flexDirection: "row"}}>
               <Text style = {styles.header}>  Info</Text>
-            
+              <TouchableOpacity onPress={onShare}>
+              <Icon name="share" size={30} color="#FF6347" />
+              </TouchableOpacity>
+              
+              </View>
             <View style= {{flex:3}}>
 
             { places[0].hasOwnProperty('vicinity') &&
@@ -355,14 +409,14 @@ export default (props) => {
             
             { places[0].hasOwnProperty('types') &&
             <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}>
-            <Text style={styles.innerText }>{"Type: " + places[0].types[0]}</Text>  
+            <Text style={styles.innerText }>{"Type: " + places[0].types[0].replace(/_/g,' ')}</Text>  
             </View>
             }
 
             
             { places[0].hasOwnProperty('rating') &&
             <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}>
-            <Text style={styles.innerText }>{ "Rating: " + places[0].rating}</Text>  
+            <Text style={styles.innerText }>{ "Rating: " + places[0].rating+"/5"}</Text>  
             </View>
             }
 
@@ -370,142 +424,46 @@ export default (props) => {
             
 
             </View>
-            <View style={{alignItems:'center'}}>
+            <View style={{alignItems:'center',flex:2}}>
 
             
-
+            {admin.state.comments.length != 0 &&
             <View style = {styles.card} >
-              <Text styles = {{fontWeight:"Bold"}}>
-                Top Comment:
-              </Text>
-              <Text>
-                Gus says, I love this place! I go here every Friday!
-              </Text>
+              <ScrollView>
+              {admin.state.comments.map((elem) => {
+                return (
+                  <View>
+                    <TouchableOpacity onLongPress = {() => props.navigation.navigate("profile")}>
+                      <Text>
+                        {elem.poster + " says:\n" + elem.content + "\n\n"}
+                      </Text>
+                      </TouchableOpacity>
+                  </View>
+                )
+              })}
+              </ScrollView>
             </View>
+            }
+            </View>
+
 
             <View style={{flexDirection: 'column', flex: 1}}>
         <TouchableOpacity onPress ={() => props.navigation.navigate('home')} style={styles.backButton}>
           <Text style = {styles.appButtonText}>{'Retry'} </Text>
         </TouchableOpacity>
       </View>
+
+
     
-            </View>
 
-            
-            {/*}
-            { places[0].hasOwnProperty('vicinity') &&
-            <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:1}}>
-            <TouchableOpacity onPress={() => openGoogleMaps(places[0].vicinity)}>
-            <Text style={styles.innerText }>{"Address: " + places[0].vicinity}</Text> 
-            </TouchableOpacity>
-            </View>
-            }
-            
-            { places[0].hasOwnProperty('formatted_phone_number') &&
-            <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}> 
-                <TouchableOpacity onPress={() => phoneNumber(places[0].formatted_phone_number)}>
-                <Text style={styles.innerText }>{places[0].formatted_phone_number}</Text>  
-
-                </TouchableOpacity>
-            </View>
-            }
-
-            { places[0].hasOwnProperty('price_level') &&
-            <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}>
-            <Text style={{   fontSize:20,
-          textAlign: 'left',
-          marginTop:12,
-          marginBottom:12, color: '#696969'} }>{"Price Level: " + places[0].price_level + "/4"}</Text>  
-            </View>
-            }
-
-            { places[0].hasOwnProperty('types') &&
-            <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}>
-            <Text style={styles.innerText }>{"Type: " + places[0].types[0]}</Text>  
-            </View>
-            }
-
-            { places[0].hasOwnProperty('rating') &&
-            <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}>
-            <Text style={styles.innerText }>{ "Rating: " + places[0].rating}</Text>  
-            </View>
-            }
-          */}
-
-            
   
         </View>
         </SafeAreaView>
 
     );
 }
-
-/*const styles = StyleSheet.create({
-  background_image: {
-    flexGrow: 1,
-    justifyContent: "flex-start",
-    width: "100%",
-    resizeMode: "cover",
-  },
-    container: {
-        flex: 1,
-        backgroundColor: '#FFFAFA',
-        marginBottom: 0,
-      },
-      message:{
-        fontWeight:"bold",
-        fontSize:15,
-        color:"#FF6347",
-        marginTop:10,
-        marginBottom:10,
-        textAlign: 'center',
-        flex: 1,
-      },
-      logo: {
-        width: height*8,
-        height: height*8,
-        borderRadius: height*8 / 2,
-        overflow: "hidden",
-        borderWidth: 3,
-        borderColor: "#DC143C",
-        marginTop:10,
-        marginBottom:10,
-      },
-      header:{
-        fontWeight:"bold",
-        fontSize:35,
-        color:"#FF6347",
-        textAlign: 'center',
-        marginBottom: 5,
-        marginTop: 5,
-      },
-      logoContainer: {
-        //justifyContent: 'center',
-        //alignItems: 'center',
-        flex:3
-      },
-      innerText: {
-          fontSize:20,
-          color: '#696969',
-          textAlign: 'left',
-          marginTop:12,
-          marginBottom:12,
-      },
-      inputView:{
-        width:width*.8,
-        backgroundColor:"#465881",
-        borderRadius:25,
-        height:height*.1,
-        justifyContent:"center",
-        marginBottom:10,
-        alignItems:'center',
-      },
-      innerText2: {
-        fontSize:20,
-        color: '#7FFF00',
-        textAlign: 'left',
-        marginTop:12,
-        marginBottom:12,
-    },
-
-});*/
+/*
+<Text style = {{fontWeight:"bold", color: "#FF6347"}}>
+{"Foodie Reviews for " + places[0].name + "\n"}
+</Text>
+*/
