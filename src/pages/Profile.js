@@ -7,10 +7,13 @@ import useWindowDimensions from 'react-native/Libraries/Utilities/useWindowDimen
 import { CommentContext, CommmentProvider } from "./../context/"
 import { RestaurantContext, RestaurantProvider } from "./../context/"
 import { FlatList, TextInput } from 'react-native-gesture-handler';
+import { Alert } from 'react-native';
+import { render } from 'react-dom';
 
 export default (props) => {
 const width = useWindowDimensions.width;
-const height = useWindowDimensions.height;   
+const height = useWindowDimensions.height;  
+const userContext = useContext(AuthContext); 
 const commentContext = useContext(CommentContext);
 const restaurantContext = useContext(RestaurantContext);
 var [userName, setUserName] = useState("");
@@ -18,11 +21,19 @@ const [search, setSearch] = useState('');
 const [filteredDataSource, setFilteredDataSource] = useState([]);
 const [masterDataSource, setMasterDataSource] = useState([]);
 var [comments, setComments] = useState([]);
+const [friendslist, setFriendsList] = useState([]);
 var [restaurants, setRestaurants] = useState([]);
 var [parent, setParent] = useState('');
 const [modalVisible, setModalVisible] = useState(false);
+const [friendsVisible, setFriendsVisible] = useState(false);
+const [buttonsVisible, setButtonsVisible] = useState(false);
+const [viewVisible, setViewVisible] = useState(false);
+const display = buttonsVisible ? "none" : "flex";
+const display2 = viewVisible ? "none" : "flex";
 const [selectedId, setSelectedId] = useState(null);
+const [selectedFriend, setSelectedFriend] = useState(null); 
 const [dictionary, setDictionary] = useState({});
+const [commentsToShow, setCommentsToShow] = useState([]);
 
     //function to get
     function get_font_size(size) {
@@ -30,6 +41,7 @@ const [dictionary, setDictionary] = useState({});
     };
 
     async function getMyData() {
+        setViewVisible(true);
         var username
     try{
         username = await AsyncStorage.getItem('userName');
@@ -38,14 +50,6 @@ const [dictionary, setDictionary] = useState({});
     }catch(error){
         console.log(`Failed to get username: ${error}`);
         throw("Failed to get auth username");
-    }
-    try{
-        commentContext.setContent('');
-        const mycomments = await commentContext.findComments(username);
-        console.log(await commentContext.state.comments)
-        setComments(mycomments);
-    }catch(e){
-        console.log(`No comments to load: ${e}`);
     }
     try{
         const myrestaurants = await restaurantContext.findRestaurant();
@@ -61,29 +65,35 @@ const [dictionary, setDictionary] = useState({});
             dict[myrestaurants.data[k]._id] = myrestaurants.data[k].name
         }
         setDictionary(dict);
-    
-       
     }catch(e){
         console.log(`No restaurants to load: ${e}`);
     }
+    try{
+        commentContext.setContent('');
+        const mycomments = await commentContext.findComments(username);
+        console.log(await commentContext.state.comments)
+        setComments(mycomments);
+    }catch(e){
+        console.log(`No comments to load: ${e}`);
+    }
+    try{
+        userContext.setUserName(username);
+        myinfo = await userContext.getUserInfo(username);
+        setFriendsList(myinfo.data[0].friends)
+        console.log(myinfo.data);
+        console.log(myinfo.data[0].friends)
+    }catch(e){
+        console.log(`No info to load: ${e}`);
+    }
+    loadComments();
     }    
 
     useEffect( () =>{
         (async () => { 
-            await getMyData()
+            await getMyData(); 
         })();
        //[] indicates that this is loads/unloads once and will not continuously update
     }, [])
-    
-    const goHome = function() {
-        try{
-            props.navigation.navigate('main');
-        }
-        catch(error){
-            console.log(`Failed to go to main page: ${error}`);
-            throw('failed to move');
-        }
-    }
 
     const loadComments = function() {
         var newcomment;
@@ -91,6 +101,7 @@ const [dictionary, setDictionary] = useState({});
         var visiblename;
         var count = 0
         try{
+
         for(let i=0; i < comments.data.length; i++){
             var newposter = comments.data[i].poster
             console.log(newposter);
@@ -131,7 +142,7 @@ const [dictionary, setDictionary] = useState({});
         alert(' Restaurant : ' + item.name + '\n' + ' Address : ' + item.address);
       };
 
-    //this function defines the actions when a use4r clicks an item in the restaurant flatlist
+    //this function defines the actions when a user clicks an item in the restaurant flatlist
     const ItemView = ({ item }) => {
         const bgcolor = item._id === selectedId ? "#f6b7ff" : "#aedbff";
         return (
@@ -142,6 +153,23 @@ const [dictionary, setDictionary] = useState({});
         </Text>
         );
   };
+    //this function defines the acions when a user clicks on a friends in the friendslist
+    const FriendView = ({ item }) => {
+        const bgcolour = item == selectedFriend ? "#f6b7ff" : "#aedbff";
+        return (
+        //Flat List Item
+        <Text style = {styles.itemStyle, {backgroundColor:bgcolour, fontSize: get_font_size(15), padding: 5}}
+        onPress={() => {setSelectedFriend(item); console.log(item);  console.log(typeof(item)); }}>
+            {item}
+        </Text>
+        );
+    };
+
+     async function viewFriends() {
+        setComments(await commentContext.findComments(selectedFriend));
+        setUserName(selectedFriend);
+        setButtonsVisible(true);
+    }
 
     const ItemSeparatorView = () => {
         return ( 
@@ -297,8 +325,55 @@ const [dictionary, setDictionary] = useState({});
                 <View stlye = {styles.userview}>
                     <Text adjustsFontSizeToFit style = {styles.title}>{userName}</Text>
                 </View>
+                <View style={{ flex: 1, flexDirection:'row', justifyContent: "center", alignItems: "center", marginBottom: "1%"}}>
+                <Pressable 
+                style = {{alignSelf : 'center', borderRadius: 20, margin: 3, backgroundColor: "#F194FF" }}
+                onPress = {() => setFriendsVisible(true)}>
+                    <Text>Friends List</Text>
+                </Pressable>
+                <Pressable
+                style = {{alignSelf:"center", borderRadius: 20, margin: 3, backgroundColor: "#F194FF", display:display2}}
+                onPress = {() => {getMyData(); setButtonsVisible(false);}}>
+                    <Text>My Profile</Text>
+                </Pressable>
+                </View>
                 <ScrollView
                      style = {styles.commentParent}>{loadComments()}</ScrollView>
+
+                <View>
+                    <Modal animationType="slide"
+                    transparent={true}
+                    visible={friendsVisible}
+                    onRequestClose={() => {
+                        Alert.alert('Modal has been closed.');
+                        setModalVisible(!friendsVisible);
+                    }}>
+                <View style = {styles.modalView}>
+                    <Text style = {{alignSelf: "center", fontSize: get_font_size(17), fontWeight:"bold"}}>Go to a friends page!</Text>
+                        <FlatList
+                        data={friendslist}
+                        ItemSeparatorComponent={ItemSeparatorView}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={FriendView}>
+                        </FlatList>
+                        <View style = {{flexDirection:"row", alignSelf: "center", padding: 4, marginTop: 10}}>
+                            <Pressable
+                                style={[styles.button, styles.buttonClose]}
+                                onPress={() => {setFriendsVisible(!friendslist); setSelectedFriend(null); viewFriends(); setViewVisible(false); }}>
+                                    <Text>Checkout Friend</Text>
+                                </Pressable>
+                            <Pressable
+                                style={[styles.button, styles.buttonClose]}
+                                onPress={() => {setFriendsVisible(!friendslist); }}>
+                            <Text>Go Back</Text>
+                            </Pressable>
+                            </View>    
+                </View>
+                </Modal>
+                </View>
+
+
+
                 <View>
                     <Modal
                     animationType="slide"
@@ -349,7 +424,7 @@ const [dictionary, setDictionary] = useState({});
                     </Modal>
                      </View>
 
-            <View style={{ flex: 1, flexDirection:'row', justifyContent: "center", alignItems: "center", marginBottom: "1%"}}>
+            <View style={{ flex: 1, flexDirection:'row', justifyContent: "center", alignItems: "center", marginBottom: "1%", display}}>
                 <TouchableOpacity style = {[styles.button, styles.buttonLogOut]} onPress = {() => logOut()}>
                     <Text>
                         Sign Out
@@ -361,6 +436,9 @@ const [dictionary, setDictionary] = useState({});
                      <Text>Add a comment</Text>
                     </Pressable>
             </View>
+           
+           
+
         </SafeAreaView>
     )
 }
