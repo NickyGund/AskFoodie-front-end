@@ -1,88 +1,78 @@
-// https://reactnative.dev/docs/components-and-apis
-import React, { useState, useContext } from 'react';
-import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, ImageBackground, Alert } from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
-import { AuthContext, AuthProvider } from '../../context';
+// sign in page for admin
+import React, { useState, useContext } from "react";
+import {
+  View,
+  PixelRatio,
+  Dimensions,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  ImageBackground,
+  Alert,
+} from "react-native";
+import { TextInput } from "react-native-gesture-handler";
+import { AuthContext, AuthProvider } from "../../context";
 
 function get_font_size(size) {
   return size / PixelRatio.getFontScale();
-};
+}
 
-
-const backgroundImage = {
-  uri: "https://i.imgur.com/4SKbUmR.jpg",
-};
-
-export default (props) =>  {
-  const auth = useContext(AuthContext)
-  const toSignUp = () => {
-    props.navigation.navigate('sign up'); //sign up
-  };
-
-  var username, password;
-  const username_input_changed = (text) => {
-    username = text
-  }
-  const password_input_changed = (text) => {
-    password = text
-  }
+export default (props) => {
+  const auth = useContext(AuthContext);
 
   const login = async () => {
     try {
       const res = await auth.signIn();
-        if(res.signedIn && res.admin) {
-          props.navigation.navigate('adminHome') //changed from main
-        } else {
-            throw('Not an admin')
-        }
-    } catch(err) {
+      if (res.signedIn && res.admin) {
+        props.navigation.navigate("adminHome"); //changed from main
+      } else {
+        throw "Not an admin";
+      }
+    } catch (err) {
       Alert.alert(
-        'Log in failed', 
+        "Log in failed",
         err.toString(),
         [
-          {text: 'Ok', style: 'Ok'} // no idea what these are for
+          { text: "Ok", style: "Ok" }, // no idea what these are for
         ],
-        {cancelable:false}
+        { cancelable: false }
       );
     }
   };
 
-  
   return (
     <View style={styles.container}>
-     
-        <View style = {styles.menu_container}>
-          <Text adjustsFontSizeToFit style = {styles.title}>
-            Foodie Admin
-          </Text>
-          <View style = {styles.login_container}>
-            <TextInput 
-              onChangeText = {(text) => auth.setEmail(text)} 
-              style = {styles.input} 
-              placeholder = "Email" 
-              textContentType = "emailAddress"
-              autoCapitalize = 'none' 
-            />
-            <TextInput 
-              onChangeText = {(text) => auth.setPassword(text)} 
-              style = {styles.input} placeholder = "Password" 
-              textContentType = "password" 
-              secureTextEntry
-              autoCapitalize = 'none' 
-              />
-          </View>
-          <TouchableOpacity>
-            <Text style = {styles.signin} onPress = {login}>
-              Login
-            </Text>
-          </TouchableOpacity>
-          <View style = {styles.bar} />
-          <TouchableOpacity onPress = {() => props.navigation.navigate('sign in')}>
-            <Text style = {styles.signup}>
-              Sign In
-            </Text>
-          </TouchableOpacity>
+      <View style={styles.menu_container}>
+        <Text adjustsFontSizeToFit style={styles.title}>
+          Foodie Admin
+        </Text>
+        <View style={styles.login_container}>
+          <TextInput
+            onChangeText={(text) => auth.setEmail(text)}
+            style={styles.input}
+            placeholder="Email"
+            textContentType="emailAddress"
+            autoCapitalize="none"
+          />
+          <TextInput
+            onChangeText={(text) => auth.setPassword(text)}
+            style={styles.input}
+            placeholder="Password"
+            textContentType="password"
+            secureTextEntry
+            autoCapitalize="none"
+          />
         </View>
+        <TouchableOpacity>
+          <Text style={styles.signin} onPress={login}>
+            Login
+          </Text>
+        </TouchableOpacity>
+        <View style={styles.bar} />
+        <TouchableOpacity onPress={() => props.navigation.navigate("sign in")}>
+          <Text style={styles.signup}>Sign In</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -97,7 +87,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     flexDirection: "column",
-    backgroundColor:'grey'
+    backgroundColor: "grey",
   },
   menu_container: {
     width: "100%",
@@ -119,7 +109,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 4,
     paddingRight: 4,
-    paddingBottom: 4-4,
+    paddingBottom: 4 - 4,
     paddingLeft: 4,
     backgroundColor: "#ffffff44",
   },
@@ -150,8 +140,5 @@ const styles = StyleSheet.create({
     margin: 4,
     textAlignVertical: "top",
     color: "#ffffffff",
-  }
+  },
 });
-
-
-

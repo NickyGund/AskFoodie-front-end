@@ -1,3 +1,4 @@
+// component that displays list of restaurants in database
 import React, { useState, useContext, useEffect } from "react";
 import {
   View,

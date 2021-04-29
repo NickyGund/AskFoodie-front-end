@@ -1,3 +1,4 @@
+// component to show list of comments for given restaurant
 import React, { useState, useContext, useEffect } from "react";
 import {
   View,
@@ -23,6 +24,7 @@ export default ({ route }) => {
   const height = useWindowDimensions().height;
   const { name, id } = route.params;
 
+  // load comments for given restaurant when component renders
   useEffect(() => {
     (async () => {
       adminContext.getComments(id);
@@ -32,9 +34,6 @@ export default ({ route }) => {
   function get_font_size(size) {
     return size / PixelRatio.getFontScale();
   }
-  const toComments = () => {
-    props.navigation.navigate("comments");
-  };
 
   return (
     <View style={{ alignItems: "center", flex: 1, width: width }}>

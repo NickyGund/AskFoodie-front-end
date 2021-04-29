@@ -9,11 +9,12 @@ export default (props) => {
   const [likePressed, setLikePressed] = useState(false);
   const [dislikePressed, setDisLikePressed] = useState(false);
 
+  // when thumbs up is pressed send like to database
   const sendLike = () => {
     placesContext.sendLike(props.placeId);
     setLikePressed(true);
   };
-
+  // when thumbs down is pressed send dislike to database
   const sendDislike = () => {
     placesContext.sendDislike(props.placeId);
     setDisLikePressed(true);
