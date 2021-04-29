@@ -11,97 +11,10 @@ import useWindowDimensions from 'react-native/Libraries/Utilities/useWindowDimen
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick';
 import {AdminContext, AdminProvider} from '../context/AdminContext';
 
-
-//const places = useContext(PlacesContext);
-
-class ImageLoader extends Component {
-    state = {
-      opacity: new Animated.Value(0),
-    }
-  
-    onLoad = () => {
-      Animated.timing(this.state.opacity, {
-        toValue: 1,
-        duration: 2000,
-        useNativeDriver: true,
-      }).start();
-    }
-  
-    render() {
-      return (
-        <Animated.Image
-          onLoad={this.onLoad}
-          {...this.props}
-          style={[
-            {
-              opacity: this.state.opacity,
-              transform: [
-                {
-                  scale: this.state.opacity.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0.85, 1],
-                  })
-                },
-              ],
-            },
-            this.props.style,
-          ]}
-        />
-      );
-    }
-  }
-  var backgroundImage = "https://wallpaperaccess.com/full/629233.jpg"
-  ;
-
   /*
-  const background = {
-    uri: "https://previews.123rf.com/images/olenayepifanova/olenayepifanova1712/olenayepifanova171200041/92051683-set-of-vector-cartoon-doodle-icons-junk-food-illustration-of-comic-fast-food-seamless-texture-patter.jpg"
-  };
+  Opens prompt to call phone number
+  @param number is the phone number to call
   */
-
-
-const getRestaurantPhoto = async(p) => {
-  try {
-    p.setPhoto_reference = p.details[0].photos[0].photo_reference;
-    backgroundImage = "data:image/jpeg;base64," + p.getPhoto();
-
-  } catch (error) {
-    
-  }
-}
-
-  const getPrice = async(temp) => {
-    if ( temp == 0) {
-      return "Free";
-    }
-
-    if ( temp == 1) {
-      return "Inexpensive ($)";
-    }
-
-    if ( temp == 2) {
-      return "Moderate ($$)";
-    }
-
-    if ( temp == 3) {
-      return "Expensive ($$$)";
-    }
-
-    if ( temp == 4) {
-      return "Very Expensive ($$$$)";
-    }
-
-    return "";
-
-
-  }
-
-  
-
-  const GPS = async () => {
-    openMap({ latitude: 40.520710, longitude: -74.285720 });
-  }
-
   const phoneNumber = async (number) => {
     var formatted_number = number.replace(/\D/g,'');
     var int_formatted_number = parseInt(formatted_number);
@@ -112,14 +25,10 @@ const getRestaurantPhoto = async(p) => {
     }
   }
 
-
-//const { width, height } = Dimensions.get('window');
-
-
-const maped = "https://www.google.com/maps/search/?api=1&query='Mcdonalds+160+broadway+newyork+city+ny'";
-
-
-
+/*
+Opens google maps
+@params opens google maps using address
+*/
 const openGoogleMaps = async (address) => {
   var googleQuery = "https://www.google.com/maps/search/?api=1&query=";
   var restaurantEncoded = encodeURIComponent(address);
@@ -130,7 +39,10 @@ const openGoogleMaps = async (address) => {
 
   }}
 
-  
+/*
+Opens a website
+@params opens the url website
+*/
 const openRestaurantWebsite = async (website) => {
   try {
     Linking.openURL(website)
@@ -138,17 +50,6 @@ const openRestaurantWebsite = async (website) => {
 
   }
 }
-
-const test = (w) => {
-  Linking.openURL(w)
-}
-
-const test2 = () => {
-  placesContext.setPhoto("https://wallpaperaccess.com/full/629233.jpg");
-}
-
-//const width = useWindowDimensions.width;
-//const height = useWindowDimensions.height; 
 
 const { width, height } = Dimensions.get('window');
 
@@ -179,33 +80,18 @@ export default (props) => {
       GOOGLE_API_KEY,
     } = placesContext.state;
 
+    /*
+    fetches comments of the restaurant
+    */
     useEffect(() => {
       (async () => {
         admin.getComments(places[0].name);
       })();
     }, []);
 
-    //let comment = admin.state.comments.find(comment => comment.id == 2);
-    //console.log(comment)
-
     let comment_list = admin.state.comments;
 
-    let websites = ["q","https://twitter.com/home","https://stackoverflow.com/questions/29452822/how-to-fetch-data-from-local-json-file-on-react-native"];
-
-    for (let comment in comment_list) {
-      console.log(`${comment_list[comment].comment}`);
-    }
-    //comment_list.forEach(comment => console.log(comment));
-    //console.log(comment_list[1].id);
-
-    //const comments = admin.getComments(places[0].name)
-    //console.log(typeof(comments))
-
-      //var restaurantPrice2 = getPrice(places[0].price_level);
-
-      //placesContext.getPhoto(places[0].photos[0].photo_reference, places[0].photos[0].height, places[0].photos[0].width)
-      //placesContext.setInfo();
-      //console.log(photo);
+    //let websites = ["q","https://twitter.com/home","https://stackoverflow.com/questions/29452822/how-to-fetch-data-from-local-json-file-on-react-native"];
 
       const styles = StyleSheet.create({
         background_image: {
@@ -318,6 +204,9 @@ export default (props) => {
       
       });
 
+      /*
+      opens the share prompt
+      */
       const onShare = async () => {
         try {
           const result = await Share.share({
@@ -348,7 +237,7 @@ export default (props) => {
 
 
         <View style = {styles.container}>
-
+            {/* Displays restaurant name */}
             { places[0].hasOwnProperty('name') &&
             <View style={{backgroundColor: '#FFFFFF', width: width, alignContent: 'center'}}>
             <Text style={styles.message}>{places[0].name}</Text>
@@ -356,16 +245,7 @@ export default (props) => {
             }
 
             <View style = {styles.logoContainer}>
-              
-            
-                {/*<ImageLoader 
-                    style = {styles.logo}
-                    source={{
-                    uri: "https://maps.googleapis.com/maps/api/place/photo?maxwidth=" + places[0].photos[0].width +
-                    "&photoreference=" + places[0].photos[0].photo_reference + "&key=" + GOOGLE_API_KEY,
-                }} />*/}
-
-                
+                 {/* Displays restaurant photo */}
                 <Image source = {{ uri:"https://maps.googleapis.com/maps/api/place/photo?maxwidth=" + places[0].photos[0].width +
                     "&photoreference=" + places[0].photos[0].photo_reference + "&key=" + GOOGLE_API_KEY
                 
@@ -380,7 +260,7 @@ export default (props) => {
               
               </View>
             <View style= {{flex:3}}>
-
+               {/* Displays restaurant address */}
             { places[0].hasOwnProperty('vicinity') &&
             <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:1}}>
             <TouchableOpacity onPress={() => openGoogleMaps(places[0].vicinity)}>
@@ -388,6 +268,7 @@ export default (props) => {
             </TouchableOpacity>
             </View>
             }
+             {/* Displays restaurant phone number */}
             { places[0].hasOwnProperty('formatted_phone_number') &&
             <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}> 
                 <TouchableOpacity onPress={() => phoneNumber(places[0].formatted_phone_number)}>
@@ -396,7 +277,7 @@ export default (props) => {
                 </TouchableOpacity>
             </View>
             }
-
+             {/* Displays restaurant price level */}
             { places[0].hasOwnProperty('price_level') &&
             <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}>
             <Text style={{   fontSize:20,
@@ -406,14 +287,14 @@ export default (props) => {
             </View>
             }
 
-            
+             {/* Displays restaurant types */}
             { places[0].hasOwnProperty('types') &&
             <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}>
             <Text style={styles.innerText }>{"Type: " + places[0].types[0].replace(/_/g,' ')}</Text>  
             </View>
             }
 
-            
+             {/* Displays restaurant rating */}
             { places[0].hasOwnProperty('rating') &&
             <View style={{borderColor:'#DCDCDC',borderBottomWidth:1,borderTopWidth:0}}>
             <Text style={styles.innerText }>{ "Rating: " + places[0].rating+"/5"}</Text>  
@@ -426,16 +307,16 @@ export default (props) => {
             </View>
             <View style={{alignItems:'center',flex:2}}>
 
-            
+             {/* Displays restaurant comments */}
             {admin.state.comments.length != 0 &&
             <View style = {styles.card} >
               <ScrollView>
-              {admin.state.comments.map((elem) => {
+              {admin.state.comments.map((item,index) => {
                 return (
-                  <View>
+                  <View key = {index}>
                     <TouchableOpacity onLongPress = {() => props.navigation.navigate("profile")}>
                       <Text>
-                        {elem.poster + " says:\n" + elem.content + "\n\n"}
+                        {item.poster + " says:\n" + item.content + "\n\n"}
                       </Text>
                       </TouchableOpacity>
                   </View>
@@ -452,18 +333,9 @@ export default (props) => {
           <Text style = {styles.appButtonText}>{'Retry'} </Text>
         </TouchableOpacity>
       </View>
-
-
-    
-
   
         </View>
         </SafeAreaView>
 
     );
 }
-/*
-<Text style = {{fontWeight:"bold", color: "#FF6347"}}>
-{"Foodie Reviews for " + places[0].name + "\n"}
-</Text>
-*/
