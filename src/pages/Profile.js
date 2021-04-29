@@ -16,24 +16,27 @@ const height = useWindowDimensions.height;
 const userContext = useContext(AuthContext); 
 const commentContext = useContext(CommentContext);
 const restaurantContext = useContext(RestaurantContext);
-var [userName, setUserName] = useState("");
+const [userName, setUserName] = useState("");
 const [search, setSearch] = useState('');
 const [filteredDataSource, setFilteredDataSource] = useState([]);
 const [masterDataSource, setMasterDataSource] = useState([]);
 var [comments, setComments] = useState([]);
 const [friendslist, setFriendsList] = useState([]);
-var [restaurants, setRestaurants] = useState([]);
+const [restaurants, setRestaurants] = useState([]);
 var [parent, setParent] = useState('');
 const [modalVisible, setModalVisible] = useState(false);
 const [friendsVisible, setFriendsVisible] = useState(false);
+const [userListVisible, setUserListVisible] = useState(false);
 const [buttonsVisible, setButtonsVisible] = useState(false);
 const [viewVisible, setViewVisible] = useState(false);
 const display = buttonsVisible ? "none" : "flex";
 const display2 = viewVisible ? "none" : "flex";
 const [selectedId, setSelectedId] = useState(null);
-const [selectedFriend, setSelectedFriend] = useState(null); 
+const [selectedFriend, setSelectedFriend] = useState(null);
+const [selectedUser, setSelectedUser] = useState(null);
 const [dictionary, setDictionary] = useState({});
 const [commentsToShow, setCommentsToShow] = useState([]);
+const [userList, setUserList] = useState([]);
 
     //function to get
     function get_font_size(size) {
@@ -57,10 +60,7 @@ const [commentsToShow, setCommentsToShow] = useState([]);
         commentContext.setRestaurant('null');
         console.log(myrestaurants);
         setRestaurants(myrestaurants);
-        setMasterDataSource(myrestaurants);
-        setFilteredDataSource(myrestaurants);
         //make a dictionary here to map out _ids to names
-        //forloop
         for(let k=0; k < myrestaurants.data.length; k++){
             dict[myrestaurants.data[k]._id] = myrestaurants.data[k].name
         }
@@ -76,15 +76,8 @@ const [commentsToShow, setCommentsToShow] = useState([]);
     }catch(e){
         console.log(`No comments to load: ${e}`);
     }
-    try{
-        userContext.setUserName(username);
-        myinfo = await userContext.getUserInfo(username);
-        setFriendsList(myinfo.data[0].friends)
-        console.log(myinfo.data);
-        console.log(myinfo.data[0].friends)
-    }catch(e){
-        console.log(`No info to load: ${e}`);
-    }
+    getFriendsList();
+    getUserList();
     loadComments();
     }    
 
@@ -94,6 +87,23 @@ const [commentsToShow, setCommentsToShow] = useState([]);
         })();
        //[] indicates that this is loads/unloads once and will not continuously update
     }, [])
+
+    
+    const getUserList = async function () {
+        const users = await userContext.findUsers();
+        console.log(users)
+        setUserList(users);
+    }
+
+    const getFriendsList = async function () {
+            username = await AsyncStorage.getItem('userName');
+            userContext.setUserName(username);
+            myinfo = await userContext.getUserInfo(username);
+            setFriendsList(myinfo.data[0].friends)
+            console.log(myinfo.data);
+            console.log(myinfo.data[0].friends)
+       
+    }
 
     const loadComments = function() {
         var newcomment;
@@ -165,10 +175,27 @@ const [commentsToShow, setCommentsToShow] = useState([]);
         );
     };
 
+    const userView = ({ item }) => {
+        const bgcolour = item == selectedUser ? "#f6b7ff" : "#aedbff";
+        return (
+        //Flat List Item
+        <Text style = {styles.itemStyle, {backgroundColor:bgcolour, fontSize: get_font_size(15), padding: 5}}
+        onPress={() => {setSelectedUser(item); console.log(item);  }}>
+            {item.userName}
+        </Text>
+        );
+    };
+
+
      async function viewFriends() {
         setComments(await commentContext.findComments(selectedFriend));
         setUserName(selectedFriend);
         setButtonsVisible(true);
+        
+    }
+
+    async function addFriend() {
+        await userContext.addFriend(userName, selectedUser.userName)
     }
 
     const ItemSeparatorView = () => {
@@ -192,6 +219,30 @@ const [commentsToShow, setCommentsToShow] = useState([]);
             const newData = masterDataSource.data.filter(function (item) {
               const itemData = item.name
                 ? item.name.toUpperCase()
+                : ''.toUpperCase();
+                console.log(itemData);
+              const textData = text.toUpperCase();
+              return itemData.indexOf(textData) > -1;
+            });
+            console.log(newData);
+            setFilteredDataSource(newData);
+            setSearch(text);
+          } else {
+            // Inserted text is blank
+            // Update FilteredDataSource with masterDataSource
+            setFilteredDataSource(masterDataSource);
+            setSearch(text);
+          }
+    }
+
+    const searchUserFilterFunction  = (text) => {
+        if (text) {
+            // Inserted text is not blank
+            // Filter the masterDataSource
+            // Update FilteredDataSource
+            const newData = masterDataSource.data.filter(function (item) {
+              const itemData = item.userName
+                ? item.userName.toUpperCase()
                 : ''.toUpperCase();
                 console.log(itemData);
               const textData = text.toUpperCase();
@@ -307,7 +358,7 @@ const [commentsToShow, setCommentsToShow] = useState([]);
             fontFamily: 'Georgia'
         },
         commentParent:{
-            height: "75%",
+            height: "70%",
             width: "80%",
             padding: 5,
         },
@@ -327,19 +378,25 @@ const [commentsToShow, setCommentsToShow] = useState([]);
                 </View>
                 <View style={{ flex: 1, flexDirection:'row', justifyContent: "center", alignItems: "center", marginBottom: "1%"}}>
                 <Pressable 
-                style = {{alignSelf : 'center', borderRadius: 20, margin: 3, backgroundColor: "#F194FF" }}
-                onPress = {() => setFriendsVisible(true)}>
+                style = {{padding:7, alignSelf : 'center', borderRadius: 20, margin: 3, backgroundColor: "#F194FF" }}
+                onPress = {() => {getFriendsList(); setFriendsVisible(true);}}>
                     <Text>Friends List</Text>
                 </Pressable>
                 <Pressable
-                style = {{alignSelf:"center", borderRadius: 20, margin: 3, backgroundColor: "#F194FF", display:display2}}
+                style = {{padding:7, alignSelf:"center", borderRadius: 20, margin: 3, backgroundColor: "#F194FF", display:display2}}
                 onPress = {() => {getMyData(); setButtonsVisible(false);}}>
                     <Text>My Profile</Text>
                 </Pressable>
+                <Pressable
+                style = {{padding:7, alignSelf : 'center', borderRadius: 20, margin: 3, backgroundColor: "#F194FF" }}
+                onPress = {() => {setMasterDataSource(userList); setFilteredDataSource(userList); setUserListVisible(true);}}>
+                    <Text>Find a Friend</Text>               
+                </Pressable>
                 </View>
+
                 <ScrollView
                      style = {styles.commentParent}>{loadComments()}</ScrollView>
-
+                
                 <View>
                     <Modal animationType="slide"
                     transparent={true}
@@ -372,7 +429,47 @@ const [commentsToShow, setCommentsToShow] = useState([]);
                 </Modal>
                 </View>
 
-
+                <View>
+                    <Modal animationType="slide"
+                    transparent={true}
+                    visible={userListVisible}
+                    onRequestClose={() => {
+                        Alert.alert('Modal has been closed.');
+                        setModalVisible(!userListVisible);
+                    }}>
+                <View style = {styles.modalView}>
+                    <Text style = {{alignSelf: "center", fontSize: get_font_size(17), fontWeight:"bold"}}>Search for a friend</Text>
+                        <SearchBar style = {styles.searchbar}
+                            containerStyle = {{backgroundColor: "white", borderRadius: "15"}}
+                            inputStyle = {{backgroundColor: "white"}}
+                            searchIcon={{ size: 18 }}
+                            onChangeText={(text) => searchUserFilterFunction(text)}
+                            onClear={(text) => searchUserFilterFunction('')}
+                            placeholder = "Find a friend"
+                            value = {search}>
+                        </SearchBar> 
+                        <FlatList
+                        data={filteredDataSource}
+                        ItemSeparatorComponent={ItemSeparatorView}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={userView}>
+                        </FlatList>
+                        <View style = {{flexDirection:"row", alignSelf: "center", padding: 4, marginTop: 10}}>
+                            <Pressable
+                                style={[styles.button, styles.buttonClose]}
+                                onPress={() => {addFriend(); setUserListVisible(!userListVisible);}}>
+                                    <Text>Add Friend</Text>
+                                </Pressable>
+                            <Pressable
+                                style={[styles.button, styles.buttonClose]}
+                                onPress={() => {getMyData(); setUserListVisible(!userListVisible);}}>
+                            <Text>Go Back</Text>
+                            </Pressable>
+                            </View>    
+                </View>
+                </Modal>
+                </View>    
+                
 
                 <View>
                     <Modal
@@ -432,7 +529,7 @@ const [commentsToShow, setCommentsToShow] = useState([]);
                 </TouchableOpacity>
                 <Pressable
                         style={[styles.button, styles.buttonOpen]}
-                        onPress={() => setModalVisible(true)}>
+                        onPress={() => {setModalVisible(true);  setMasterDataSource(restaurants); setFilteredDataSource(restaurants);}}>
                      <Text>Add a comment</Text>
                     </Pressable>
             </View>

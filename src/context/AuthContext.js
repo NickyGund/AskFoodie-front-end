@@ -135,6 +135,35 @@ const AuthProvider = (props) => {
       throw err;
     }
   };
+
+  const findUsers = async () => {
+    try{
+      res = await axios.get('http://192.168.1.8:3000/api/findUsers', {
+                params:{}
+            });
+      if(res.data.error){
+        throw new Error("error finding users");
+      }
+      return res.data;
+    }catch(err){
+      throw err;
+    }
+  }
+
+  const addFriend = async(user, friend) => {
+    try{
+      res = await axios.post('http://192.168.1.8:3000/api/addFriend', {
+      userName: user,
+      friends: friend
+    });
+    if(res.data.error) {
+      throw new Error("cant add friend");
+    }
+    return res.data;
+    }catch(error){
+      throw error;
+    }
+  }
   
 
   const state = {
@@ -165,7 +194,9 @@ const AuthProvider = (props) => {
     checkAuth,
     checkEmail,
     checkUserName,
-    getUserInfo
+    getUserInfo,
+    findUsers,
+    addFriend
   };
 
   return (
