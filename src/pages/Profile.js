@@ -188,9 +188,15 @@ const [userList, setUserList] = useState([]);
 
 
      async function viewFriends() {
+        if(selectedFriend){
+        setFriendsVisible(!friendslist);
         setComments(await commentContext.findComments(selectedFriend));
         setUserName(selectedFriend);
         setButtonsVisible(true);
+        }
+        else{
+            alert('must select a friend');
+        }
         
     }
 
@@ -416,7 +422,7 @@ const [userList, setUserList] = useState([]);
                         <View style = {{flexDirection:"row", alignSelf: "center", padding: 4, marginTop: 10}}>
                             <Pressable
                                 style={[styles.button, styles.buttonClose]}
-                                onPress={() => {setFriendsVisible(!friendslist); setSelectedFriend(null); viewFriends(); setViewVisible(false); }}>
+                                onPress={() => {setSelectedFriend(null); viewFriends(); setViewVisible(false); }}>
                                     <Text>Checkout Friend</Text>
                                 </Pressable>
                             <Pressable
