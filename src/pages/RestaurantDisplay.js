@@ -365,25 +365,33 @@ export default (props) => {
         </View>
         <View style={{ alignItems: "center", flex: 2, marginTop: "5%" }}>
           {/* Displays restaurant comments */}
-          {admin.state.comments.length != 0 && (
-            <View style={styles.card}>
-              <ScrollView>
-                {admin.state.comments.map((item, index) => {
-                  return (
-                    <View key={index}>
-                      <TouchableOpacity
-                        onLongPress={() => props.navigation.navigate("profile")}
-                      >
-                        <Text>
-                          {item.poster + " says:\n" + item.content + "\n\n"}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  );
-                })}
-              </ScrollView>
+
+          <View style={styles.card}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text>Comments</Text>
             </View>
-          )}
+            <ScrollView>
+              {admin.state.comments.map((item, index) => {
+                return (
+                  <View key={index}>
+                    <TouchableOpacity
+                      onLongPress={() => props.navigation.navigate("profile")}
+                    >
+                      <Text>
+                        {item.poster + " says:\n" + item.content + "\n\n"}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                );
+              })}
+            </ScrollView>
+          </View>
         </View>
 
         <View>

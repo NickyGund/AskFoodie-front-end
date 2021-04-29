@@ -11,7 +11,7 @@ const RestaurantProvider = (props) => {
   const findRestaurant = async () => {
     var res;
     try {
-      res = await axios.get("http://172.31.75.183:3000/api/findRestaurant", {
+      res = await axios.get("http://192.168.1.11:3000/api/findRestaurant", {
         params: {},
       });
     } catch (error) {

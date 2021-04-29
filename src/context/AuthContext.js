@@ -21,7 +21,7 @@ const AuthProvider = (props) => {
 
   const signUp = async () => {
     try {
-      const res = await axios.post("http://localhost:3000/api/register", {
+      const res = await axios.post("http://192.168.1.11:3000/api/register", {
         email: email,
         firstName: name,
         userName: userName,
@@ -69,7 +69,7 @@ const AuthProvider = (props) => {
   const signIn = async () => {
     try {
       // Send the email and password to login
-      const res = await axios.post("http://172.31.75.183:3000/api/login", {
+      const res = await axios.post("http://192.168.1.11:3000/api/login", {
         email: email,
         password: password,
       });
@@ -99,7 +99,7 @@ const AuthProvider = (props) => {
   const checkUserName = async (value) => {
     try {
       const res = await axios.get(
-        `http://localhost:3000/api/check_username/${value}`
+        `http://192.168.1.11:3000/api/check_username/${value}`
       );
       if (res.data.error) throw new Error("something bad");
       return res.data.exists;
@@ -111,7 +111,7 @@ const AuthProvider = (props) => {
   const checkEmail = async (value) => {
     try {
       const res = await axios.get(
-        `http://192.168.1.8:3000/api/check_email/${value}`
+        `http://192.168.1.11:3000/api/check_email/${value}`
       );
       if (res.data.error) throw new Error("bad email");
       return res.data.exists;
@@ -122,7 +122,7 @@ const AuthProvider = (props) => {
 
   const getUserInfo = async (user) => {
     try {
-      res = await axios.get("http://192.168.1.8:3000/api/getUserInfo", {
+      res = await axios.get("http://192.168.1.11:3000/api/getUserInfo", {
         params: {
           userName: user,
         },
@@ -138,7 +138,7 @@ const AuthProvider = (props) => {
 
   const findUsers = async () => {
     try {
-      res = await axios.get("http://192.168.1.8:3000/api/findUsers", {
+      res = await axios.get("http://192.168.1.11:3000/api/findUsers", {
         params: {},
       });
       if (res.data.error) {
@@ -152,7 +152,7 @@ const AuthProvider = (props) => {
 
   const addFriend = async (user, friend) => {
     try {
-      res = await axios.post("http://192.168.1.8:3000/api/addFriend", {
+      res = await axios.post("http://192.168.1.11:3000/api/addFriend", {
         userName: user,
         friends: friend,
       });

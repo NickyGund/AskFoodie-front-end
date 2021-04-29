@@ -11,20 +11,11 @@ const AdminProvider = (props) => {
   const [token, setToken] = useState("");
 
   const getComments = async (id) => {
-    const commentsList = [
-      {
-        id: 1,
-        poster: "Ben",
-        content: "I love this spot!",
-      },
-      { id: 2, poster: "joe", content: "This place is bad!" },
-    ];
-    setComments(commentsList);
     console.log(id);
     var res;
     try {
       res = await axios.get(
-        "http://192.168.1.201:3000/api/findCommentsForRestaurant",
+        "http://192.168.1.11:3000/api/findCommentsForRestaurant",
         {
           params: {
             restaurant: id,
@@ -36,14 +27,14 @@ const AdminProvider = (props) => {
       throw "Failed to get from back-end server";
     }
     console.log(res.data);
-    //setComments(res.data.data);
+    setComments(res.data.data);
     return res.data;
   };
 
   const getRestaurants = async () => {
     try {
       const res = await axios.get(
-        `http://192.168.1.201:3000/api/findRestaurant`,
+        `http://192.168.1.11:3000/api/findRestaurant`,
         {
           headers: {
             Authorization: "Bearer " + token,
