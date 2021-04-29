@@ -214,7 +214,7 @@ export default (props) => {
   };
 
   const logOut = async () => {
-    await AsyncStorage.removeItem("token");
+    await AsyncStorage.clear();
     props.navigation.navigate("sign in");
   };
 
