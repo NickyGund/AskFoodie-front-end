@@ -41,7 +41,7 @@ const PlacesProvider = function (props) {
     var res;
     try {
       // Returns an array of dictionaries of places
-      res = await axios.get(`http://172.31.75.183:3000/api/places/find`, {
+      res = await axios.get(`http://192.168.1.11:3000/api/places/find`, {
         params: {
           latitude: latitude,
           longitude: longitude,
@@ -77,7 +77,7 @@ const PlacesProvider = function (props) {
       res = await axios({
         method: "get",
         responseType: "arraybuffer",
-        url: "http://172.31.75.183:3000/api/places/photos/",
+        url: "http://192.168.1.11:3000/api/places/photos/",
         params: {
           photo_reference: pf,
           maxwidth: w,
@@ -120,7 +120,7 @@ const PlacesProvider = function (props) {
     try {
       console.log(places[0]);
       const userName = await AsyncStorage.getItem("userName");
-      const res = await axios.post("http://172.31.75.183:3000/api/addLike", {
+      const res = await axios.post("http://192.168.1.11:3000/api/addLike", {
         restaurant: placeId,
         userName: userName,
       });
@@ -133,7 +133,7 @@ const PlacesProvider = function (props) {
     try {
       console.log(places[0]);
       const userName = await AsyncStorage.getItem("userName");
-      const res = await axios.post("http://172.31.75.183:3000/api/addDislike", {
+      const res = await axios.post("http://192.168.1.11:3000/api/addDislike", {
         restaurant: placeId,
         userName: userName,
       });

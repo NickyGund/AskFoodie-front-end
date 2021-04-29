@@ -24,8 +24,7 @@ export default (props) => {
     <View
       style={{
         flexDirection: "row",
-        justifyContent: "space-between",
-        marginTop: "15%",
+        justifyContent: "space-evenly",
       }}
     >
       <TouchableOpacity onPress={() => sendLike()} disabled={dislikePressed}>
