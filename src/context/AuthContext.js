@@ -111,12 +111,57 @@ const AuthProvider = (props) => {
   const checkEmail = async (value) => {
     try {
       const res = await axios.get(
-        `http://192.168.1.26:3000/api/check_email/${value}`
+        `http://192.168.1.8:3000/api/check_email/${value}`
       );
       if (res.data.error) throw new Error("bad email");
       return res.data.exists;
     } catch (err) {
       throw err;
+    }
+  };
+
+  const getUserInfo = async (user) => {
+    try {
+      res = await axios.get("http://192.168.1.8:3000/api/getUserInfo", {
+        params: {
+          userName: user,
+        },
+      });
+      if (res.data.error) {
+        throw new Error("bad username");
+      }
+      return res.data;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  const findUsers = async () => {
+    try {
+      res = await axios.get("http://192.168.1.8:3000/api/findUsers", {
+        params: {},
+      });
+      if (res.data.error) {
+        throw new Error("error finding users");
+      }
+      return res.data;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  const addFriend = async (user, friend) => {
+    try {
+      res = await axios.post("http://192.168.1.8:3000/api/addFriend", {
+        userName: user,
+        friends: friend,
+      });
+      if (res.data.error) {
+        throw new Error("cant add friend");
+      }
+      return res.data;
+    } catch (error) {
+      throw error;
     }
   };
 
@@ -148,6 +193,9 @@ const AuthProvider = (props) => {
     checkAuth,
     checkEmail,
     checkUserName,
+    getUserInfo,
+    findUsers,
+    addFriend,
   };
 
   return (

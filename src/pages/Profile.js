@@ -23,22 +23,36 @@ import useWindowDimensions from "react-native/Libraries/Utilities/useWindowDimen
 import { CommentContext, CommmentProvider } from "./../context/";
 import { RestaurantContext, RestaurantProvider } from "./../context/";
 import { FlatList, TextInput } from "react-native-gesture-handler";
+import { Alert } from "react-native";
+import { render } from "react-dom";
 
 export default (props) => {
   const width = useWindowDimensions.width;
   const height = useWindowDimensions.height;
+  const userContext = useContext(AuthContext);
   const commentContext = useContext(CommentContext);
   const restaurantContext = useContext(RestaurantContext);
-  var [userName, setUserName] = useState("");
+  const [userName, setUserName] = useState("");
   const [search, setSearch] = useState("");
   const [filteredDataSource, setFilteredDataSource] = useState([]);
   const [masterDataSource, setMasterDataSource] = useState([]);
   var [comments, setComments] = useState([]);
-  var [restaurants, setRestaurants] = useState([]);
+  const [friendslist, setFriendsList] = useState([]);
+  const [restaurants, setRestaurants] = useState([]);
   var [parent, setParent] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const [friendsVisible, setFriendsVisible] = useState(false);
+  const [userListVisible, setUserListVisible] = useState(false);
+  const [buttonsVisible, setButtonsVisible] = useState(false);
+  const [viewVisible, setViewVisible] = useState(false);
+  const display = buttonsVisible ? "none" : "flex";
+  const display2 = viewVisible ? "none" : "flex";
   const [selectedId, setSelectedId] = useState(null);
+  const [selectedFriend, setSelectedFriend] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [dictionary, setDictionary] = useState({});
+  const [commentsToShow, setCommentsToShow] = useState([]);
+  const [userList, setUserList] = useState([]);
 
   //function to get
   function get_font_size(size) {
@@ -46,6 +60,7 @@ export default (props) => {
   }
 
   async function getMyData() {
+    setViewVisible(true);
     var username;
     try {
       username = await AsyncStorage.getItem("userName");
@@ -56,23 +71,12 @@ export default (props) => {
       throw "Failed to get auth username";
     }
     try {
-      commentContext.setContent("");
-      const mycomments = await commentContext.findComments(username);
-      console.log(await commentContext.state.comments);
-      setComments(mycomments);
-    } catch (e) {
-      console.log(`No comments to load: ${e}`);
-    }
-    try {
       const myrestaurants = await restaurantContext.findRestaurant();
       var dict = {};
       commentContext.setRestaurant("null");
       console.log(myrestaurants);
       setRestaurants(myrestaurants);
-      setMasterDataSource(myrestaurants);
-      setFilteredDataSource(myrestaurants);
       //make a dictionary here to map out _ids to names
-      //forloop
       for (let k = 0; k < myrestaurants.data.length; k++) {
         dict[myrestaurants.data[k]._id] = myrestaurants.data[k].name;
       }
@@ -80,6 +84,17 @@ export default (props) => {
     } catch (e) {
       console.log(`No restaurants to load: ${e}`);
     }
+    try {
+      commentContext.setContent("");
+      const mycomments = await commentContext.findComments(username);
+      console.log(await commentContext.state.comments);
+      setComments(mycomments);
+    } catch (e) {
+      console.log(`No comments to load: ${e}`);
+    }
+    getFriendsList();
+    getUserList();
+    loadComments();
   }
 
   useEffect(() => {
@@ -89,13 +104,19 @@ export default (props) => {
     //[] indicates that this is loads/unloads once and will not continuously update
   }, []);
 
-  const goHome = function () {
-    try {
-      props.navigation.navigate("main");
-    } catch (error) {
-      console.log(`Failed to go to main page: ${error}`);
-      throw "failed to move";
-    }
+  const getUserList = async function () {
+    const users = await userContext.findUsers();
+    console.log(users);
+    setUserList(users);
+  };
+
+  const getFriendsList = async function () {
+    username = await AsyncStorage.getItem("userName");
+    userContext.setUserName(username);
+    myinfo = await userContext.getUserInfo(username);
+    setFriendsList(myinfo.data[0].friends);
+    console.log(myinfo.data);
+    console.log(myinfo.data[0].friends);
   };
 
   const loadComments = function () {
@@ -158,7 +179,7 @@ export default (props) => {
     alert(" Restaurant : " + item.name + "\n" + " Address : " + item.address);
   };
 
-  //this function defines the actions when a use4r clicks an item in the restaurant flatlist
+  //this function defines the actions when a user clicks an item in the restaurant flatlist
   const ItemView = ({ item }) => {
     const bgcolor = item._id === selectedId ? "#f6b7ff" : "#aedbff";
     return (
@@ -177,6 +198,68 @@ export default (props) => {
       </Text>
     );
   };
+  //this function defines the acions when a user clicks on a friends in the friendslist
+  const FriendView = ({ item }) => {
+    const bgcolour = item == selectedFriend ? "#f6b7ff" : "#aedbff";
+    return (
+      //Flat List Item
+      <Text
+        style={
+          (styles.itemStyle,
+          {
+            backgroundColor: bgcolour,
+            fontSize: get_font_size(15),
+            padding: 5,
+          })
+        }
+        onPress={() => {
+          setSelectedFriend(item);
+          console.log(item);
+          console.log(typeof item);
+        }}
+      >
+        {item}
+      </Text>
+    );
+  };
+
+  const userView = ({ item }) => {
+    const bgcolour = item == selectedUser ? "#f6b7ff" : "#aedbff";
+    return (
+      //Flat List Item
+      <Text
+        style={
+          (styles.itemStyle,
+          {
+            backgroundColor: bgcolour,
+            fontSize: get_font_size(15),
+            padding: 5,
+          })
+        }
+        onPress={() => {
+          setSelectedUser(item);
+          console.log(item);
+        }}
+      >
+        {item.userName}
+      </Text>
+    );
+  };
+
+  async function viewFriends() {
+    if (selectedFriend) {
+      setFriendsVisible(!friendslist);
+      setComments(await commentContext.findComments(selectedFriend));
+      setUserName(selectedFriend);
+      setButtonsVisible(true);
+    } else {
+      alert("must select a friend");
+    }
+  }
+
+  async function addFriend() {
+    await userContext.addFriend(userName, selectedUser.userName);
+  }
 
   const ItemSeparatorView = () => {
     return (
@@ -198,6 +281,30 @@ export default (props) => {
       // Update FilteredDataSource
       const newData = masterDataSource.data.filter(function (item) {
         const itemData = item.name ? item.name.toUpperCase() : "".toUpperCase();
+        console.log(itemData);
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+      console.log(newData);
+      setFilteredDataSource(newData);
+      setSearch(text);
+    } else {
+      // Inserted text is blank
+      // Update FilteredDataSource with masterDataSource
+      setFilteredDataSource(masterDataSource);
+      setSearch(text);
+    }
+  };
+
+  const searchUserFilterFunction = (text) => {
+    if (text) {
+      // Inserted text is not blank
+      // Filter the masterDataSource
+      // Update FilteredDataSource
+      const newData = masterDataSource.data.filter(function (item) {
+        const itemData = item.userName
+          ? item.userName.toUpperCase()
+          : "".toUpperCase();
         console.log(itemData);
         const textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
@@ -311,7 +418,7 @@ export default (props) => {
       fontFamily: "Georgia",
     },
     commentParent: {
-      height: "75%",
+      height: "70%",
       width: "80%",
       padding: 5,
     },
@@ -331,7 +438,190 @@ export default (props) => {
           {userName}
         </Text>
       </View>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          marginBottom: "1%",
+        }}
+      >
+        <Pressable
+          style={{
+            padding: 7,
+            alignSelf: "center",
+            borderRadius: 20,
+            margin: 3,
+            backgroundColor: "#F194FF",
+          }}
+          onPress={() => {
+            getFriendsList();
+            setFriendsVisible(true);
+          }}
+        >
+          <Text>Friends List</Text>
+        </Pressable>
+        <Pressable
+          style={{
+            padding: 7,
+            alignSelf: "center",
+            borderRadius: 20,
+            margin: 3,
+            backgroundColor: "#F194FF",
+            display: display2,
+          }}
+          onPress={() => {
+            getMyData();
+            setButtonsVisible(false);
+          }}
+        >
+          <Text>My Profile</Text>
+        </Pressable>
+        <Pressable
+          style={{
+            padding: 7,
+            alignSelf: "center",
+            borderRadius: 20,
+            margin: 3,
+            backgroundColor: "#F194FF",
+          }}
+          onPress={() => {
+            setMasterDataSource(userList);
+            setFilteredDataSource(userList);
+            setUserListVisible(true);
+          }}
+        >
+          <Text>Find a Friend</Text>
+        </Pressable>
+      </View>
+
       <ScrollView style={styles.commentParent}>{loadComments()}</ScrollView>
+
+      <View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={friendsVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            setModalVisible(!friendsVisible);
+          }}
+        >
+          <View style={styles.modalView}>
+            <Text
+              style={{
+                alignSelf: "center",
+                fontSize: get_font_size(17),
+                fontWeight: "bold",
+              }}
+            >
+              Go to a friends page!
+            </Text>
+            <FlatList
+              data={friendslist}
+              ItemSeparatorComponent={ItemSeparatorView}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={FriendView}
+            ></FlatList>
+            <View
+              style={{
+                flexDirection: "row",
+                alignSelf: "center",
+                padding: 4,
+                marginTop: 10,
+              }}
+            >
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => {
+                  setSelectedFriend(null);
+                  viewFriends();
+                  setViewVisible(false);
+                }}
+              >
+                <Text>Checkout Friend</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => {
+                  setFriendsVisible(!friendslist);
+                }}
+              >
+                <Text>Go Back</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+      </View>
+
+      <View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={userListVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            setModalVisible(!userListVisible);
+          }}
+        >
+          <View style={styles.modalView}>
+            <Text
+              style={{
+                alignSelf: "center",
+                fontSize: get_font_size(17),
+                fontWeight: "bold",
+              }}
+            >
+              Search for a friend
+            </Text>
+            <SearchBar
+              style={styles.searchbar}
+              containerStyle={{ backgroundColor: "white", borderRadius: 15 }}
+              inputStyle={{ backgroundColor: "white" }}
+              searchIcon={{ size: 18 }}
+              onChangeText={(text) => searchUserFilterFunction(text)}
+              onClear={(text) => searchUserFilterFunction("")}
+              placeholder="Find a friend"
+              value={search}
+            ></SearchBar>
+            <FlatList
+              data={filteredDataSource}
+              ItemSeparatorComponent={ItemSeparatorView}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={userView}
+            ></FlatList>
+            <View
+              style={{
+                flexDirection: "row",
+                alignSelf: "center",
+                padding: 4,
+                marginTop: 10,
+              }}
+            >
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => {
+                  addFriend();
+                  setUserListVisible(!userListVisible);
+                }}
+              >
+                <Text>Add Friend</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => {
+                  getMyData();
+                  setUserListVisible(!userListVisible);
+                }}
+              >
+                <Text>Go Back</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+      </View>
+
       <View>
         <Modal
           animationType="slide"
@@ -355,7 +645,10 @@ export default (props) => {
               </Text>
               <SearchBar
                 style={styles.searchbar}
-                containerStyle={{ backgroundColor: "white", borderRadius: 15 }}
+                containerStyle={{
+                  backgroundColor: "white",
+                  borderRadius: 15,
+                }}
                 inputStyle={{ backgroundColor: "white" }}
                 searchIcon={{ size: 18 }}
                 onChangeText={(text) => searchFilterFunction(text)}
@@ -418,6 +711,7 @@ export default (props) => {
           justifyContent: "center",
           alignItems: "center",
           marginBottom: "1%",
+          display,
         }}
       >
         <TouchableOpacity
@@ -428,7 +722,11 @@ export default (props) => {
         </TouchableOpacity>
         <Pressable
           style={[styles.button, styles.buttonOpen]}
-          onPress={() => setModalVisible(true)}
+          onPress={() => {
+            setModalVisible(true);
+            setMasterDataSource(restaurants);
+            setFilteredDataSource(restaurants);
+          }}
         >
           <Text>Add a comment</Text>
         </Pressable>
