@@ -38,11 +38,12 @@ export default (props) => {
     const [commentsToShow, setCommentsToShow] = useState([]);
     const [userList, setUserList] = useState([]);
 
-    //function to get
+    //function to get font size
     function get_font_size(size) {
         return size / PixelRatio.getFontScale();
     };
 
+    //This function retrives the data we want on loading of the page
     async function getMyData() {
         setViewVisible(true);
         var username
@@ -54,7 +55,7 @@ export default (props) => {
             console.log(`Failed to get username: ${error}`);
             throw ("Failed to get auth username");
         }
-       
+
         try {
             commentContext.setContent('');
             const mycomments = await commentContext.findComments(username);
@@ -68,7 +69,7 @@ export default (props) => {
         getUserList();
         loadComments();
     }
-
+    //useEffect() is the trigger when the page is first loaded, here we call getMyData()
     useEffect(() => {
         (async () => {
             await getMyData();
@@ -76,25 +77,28 @@ export default (props) => {
         //[] indicates that this is loads/unloads once and will not continuously update
     }, [])
 
+    //This method uses the restaurant Context to find all the restaurants in the database
     const updateRestaurants = async function () {
-            const myrestaurants = await restaurantContext.findRestaurant();
-            var dict = {};
-            commentContext.setRestaurant('null');
-            console.log(myrestaurants);
-            setRestaurants(myrestaurants);
-            //make a dictionary here to map out _ids to names
-            for (let k = 0; k < myrestaurants.data.length; k++) {
-                dict[myrestaurants.data[k]._id] = myrestaurants.data[k].name
-            }
-            setDictionary(dict);
+        const myrestaurants = await restaurantContext.findRestaurant();
+        var dict = {};
+        commentContext.setRestaurant('null');
+        console.log(myrestaurants);
+        setRestaurants(myrestaurants);
+        //make a dictionary here to map out _ids to names
+        for (let k = 0; k < myrestaurants.data.length; k++) {
+            dict[myrestaurants.data[k]._id] = myrestaurants.data[k].name
+        }
+        setDictionary(dict);
     }
 
+    //uses authContext to find all the users in the database
     const getUserList = async function () {
         const users = await userContext.findUsers();
         console.log(users)
         setUserList(users);
     }
 
+    //Uses authContext to find the info of the specific logged in user
     const getFriendsList = async function () {
         username = await AsyncStorage.getItem('userName');
         userContext.setUserName(username);
@@ -105,6 +109,7 @@ export default (props) => {
 
     }
 
+    //parses the comments object to return nicely displayed comments using the resraurant dictionaru
     const loadComments = function () {
         var newcomment;
         var commentlist = [];
@@ -139,6 +144,7 @@ export default (props) => {
         }
     }
 
+    //uses commentContext to add a comment to the database
     const addComments = async function () {
         try {
             commentContext.addParentComment()
@@ -147,6 +153,7 @@ export default (props) => {
         }
     }
 
+    //Alert that shows up when selecting a restaurant
     const getItem = (item) => {
         commentContext.setRestaurant(item._id)
         alert(' Restaurant : ' + item.name + '\n' + ' Address : ' + item.address);
@@ -175,6 +182,7 @@ export default (props) => {
         );
     };
 
+    //this function defines the acions when a user clicks on a user in the userlist
     const userView = ({ item }) => {
         const bgcolour = item == selectedUser ? "#f6b7ff" : "#aedbff";
         return (
@@ -187,6 +195,7 @@ export default (props) => {
     };
 
 
+    //this method uses the commentContext to load a specific users comments, making it seem like you're going to a users page
     async function viewFriends() {
         if (selectedFriend) {
             setFriendsVisible(!friendslist);
@@ -200,10 +209,12 @@ export default (props) => {
 
     }
 
+    //uses userContext addFriend method to add a friend to a users friendlist
     async function addFriend() {
         await userContext.addFriend(userName, selectedUser.userName)
     }
 
+    //separates items in flatlist
     const ItemSeparatorView = () => {
         return (
             // Flat List Item Separator
@@ -217,6 +228,7 @@ export default (props) => {
         );
     };
 
+    //function to search through the restaurantlist
     const searchFilterFunction = (text) => {
         if (text) {
             // Inserted text is not blank
@@ -241,6 +253,7 @@ export default (props) => {
         }
     }
 
+    //function to search through userlist
     const searchUserFilterFunction = (text) => {
         if (text) {
             // Inserted text is not blank
@@ -265,12 +278,13 @@ export default (props) => {
         }
     }
 
+    //logsout of current user
     const logOut = async () => {
         await AsyncStorage.removeItem('token')
         props.navigation.navigate('sign in')
     }
 
-
+    //styling
     const styles = StyleSheet.create({
         screen: {
             flex: 1,
