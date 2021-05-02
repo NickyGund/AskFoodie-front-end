@@ -1,3 +1,4 @@
+// profile page for user
 import React, { useContext, Component, useEffect, useState, Suspense } from 'react';
 import { StyleSheet, Text, ScrollView, SafeAreaView, TouchableOpacity, View, Modal, Pressable, PixelRatio } from 'react-native';
 import { SearchBar } from 'react-native-elements';

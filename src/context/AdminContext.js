@@ -1,3 +1,4 @@
+// global context for admin pages. Stores admin information and makes admin related api calls.
 import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -10,12 +11,14 @@ const AdminProvider = (props) => {
   const [comments, setComments] = useState([]);
   const [token, setToken] = useState("");
 
+
+  // get comments from database associated with given restaurant id
   const getComments = async (id) => {
     console.log(id);
     var res;
     try {
-      res = await axios.get(
-        "http://192.168.1.11:3000/api/findCommentsForRestaurant",
+      res = await axios.get( // api call to get comments
+        "http://192.168.1.246:3000/api/findCommentsForRestaurant",
         {
           params: {
             restaurant: id,
@@ -31,10 +34,11 @@ const AdminProvider = (props) => {
     return res.data;
   };
 
+  // get list of restaurants in database
   const getRestaurants = async () => {
     try {
-      const res = await axios.get(
-        `http://192.168.1.11:3000/api/findRestaurant`,
+      const res = await axios.get( // api call to get restaurants 
+        `http://192.168.1.246:3000/api/findRestaurant`,
         {
           headers: {
             Authorization: "Bearer " + token,
@@ -48,10 +52,11 @@ const AdminProvider = (props) => {
     }
   };
 
+  // delete comment given a comment id
   const deleteComment = async (id) => {
     var res;
     try {
-      res = await axios.get("http://192.168.1.201:3000/api/deleteComment", {
+      res = await axios.get("http://192.168.1.246:3000/api/deleteComment", { // api call to delete comment
         params: {
           id: id,
         },

@@ -1,3 +1,4 @@
+// global context to store profile questionare information and make api call to add to database
 import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -10,11 +11,12 @@ const ProfileProvider = (props) => {
   const [distance, setDistance] = useState(1);
   const [dining, setDining] = useState(1);
 
+  // submit profile questionare to database with given information
   const submit = async () => {
     const body = { foodTypes, price, distance, dining };
     try {
       const res = await axios.post(
-        "http://192.168.1.11:3000/api/addProfileInfo",
+        "http://192.168.1.246:3000/api/addProfileInfo",
         {
           foodTypes,
           price,

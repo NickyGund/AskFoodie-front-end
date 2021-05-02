@@ -1,3 +1,4 @@
+// component to render thumbs up and thumbs down icon
 import React, { useState, useContext, useEffect, Component } from "react";
 import { View, StyleSheet, Touchable } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";

@@ -61,28 +61,15 @@ const openRestaurantWebsite = async (website) => {
   } catch (error) {}
 };
 
-const { width, height } = Dimensions.get("window");
 
 export default (props) => {
-  const auth = useContext(AuthContext);
   const placesContext = useContext(PlacesContext);
   const admin = useContext(AdminContext);
-
   const width = useWindowDimensions.width;
   const height = useWindowDimensions.height;
 
   const {
-    restaurantPhoneNumber,
-    restaurantName,
-    restaurantAddress,
-    restaurantType,
-    restaurantPrice,
-    restaurantRating,
-    restaurantWebsite,
-    googleRestaurantAddress,
     places,
-    priceColor,
-    photo,
     GOOGLE_API_KEY,
   } = placesContext.state;
 

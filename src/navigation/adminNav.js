@@ -1,3 +1,4 @@
+// stack navigator for admin screens
 import React from 'react';
 import { Home, AdminHome, Comments, RestaurantList } from '../pages';
 import { createStackNavigator } from '@react-navigation/stack';

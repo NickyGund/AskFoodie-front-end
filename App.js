@@ -1,3 +1,7 @@
+/* 
+  entry point of application 
+  renders main navigation stack with context providers
+*/
 import React from 'react';
 import Main from './src/navigation';
 import { AuthProvider, ProfileProvider, PlacesProvider, AdminProvider, LocationProvider,CommentProvider, RestaurantProvider } from './src/context';

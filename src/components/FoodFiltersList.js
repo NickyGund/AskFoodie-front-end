@@ -1,3 +1,4 @@
+// component to render food type and restaurant filters
 import React, {useState, useContext} from 'react';
 import { View, PixelRatio, Dimensions, StyleSheet, ScrollView, Pressable, Text, ImageBackground } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -9,7 +10,7 @@ const { width, height } = Dimensions.get('window');
 
 export default (props) => {
     const placesContext = useContext(PlacesContext);
-    const foodTypes = [
+    const foodTypes = [ // array of food type filters
         {name:'Fast Food', icon:'FastFood'}, 
         {name:'Burgers', icon:'Burgers'}, 
         {name:'Mexican', icon:'Mexican'},
@@ -25,7 +26,7 @@ export default (props) => {
         {name:'Italian', icon:'Italian'},
         {name:'Asian', icon:'Asian'}
         ]
-    const filters = [
+    const filters = [ //restaurant filters
         {name:'$'},
         {name:'$$'},
         {name:'$$$'},
@@ -37,7 +38,7 @@ export default (props) => {
     ]
 
  
-    return (
+    return ( // returns scrollable list of food filters and restaurant filters
         
         <View>
             <ScrollView horizontal = {true} showsHorizontalScrollIndicator = {false} marginBottom = {'5%'}>

@@ -1,3 +1,4 @@
+// global context to find and store list of restaurants in database
 import React, { useState } from "react";
 import axios from "axios";
 
@@ -8,10 +9,12 @@ const RestaurantProvider = (props) => {
   const [restaurants, setRestaurants] = useState([]);
   const [name, setName] = useState("");
 
+
+  // get list of restaurants in database
   const findRestaurant = async () => {
     var res;
     try {
-      res = await axios.get("http://192.168.1.11:3000/api/findRestaurant", {
+      res = await axios.get("http://192.168.1.246:3000/api/findRestaurant", {
         params: {},
       });
     } catch (error) {
