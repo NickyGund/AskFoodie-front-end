@@ -1,3 +1,5 @@
+// sign in screen
+
 // https://reactnative.dev/docs/components-and-apis
 import React, { useState, useContext } from 'react';
 import { View, PixelRatio, Dimensions, StyleSheet, TouchableOpacity, Text, ImageBackground, Alert } from 'react-native';
@@ -15,32 +17,28 @@ const backgroundImage = {
 
 export default (props) =>  {
   const auth = useContext(AuthContext)
+  // navigate to sign up screen when button is pressed
   const toSignUp = () => {
     props.navigation.navigate('sign up'); //sign up
   };
 
   var username, password;
-  const username_input_changed = (text) => {
-    username = text
-  }
-  const password_input_changed = (text) => {
-    password = text
-  }
 
+  // attempt to login 
   const login = async () => {
     try {
-      const res = await auth.signIn();
+      const res = await auth.signIn(); // call method to make api call to sign in
         if(res.signedIn) {
-          props.navigation.navigate('main') //changed from main
+          props.navigation.navigate('main') // navigate to main screen
         } else {
-        props.navigation.navigate('questionaire') //questionaire
+        props.navigation.navigate('questionaire') // navigate to questionaire if first time signing in
       }
     } catch(err) {
       Alert.alert(
         'Log in failed', 
         err.toString(),
         [
-          {text: 'Ok', style: 'Ok'} // no idea what these are for
+          {text: 'Ok', style: 'Ok'} 
         ],
         {cancelable:false}
       );

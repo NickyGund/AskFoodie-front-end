@@ -1,3 +1,4 @@
+// component for food type filter 
 import React, {useState, useContext} from 'react';
 import { View, PixelRatio, Image, TouchableOpacity, useWindowDimensions, StyleSheet, ScrollView, Pressable, Text, ImageBackground } from 'react-native';
 import Icon from './icon'
@@ -10,14 +11,15 @@ export default (props) => {
     const height = useWindowDimensions().width;
     const { foodFilters } = placesContext.state
 
+    // adds food type filter to filter array
     const filterPressed = async () => {
         setPressed(!pressed)
         console.log(pressed)
         if(pressed){
-            if(await foodFilters.indexOf(props.name) < 0){
+            if(await foodFilters.indexOf(props.name) < 0){ // add filter to array if icon is pressed
                  await placesContext.setFoodFilters(oldArray => [...oldArray, props.name])
             }
-        } else {
+        } else { // remove from array if unpressed
             var newArray = foodFilters
             var index = newArray.indexOf(props.name)
             newArray.splice(index,1)
@@ -33,7 +35,7 @@ export default (props) => {
             margin:10, 
         },
     })
-    return (   
+    return ( // renders food type icon as a pressable button
         <View style = {{justifyContent:'center', alignItems:'center',}}> 
             <TouchableOpacity 
                             style = {{alignItems:'center',justifyContent:'center'}} 

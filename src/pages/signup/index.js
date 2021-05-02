@@ -1,13 +1,14 @@
-import React from 'react';
-import { View, SafeAreaView, Dimensions, StyleSheet, Text } from 'react-native';
+// stack navigator for sign up
+import React from "react";
+import { View, SafeAreaView, Dimensions, StyleSheet, Text } from "react-native";
 
-import Username from './username';
-import Birthday from './birthday';
-import Email from './email';
-import Password from './password';
-import Name from './name'
-import { createStackNavigator } from '@react-navigation/stack';
-const { width, height } = Dimensions.get('window');
+import Username from "./username";
+import Birthday from "./birthday";
+import Email from "./email";
+import Password from "./password";
+import Name from "./name";
+import { createStackNavigator } from "@react-navigation/stack";
+const { width, height } = Dimensions.get("window");
 const cross = Math.sqrt(width * width + height * height);
 
 export default () => {

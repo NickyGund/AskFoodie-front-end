@@ -1,3 +1,4 @@
+// stack navigator for main screens in app (after signing in)
 import React from 'react';
 import { Home, Profile} from '../pages';
 import { createStackNavigator } from '@react-navigation/stack';

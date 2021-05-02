@@ -1,18 +1,18 @@
+/* 
+  main screen in app
+  displays filters and ask foodie button
+*/
 import React, { useContext, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   View,
-  PixelRatio,
-  Dimensions,
   StyleSheet,
-  TouchableOpacity,
   Text,
   StatusBar,
-  ImageBackground,
   Alert,
   useWindowDimensions,
 } from "react-native";
-import { PlacesContext, PlacesProvider, LocationContext } from "./../context/";
+import { PlacesContext, LocationContext } from "./../context/";
 import Filters from "../components/FoodFiltersList";
 import AwesomeButtonRick from "react-native-really-awesome-button/src/themes/rick";
 
@@ -82,15 +82,6 @@ export default (props) => {
     }
 
     return;
-  };
-
-  const toProfile = function () {
-    try {
-      props.navigation.navigate("profile");
-    } catch (error) {
-      console.log(`Failed to go to profile: ${error}`);
-      throw "failed to move";
-    }
   };
 
   const styles = StyleSheet.create({
